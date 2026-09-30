@@ -115,6 +115,8 @@
 	.panel :global(label.field input) {
 		background: rgba(251, 252, 251, 0.96);
 		border-color: transparent;
+		color: #0e1118;
+		caret-color: #0e1118;
 	}
 
 	@keyframes spin {
