@@ -16,7 +16,8 @@
 	--lime-deep: #1b63e0;
 	--on-lime: #ffffff;
 	--danger: #ff6b73;
-	--done: #1a2740;
+	--ok: #30d158;
+	--done: #15291c;
 	--link: #6ba3ff;
 	--topbar: rgba(14, 17, 24, 0.88);
 	--error-bg: #3a1a1c;
@@ -288,6 +289,7 @@ label.field textarea:focus {
 	*::before,
 	*::after {
 		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 	}
 }

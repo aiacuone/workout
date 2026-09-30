@@ -118,6 +118,7 @@ export const workout = pgTable(
 		version: integer('version').notNull().default(0),
 		restEndsAt: ts('rest_ends_at'),
 		restTotalSec: integer('rest_total_sec'),
+		restWeId: text('rest_we_id'),
 		updatedAt: ts('updated_at').notNull().defaultNow()
 	},
 	(t) => [index('workout_user_status_idx').on(t.userId, t.status)]

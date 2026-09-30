@@ -90,7 +90,7 @@
 	>
 		<h2>Import from Strong</h2>
 		<p class="muted help">
-			Upload <code>import/strong-history-import.csv</code> — the remapped Strong history (last 2 years,
+			Upload <code>import/strong-export-last-2-years.csv</code> — the remapped Strong history (last 2 years,
 			exercise names already matched to your library). After import, a routine is created from the
 			<strong>latest</strong> session of each workout name (skipped if that routine already exists).
 			Workouts you’ve already imported (same name + start time) are skipped.

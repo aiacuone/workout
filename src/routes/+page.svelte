@@ -26,10 +26,6 @@
 			<a class="btn primary block cta" href="/workout/active">
 				<Icon name="play" size={20} />Resume {data.active.name} · <Elapsed since={data.active.startedAt} />
 			</a>
-		{:else}
-			<form method="POST" action="/workout/start">
-				<button class="btn primary block cta"><Icon name="bolt" size={20} />Start empty workout</button>
-			</form>
 		{/if}
 	</section>
 

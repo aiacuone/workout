@@ -65,6 +65,7 @@ export async function getWorkoutState(
 		version: w.version,
 		restEndsAt: w.restEndsAt?.toISOString() ?? null,
 		restTotalSec: w.restTotalSec,
+		restWeId: w.restWeId,
 		serverNow: new Date().toISOString(),
 		exercises: rows.map(({ we, name, muscleGroup, equipment, restSec, exerciseNotes }) => ({
 			id: we.id,
@@ -228,7 +229,8 @@ export type Op =
 	| { op: 'addHitLog'; hitId: string }
 	| { op: 'removeHitLog'; logId: string }
 	| { op: 'updateHitLog'; logId: string; patch: HitLogPatch }
-	| { op: 'startRest'; seconds: number }
+	| { op: 'setRest'; weId: string; seconds: number | null }
+	| { op: 'startRest'; weId: string; seconds: number }
 	| { op: 'adjustRest'; delta: number }
 	| { op: 'stopRest' }
 	| { op: 'finish' }
@@ -313,8 +315,12 @@ async function renumberExercises(tx: Tx, workoutId: string) {
 			.where(eq(schema.workoutExercise.id, r.id));
 }
 
-function restUntil(seconds: number) {
-	return { restEndsAt: new Date(Date.now() + seconds * 1000), restTotalSec: seconds };
+function restUntil(seconds: number, weId: string) {
+	return { restEndsAt: new Date(Date.now() + seconds * 1000), restTotalSec: seconds, restWeId: weId };
+}
+
+function clearRest() {
+	return { restEndsAt: null, restTotalSec: null, restWeId: null };
 }
 
 export type OpResult = { status: 'in_progress' | 'completed' | 'discarded' };
@@ -347,6 +353,7 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 
 			case 'removeExercise':
 				await ownedWe(tx, w.id, op.weId);
+				if (w.restWeId === op.weId) Object.assign(bump, clearRest());
 				await tx.delete(schema.workoutExercise).where(eq(schema.workoutExercise.id, op.weId));
 				await renumberExercises(tx, w.id);
 				break;
@@ -431,7 +438,7 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 							.from(schema.exercise)
 							.where(eq(schema.exercise.id, we.exerciseId));
 						const secs = ex?.restSec ?? prefs.defaultRestSec;
-						if (secs > 0) Object.assign(bump, restUntil(secs));
+						if (secs > 0) Object.assign(bump, restUntil(secs, we.id));
 					}
 				}
 				if (Object.keys(next).length)
@@ -520,25 +527,46 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 					next.completedAt = p.completed ? new Date() : null;
 					const def = HIT_BY_KEY[hit.methodKey];
 					if (p.completed && !log.completed && def?.defaultRest)
-						Object.assign(bump, restUntil(def.defaultRest));
+						Object.assign(bump, restUntil(def.defaultRest, hit.workoutExerciseId));
 				}
 				if (Object.keys(next).length)
 					await tx.update(schema.hitLog).set(next).where(eq(schema.hitLog.id, log.id));
 				break;
 			}
 
+			case 'setRest': {
+				const we = await ownedWe(tx, w.id, op.weId);
+				const seconds = op.seconds === null ? null : num(op.seconds, 0, 900, true);
+				if (op.seconds !== null && seconds === null) break;
+				await tx
+					.update(schema.exercise)
+					.set({ restSec: seconds })
+					.where(and(eq(schema.exercise.id, we.exerciseId), eq(schema.exercise.userId, userId)));
+				const stillRunning = w.restWeId === we.id && w.restEndsAt && w.restEndsAt.getTime() > Date.now();
+				if (stillRunning) {
+					const secs = seconds ?? prefs.defaultRestSec;
+					if (secs > 0) Object.assign(bump, restUntil(secs, we.id));
+					else Object.assign(bump, clearRest());
+				}
+				break;
+			}
+
 			case 'startRest': {
-				const s = num(op.seconds, 5, 900, true);
-				if (s) Object.assign(bump, restUntil(s));
+				const we = await ownedWe(tx, w.id, op.weId);
+				const [ex] = await tx
+					.select({ restSec: schema.exercise.restSec })
+					.from(schema.exercise)
+					.where(eq(schema.exercise.id, we.exerciseId));
+				const s = num(op.seconds, 5, 900, true) ?? (ex?.restSec ?? prefs.defaultRestSec);
+				if (s > 0) Object.assign(bump, restUntil(s, we.id));
 				break;
 			}
 
 			case 'adjustRest': {
-				if (!w.restEndsAt) break;
+				if (!w.restEndsAt || !w.restWeId) break;
 				const ends = new Date(w.restEndsAt.getTime() + (num(op.delta, -600, 600, true) ?? 0) * 1000);
 				if (ends.getTime() <= Date.now()) {
-					bump.restEndsAt = null;
-					bump.restTotalSec = null;
+					Object.assign(bump, clearRest());
 				} else {
 					bump.restEndsAt = ends;
 					bump.restTotalSec = Math.max(
@@ -550,8 +578,7 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 			}
 
 			case 'stopRest':
-				bump.restEndsAt = null;
-				bump.restTotalSec = null;
+				Object.assign(bump, clearRest());
 				break;
 
 			case 'finish':
@@ -640,6 +667,7 @@ async function finishTx(tx: Tx, workoutId: string): Promise<OpResult> {
 			finishedAt: new Date(),
 			restEndsAt: null,
 			restTotalSec: null,
+			restWeId: null,
 			version: sql`${schema.workout.version} + 1`,
 			updatedAt: new Date()
 		})

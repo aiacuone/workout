@@ -38,7 +38,7 @@
 			</div>
 		</section>
 	{:else}
-		<p class="empty">No finished workouts yet. <a href="/workout">Start one</a>.</p>
+		<p class="empty">No finished workouts yet. <a href="/routines">Start one</a>.</p>
 	{/each}
 </div>
 

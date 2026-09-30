@@ -13,11 +13,19 @@
 <div class="page">
 	<div class="page-head">
 		<div>
-			<p class="eyebrow">Templates</p>
+			<p class="eyebrow">Start or edit</p>
 			<h1>Routines</h1>
 		</div>
 		<button class="btn primary" onclick={() => (creating = true)}><Icon name="plus" size={18} />New</button>
 	</div>
+
+	{#if data.active}
+		<p class="muted start-note">Finish your current workout before starting another.</p>
+	{:else}
+		<form method="POST" action="/workout/start" class="start">
+			<button class="btn primary block big"><Icon name="bolt" size={20} />Start an empty workout</button>
+		</form>
+	{/if}
 
 	{#if data.routines.length}
 		<div class="stack">
@@ -40,3 +48,16 @@
 		<button class="btn primary block">Create routine</button>
 	</form>
 </Sheet>
+
+<style>
+	.start {
+		margin-bottom: 1.25rem;
+	}
+	.start-note {
+		margin: 0 0 1.25rem;
+	}
+	.big {
+		min-height: 60px;
+		font-size: 1.1rem;
+	}
+</style>

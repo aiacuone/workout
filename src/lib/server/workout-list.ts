@@ -43,7 +43,7 @@ export async function listCompletedWorkouts(userId: string, limit = 100) {
 					exerciseId: x.exerciseId,
 					name: x.name,
 					rating: x.rating,
-					sets: s.length,
+					sets: s.filter((v) => v.type !== 'warmup').length,
 					best: best ? { weightKg: best.weightKg, reps: best.reps } : null,
 					hits: (hits.get(x.id) ?? []).map((h) => h.methodKey),
 					volumeKg: summarize(s).volumeKg

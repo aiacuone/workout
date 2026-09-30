@@ -12,7 +12,7 @@
 	const tabs = [
 		{ href: '/', label: 'Home', icon: 'home' },
 		{ href: '/history', label: 'History', icon: 'history' },
-		{ href: '/workout', label: 'Workout', icon: 'plus' },
+		{ href: '/routines', label: 'Routines', icon: 'list' },
 		{ href: '/exercises', label: 'Exercises', icon: 'dumbbell' },
 		{ href: '/measurements', label: 'Measure', icon: 'ruler' }
 	] as const;
@@ -63,7 +63,6 @@
 			{#each tabs as t (t.href)}
 				<a href={t.href} aria-current={isCurrent(t.href) ? 'page' : undefined}>{t.label}</a>
 			{/each}
-			<a href="/routines" aria-current={isCurrent('/routines') ? 'page' : undefined}>Routines</a>
 		</nav>
 		<a class="icon-btn" href="/settings" aria-label="Settings"><Icon name="settings" /></a>
 	</header>
@@ -185,11 +184,12 @@
 		font-size: 0.85rem;
 	}
 	.pulse {
+		flex: none;
 		width: 10px;
 		height: 10px;
 		border-radius: 50%;
 		background: var(--on-lime);
-		animation: pulse 1.6s infinite;
+		animation: pulse 2.4s ease-in-out infinite;
 	}
 
 	main.with-resume :global(.page) {
@@ -202,7 +202,7 @@
 			opacity: 1;
 		}
 		50% {
-			opacity: 0.25;
+			opacity: 0.55;
 		}
 	}
 	@keyframes rise {

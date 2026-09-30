@@ -6,6 +6,7 @@
 	import HitBlock from './HitBlock.svelte';
 	import Icon from './Icon.svelte';
 	import Rating from './Rating.svelte';
+	import RestTimer from './RestTimer.svelte';
 	import SessionNote from './SessionNote.svelte';
 
 	let {
@@ -13,21 +14,34 @@
 		unit,
 		exercises,
 		session,
+		restEndsAt,
+		restTotal,
+		offsetMs,
+		idleSec,
 		onhistory,
-		onmenu
+		onmenu,
+		onrest
 	}: {
 		we: WorkoutExerciseState;
 		unit: WeightUnit;
 		exercises: { id: string; name: string }[];
 		session: WorkoutSession;
+		restEndsAt: string | null;
+		restTotal: number | null;
+		offsetMs: number;
+		idleSec: number;
 		onhistory: () => void;
 		onmenu: () => void;
+		onrest: () => void;
 	} = $props();
 
 	let shake = $state<string | null>(null);
 	let notePicker = $state(false);
+	let noteMenu: HTMLElement | undefined = $state();
 	let permanentOpen = $state(false);
 	let sessionOpen = $state(false);
+	let cableOpen = $state(false);
+	let seatOpen = $state(false);
 
 	const NEXT_TYPE: Record<SetType, SetType> = { normal: 'warmup', warmup: 'failure', failure: 'normal' };
 
@@ -36,6 +50,23 @@
 		return we.sets.map((s) => (s.type === 'warmup' ? 'W' : String(++n)));
 	});
 	const doneCount = $derived(we.sets.filter((s) => s.completed).length);
+	const notesVisible = $derived(permanentOpen || sessionOpen || !!we.exerciseNotes || !!we.notes);
+
+	$effect(() => {
+		if (!notePicker) return;
+		const close = (e: PointerEvent) => {
+			if (!noteMenu?.contains(e.target as Node)) notePicker = false;
+		};
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') notePicker = false;
+		};
+		document.addEventListener('pointerdown', close);
+		document.addEventListener('keydown', onKey);
+		return () => {
+			document.removeEventListener('pointerdown', close);
+			document.removeEventListener('keydown', onKey);
+		};
+	});
 
 	function updateSet(set: SetView, patch: Partial<SetView>) {
 		Object.assign(set, patch);
@@ -88,35 +119,7 @@
 		<button type="button" class="icon-btn" aria-label="Exercise options" onclick={onmenu}><Icon name="more" /></button>
 	</header>
 
-	<div class="setup">
-		<label>
-			<span>Rep range</span>
-			<input
-				class="input"
-				placeholder="8–12"
-				value={we.repRange ?? ''}
-				onchange={(e) => updateExercise({ repRange: e.currentTarget.value.trim() || null })}
-			/>
-		</label>
-		<label>
-			<span>Cable height</span>
-			<input
-				class="input"
-				placeholder="–"
-				value={we.cableHeight ?? ''}
-				onchange={(e) => updateExercise({ cableHeight: e.currentTarget.value.trim() || null })}
-			/>
-		</label>
-		<label>
-			<span>Seat height</span>
-			<input
-				class="input"
-				placeholder="–"
-				value={we.seatHeight ?? ''}
-				onchange={(e) => updateExercise({ seatHeight: e.currentTarget.value.trim() || null })}
-			/>
-		</label>
-	</div>
+	<RestTimer endsAt={restEndsAt} total={restTotal} {offsetMs} {idleSec} onedit={onrest} />
 
 	{#if we.previous?.notes}
 		<p class="last-note"><span class="eyebrow">Last time</span> {we.previous.notes}</p>
@@ -197,11 +200,7 @@
 		/>
 	{/each}
 
-	<footer>
-		<Rating value={we.rating} onchange={(v) => updateExercise({ rating: v })} />
-	</footer>
-
-	<div class="notes">
+	<div class="notes" class:open={notesVisible}>
 		<SessionNote
 			bind:open={permanentOpen}
 			value={we.exerciseNotes}
@@ -216,32 +215,82 @@
 			placeholder="Changes for next time…"
 			onchange={(notes) => updateExercise({ notes })}
 		/>
-		<div class="note-actions">
-			<button type="button" class="add-note" aria-expanded={notePicker} onclick={() => (notePicker = !notePicker)}>
-				<Icon name="plus" size={16} />Note
-			</button>
-			{#if notePicker}
-				<div class="note-pick" role="menu">
-					<button
-						type="button"
-						role="menuitem"
-						onclick={() => {
-							permanentOpen = true;
-							notePicker = false;
-						}}>Permanent</button
-					>
-					<button
-						type="button"
-						role="menuitem"
-						onclick={() => {
-							sessionOpen = true;
-							notePicker = false;
-						}}>Session</button
-					>
-				</div>
-			{/if}
-		</div>
 	</div>
+
+	<footer>
+		<div class="tools">
+			<label class="chip">
+				<span>Range</span>
+				<input
+					placeholder="8–12"
+					value={we.repRange ?? ''}
+					onchange={(e) => updateExercise({ repRange: e.currentTarget.value.trim() || null })}
+				/>
+			</label>
+			{#if cableOpen || we.cableHeight}
+				<label class="chip">
+					<span>Height</span>
+					<input
+						placeholder="–"
+						value={we.cableHeight ?? ''}
+						onchange={(e) => {
+							const cableHeight = e.currentTarget.value.trim() || null;
+							if (!cableHeight) cableOpen = false;
+							updateExercise({ cableHeight });
+						}}
+					/>
+				</label>
+			{:else}
+				<button type="button" class="add-note" onclick={() => (cableOpen = true)}>
+					<Icon name="plus" size={16} />Height
+				</button>
+			{/if}
+			{#if seatOpen || we.seatHeight}
+				<label class="chip">
+					<span>Seat</span>
+					<input
+						placeholder="–"
+						value={we.seatHeight ?? ''}
+						onchange={(e) => {
+							const seatHeight = e.currentTarget.value.trim() || null;
+							if (!seatHeight) seatOpen = false;
+							updateExercise({ seatHeight });
+						}}
+					/>
+				</label>
+			{:else}
+				<button type="button" class="add-note" onclick={() => (seatOpen = true)}>
+					<Icon name="plus" size={16} />Seat
+				</button>
+			{/if}
+			<div class="note-actions" bind:this={noteMenu}>
+				<button type="button" class="add-note" aria-expanded={notePicker} onclick={() => (notePicker = !notePicker)}>
+					<Icon name="plus" size={16} />Note
+				</button>
+				{#if notePicker}
+					<div class="note-pick" role="menu">
+						<button
+							type="button"
+							role="menuitem"
+							onclick={() => {
+								permanentOpen = true;
+								notePicker = false;
+							}}>Permanent</button
+						>
+						<button
+							type="button"
+							role="menuitem"
+							onclick={() => {
+								sessionOpen = true;
+								notePicker = false;
+							}}>Session</button
+						>
+					</div>
+				{/if}
+			</div>
+		</div>
+		<Rating value={we.rating} onchange={(v) => updateExercise({ rating: v })} />
+	</footer>
 </article>
 
 <style>
@@ -284,31 +333,6 @@
 		gap: 0.25rem;
 		font-size: 0.8rem;
 		color: var(--steel);
-	}
-	.setup {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 0.4rem;
-		margin: 0.6rem 0 0.5rem;
-	}
-	.setup label {
-		display: grid;
-		gap: 0.1rem;
-	}
-	.setup span {
-		font-size: 0.66rem;
-		font-weight: 750;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--steel);
-	}
-	.setup .input {
-		min-height: 34px;
-		padding: 0.25rem 0.5rem;
-		font-size: 0.9rem;
-		font-weight: 650;
-		background: var(--paper);
-		border-color: transparent;
 	}
 	.note {
 		margin-bottom: 0.4rem;
@@ -412,9 +436,9 @@
 		transform: scale(0.92);
 	}
 	.check[aria-pressed='true'] {
-		background: var(--chrome);
-		border-color: var(--lime);
-		color: var(--lime);
+		background: var(--ok);
+		border-color: var(--ok);
+		color: var(--chrome);
 	}
 	.set-actions {
 		display: flex;
@@ -423,12 +447,50 @@
 	}
 	footer {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
-		justify-content: flex-end;
-		gap: 0.5rem;
-		margin-top: 0.75rem;
-		padding-top: 0.6rem;
+		justify-content: space-between;
+		gap: 0.5rem 0.75rem;
+		margin-top: 0.65rem;
+		padding-top: 0.55rem;
 		border-top: 1px dashed var(--line);
+	}
+	.tools {
+		display: flex;
+		flex: 1;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.15rem 0.35rem;
+		min-width: 0;
+	}
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		min-height: 32px;
+		padding: 0 0.45rem;
+		border-radius: var(--radius-sm);
+		background: var(--paper);
+	}
+	.chip span {
+		font-size: 0.66rem;
+		font-weight: 750;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--steel);
+	}
+	.chip input {
+		width: 4.2rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--ink);
+		font: inherit;
+		font-size: 0.88rem;
+		font-weight: 700;
+	}
+	.chip input:focus {
+		outline: none;
 	}
 	.last-note {
 		margin: 0.55rem 0 0;
@@ -446,7 +508,9 @@
 	.notes {
 		display: grid;
 		gap: 0.45rem;
-		margin-top: 0.55rem;
+	}
+	.notes.open {
+		margin-top: 0.65rem;
 	}
 	.note-actions {
 		position: relative;
@@ -501,7 +565,7 @@
 	}
 	@keyframes sweep {
 		from {
-			background: linear-gradient(90deg, var(--lime) 0%, var(--done) 100%);
+			background: linear-gradient(90deg, var(--ok) 0%, var(--done) 100%);
 		}
 	}
 	@keyframes shake {

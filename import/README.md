@@ -7,7 +7,7 @@ date: 2026-09-30
 
 ## What to upload in Settings
 
-Upload **`strong-history-import.csv`** via Settings → Import from Strong.
+Upload **`strong-export-last-2-years.csv`** via Settings → Import from Strong.
 
 That file is your Strong export with:
 
@@ -23,7 +23,7 @@ Do **not** upload `strong-exercise-map.csv` alone — it has no workout/set data
 |---|---|
 | `strong-exercise-map.csv` | Strong name → Ironlog name (`map` or `create`) |
 | `strong-export.csv` | Original Strong workout export (full history) |
-| `strong-history-import.csv` | Ready-to-import history (remapped + filtered) |
+| `strong-export-last-2-years.csv` | Ready-to-import history from 2024-09-30 onward (remapped). Workouts in that window are 2026-01-27 to 2026-09-29 |
 | `bmt-measurements.csv` | Body Measurement Tracker export (Settings → Import from Body Measurement Tracker) |
 | `exercises-to-add.md` | Human list of creates vs maps |
 | `strong-match-state.json` | Working state from the matching session |

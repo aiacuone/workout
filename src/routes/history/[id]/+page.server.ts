@@ -16,7 +16,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		totals: workout.exercises.reduce(
 			(t, e) => {
 				const s = summarize(e.sets);
-				return { volumeKg: t.volumeKg + s.volumeKg, reps: t.reps + s.totalReps, sets: t.sets + e.sets.length };
+				return {
+					volumeKg: t.volumeKg + s.volumeKg,
+					reps: t.reps + s.totalReps,
+					sets: t.sets + e.sets.filter((set) => set.type !== 'warmup').length
+				};
 			},
 			{ volumeKg: 0, reps: 0, sets: 0 }
 		)

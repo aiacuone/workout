@@ -6,10 +6,10 @@
 	import ExerciseHistory from '$lib/components/ExerciseHistory.svelte';
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import RestTimer from '$lib/components/RestTimer.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { HIT_METHODS } from '$lib/hit';
 	import type { Session, WorkoutExerciseState } from '$lib/types';
+	import { formatDuration } from '$lib/units';
 	import { WakeLock } from '$lib/wakelock.svelte';
 	import { WorkoutSession } from '$lib/workout/session.svelte';
 
@@ -35,7 +35,8 @@
 	let history = $state<Session[] | null>(null);
 	let finishing = $state(false);
 	let renaming = $state(false);
-	let timerPicker = $state(false);
+	let restEditId = $state<string | null>(null);
+	let customRest = $state('');
 
 	const incomplete = $derived(
 		w.exercises.reduce(
@@ -44,6 +45,24 @@
 		)
 	);
 	const completedSets = $derived(w.exercises.reduce((n, e) => n + e.sets.filter((s) => s.completed).length, 0));
+	const restEdit = $derived(w.exercises.find((e) => e.id === restEditId) ?? null);
+	const restRunning = $derived(
+		!!restEdit &&
+			w.restWeId === restEdit.id &&
+			!!w.restEndsAt &&
+			new Date(w.restEndsAt).getTime() > Date.now() + session.offsetMs
+	);
+
+	function openRest(we: WorkoutExerciseState) {
+		restEditId = we.id;
+		customRest = '';
+	}
+
+	function saveRest(seconds: number | null) {
+		if (!restEditId) return;
+		session.send({ op: 'setRest', weId: restEditId, seconds });
+		restEditId = null;
+	}
 
 	$effect(() => {
 		wake.start();
@@ -99,16 +118,8 @@
 					{#if wake.active}<span class="awake" title="Screen will stay on during this workout">Screen on</span>{/if}
 				</div>
 			</div>
-			<button type="button" class="icon-btn" aria-label="Rest timer" onclick={() => (timerPicker = true)}><Icon name="timer" /></button>
 			<button type="button" class="btn primary" onclick={() => (finishing = true)}>Finish</button>
 		</div>
-		<RestTimer
-			endsAt={w.restEndsAt}
-			total={w.restTotalSec}
-			offsetMs={session.offsetMs}
-			onadjust={(delta) => session.send({ op: 'adjustRest', delta })}
-			onskip={() => session.send({ op: 'stopRest' })}
-		/>
 	</div>
 
 	{#if session.error}
@@ -129,8 +140,13 @@
 					{unit}
 					{session}
 					exercises={data.exercises}
+					restEndsAt={w.restWeId === we.id ? w.restEndsAt : null}
+					restTotal={w.restWeId === we.id ? w.restTotalSec : null}
+					offsetMs={session.offsetMs}
+					idleSec={we.restSec ?? defaultRest}
 					onhistory={() => openHistory(we)}
 					onmenu={() => (menuFor = we)}
+					onrest={() => openRest(we)}
 				/>
 			</li>
 		{/each}
@@ -251,22 +267,54 @@
 	</div>
 </Sheet>
 
-<Sheet bind:open={timerPicker} title="Rest timer">
-	<div class="timers">
-		{#each [30, 60, 90, 120, 180, 240] as s (s)}
+<Sheet open={!!restEdit} title={restEdit ? `${restEdit.name} rest` : 'Rest'} onclose={() => (restEditId = null)}>
+	{#if restEdit}
+		<div class="timers">
+			{#each [30, 45, 60, 90, 120, 180] as s (s)}
+				<button
+					class="btn"
+					class:primary={s === (restEdit.restSec ?? defaultRest)}
+					onclick={() => saveRest(s)}
+				>
+					{formatDuration(s)}
+				</button>
+			{/each}
+		</div>
+		<form
+			class="custom-rest"
+			onsubmit={(e) => {
+				e.preventDefault();
+				const n = Math.round(Number(customRest));
+				if (Number.isFinite(n)) saveRest(Math.max(0, Math.min(900, n)));
+			}}
+		>
+			<label class="field">
+				Seconds
+				<input name="seconds" type="number" inputmode="numeric" min="0" max="900" bind:value={customRest} />
+			</label>
+			<button class="btn" type="submit" disabled={customRest.trim() === ''}>Set</button>
+		</form>
+		{#if restEdit.restSec != null}
+			<button class="btn block" onclick={() => saveRest(null)}>Use default ({formatDuration(defaultRest)})</button>
+		{/if}
+		{#if restRunning}
+			<div class="two">
+				<button class="btn" onclick={() => session.send({ op: 'adjustRest', delta: -15 })}>−15s</button>
+				<button class="btn" onclick={() => session.send({ op: 'adjustRest', delta: 15 })}>+15s</button>
+			</div>
+			<button class="btn danger block" onclick={() => { session.send({ op: 'stopRest' }); restEditId = null; }}>Skip rest</button>
+		{:else if (restEdit.restSec ?? defaultRest) > 0}
 			<button
-				class="btn"
-				class:primary={s === defaultRest}
+				class="btn primary block"
 				onclick={() => {
-					session.send({ op: 'startRest', seconds: s });
-					timerPicker = false;
+					session.send({ op: 'startRest', weId: restEdit.id, seconds: restEdit.restSec ?? defaultRest });
+					restEditId = null;
 				}}
 			>
-				{s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : `0:${s}`}
+				Start
 			</button>
-		{/each}
-	</div>
-	<p class="muted hint">Completing a set starts the timer automatically (default {defaultRest}s, per-exercise rest overrides it).</p>
+		{/if}
+	{/if}
 </Sheet>
 
 <Sheet bind:open={finishing} title="Finish workout?">
@@ -374,7 +422,7 @@
 		list-style: none;
 	}
 	.cards > li {
-		scroll-margin-top: 140px;
+		scroll-margin-top: 120px;
 	}
 	.empty-state {
 		margin: 2rem 0 1rem;
@@ -443,5 +491,14 @@
 		grid-template-columns: repeat(3, 1fr);
 		gap: 0.5rem;
 		margin-bottom: 0.75rem;
+	}
+	.custom-rest {
+		display: flex;
+		align-items: end;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+	.custom-rest .field {
+		flex: 1;
 	}
 </style>

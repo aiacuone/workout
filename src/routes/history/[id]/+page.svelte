@@ -91,7 +91,7 @@
 				{#if e.repRange || e.cableHeight || e.seatHeight}
 					<p class="extras">
 						{#if e.repRange}<span>Reps {e.repRange}</span>{/if}
-						{#if e.cableHeight}<span>Cable {e.cableHeight}</span>{/if}
+						{#if e.cableHeight}<span>Weight height {e.cableHeight}</span>{/if}
 						{#if e.seatHeight}<span>Seat {e.seatHeight}</span>{/if}
 					</p>
 				{/if}

@@ -2,7 +2,6 @@
 	import { setSummary } from '$lib/format';
 	import { formatDate, formatDuration, kgToDisplay, type WeightUnit } from '$lib/units';
 	import HitBadge from './HitBadge.svelte';
-	import Rating from './Rating.svelte';
 
 	type Summary = {
 		id: string;
@@ -40,8 +39,14 @@
 				<span class="ex"><span class="num sets">{e.sets}×</span> {e.name}</span>
 				<span class="right">
 					{#each e.hits as h (h)}<HitBadge method={h} />{/each}
-					<Rating value={e.rating} size="sm" />
-					{#if e.best}<span class="best num">{setSummary(e.best, unit)}</span>{/if}
+					{#if e.best}
+						<span
+							class="best num"
+							class:rough={e.rating === 1}
+							class:solid={e.rating === 2}
+							class:great={e.rating === 3}>{setSummary(e.best, unit)}</span
+						>
+					{/if}
 				</span>
 			</li>
 		{/each}
@@ -109,6 +114,15 @@
 	.best {
 		color: var(--ink-2);
 		font-weight: 650;
+	}
+	.best.rough {
+		color: var(--rating-rough);
+	}
+	.best.solid {
+		color: var(--rating-solid);
+	}
+	.best.great {
+		color: var(--rating-great);
 	}
 	@media (max-width: 420px) {
 		.right :global(.badge) {

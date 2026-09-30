@@ -16,7 +16,7 @@
 	type Metric = 'top' | 'e1rm' | 'volume';
 	let metric = $state<Metric>('top');
 
-	const RATING_COLORS = ['#a8b4c0', '#ff6b73', '#ffb224', '#30d158'];
+	const RATING_COLORS = ['#a8b4c0', '#ff6b73', '#ffb224', '#5dff8a'];
 
 	const chrono = $derived([...sessions].reverse().slice(-30));
 	const toUnit = (kg: number | null) => (kg == null ? null : Number(kgToDisplay(kg, unit)));
@@ -50,9 +50,12 @@
 						borderColor: '#e8eee9',
 						borderWidth: 2.5,
 						tension: 0.25,
-						pointRadius: 5,
-						pointHoverRadius: 7,
-						pointBorderColor: '#e8eee9',
+						pointRadius: chrono.map((s) => (s.rating === 3 ? 7 : 5)),
+						pointHoverRadius: chrono.map((s) => (s.rating === 3 ? 9 : 7)),
+						pointBorderWidth: chrono.map((s) => (s.rating === 3 ? 2.5 : 1)),
+						pointBorderColor: chrono.map((s) =>
+							s.rating === 3 ? RATING_COLORS[3] : '#e8eee9'
+						),
 						pointBackgroundColor: chrono.map((s) => RATING_COLORS[s.rating ?? 0]),
 						spanGaps: true,
 						order: 0
@@ -150,7 +153,7 @@
 				{#if s.cableHeight || s.seatHeight || s.repRange}
 					<p class="extras">
 						{#if s.repRange}<span>Reps {s.repRange}</span>{/if}
-						{#if s.cableHeight}<span>Cable {s.cableHeight}</span>{/if}
+						{#if s.cableHeight}<span>Weight height {s.cableHeight}</span>{/if}
 						{#if s.seatHeight}<span>Seat {s.seatHeight}</span>{/if}
 					</p>
 				{/if}

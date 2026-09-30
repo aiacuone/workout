@@ -71,6 +71,7 @@ export type WorkoutState = {
 	version: number;
 	restEndsAt: string | null;
 	restTotalSec: number | null;
+	restWeId: string | null;
 	serverNow: string;
 	exercises: WorkoutExerciseState[];
 };
