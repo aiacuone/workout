@@ -110,6 +110,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "calories": {
+          "name": "calories",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "notes": {
           "name": "notes",
           "type": "text",

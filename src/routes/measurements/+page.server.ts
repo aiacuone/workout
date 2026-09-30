@@ -59,6 +59,40 @@ export const actions: Actions = {
 		return { saved: true };
 	},
 
+	saveCalories: async ({ locals, request }) => {
+		const user = requireUser(locals);
+		const form = await request.formData();
+
+		const measuredOn = str(form, 'measuredOn');
+		if (!/^\d{4}-\d{2}-\d{2}$/.test(measuredOn))
+			return fail(400, { error: 'Pick a valid date.', kind: 'calories' });
+
+		const raw = str(form, 'calories').replace(/,/g, '');
+		const n = Number(raw);
+		if (!Number.isFinite(n) || n <= 0 || n > 20000)
+			return fail(400, { error: 'Enter calories between 1 and 20,000.', kind: 'calories' });
+
+		const calories = Math.round(n);
+		const notes = optStr(form, 'notes');
+		const id = str(form, 'id');
+
+		if (id) {
+			if (!(await owned(user.id, id))) return fail(404, { error: 'Entry not found.', kind: 'calories' });
+			await db
+				.update(schema.bodyMeasurement)
+				.set({ measuredOn, calories, notes })
+				.where(and(eq(schema.bodyMeasurement.id, id), eq(schema.bodyMeasurement.userId, user.id)));
+		} else {
+			await db.insert(schema.bodyMeasurement).values({
+				userId: user.id,
+				measuredOn,
+				calories,
+				notes
+			});
+		}
+		return { saved: true };
+	},
+
 	saveMeasurements: async ({ locals, request }) => {
 		const user = requireUser(locals);
 		const prefs = await getPrefs(user.id);

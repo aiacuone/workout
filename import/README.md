@@ -22,6 +22,8 @@ Do **not** upload `strong-exercise-map.csv` alone — it has no workout/set data
 | File | Purpose |
 |---|---|
 | `strong-exercise-map.csv` | Strong name → Ironlog name (`map` or `create`) |
+| `strong-export.csv` | Original Strong workout export (full history) |
 | `strong-history-import.csv` | Ready-to-import history (remapped + filtered) |
+| `bmt-measurements.csv` | Body Measurement Tracker export (Settings → Import from Body Measurement Tracker) |
 | `exercises-to-add.md` | Human list of creates vs maps |
 | `strong-match-state.json` | Working state from the matching session |

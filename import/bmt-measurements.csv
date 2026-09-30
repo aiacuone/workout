@@ -1,0 +1,228 @@
+# BMT Measurement Export
+# User Data
+# Name: Adrian Iacuone
+# Age: 39
+# Sex: male
+# MeasurementSystem: metric
+# BodyFatMethod: navy
+# ActivityLevel: light
+# WeightGoal: lose
+#
+Measurement,Date,Value,Unit,Notes,DefinedKey,MeasurementType,LeftRight
+Biceps - Left,2026-01-27,42.50,cm,,BICEPS,length,left
+Biceps - Left,2026-02-01,42.00,cm,,BICEPS,length,left
+Biceps - Left,2026-02-08,41.00,cm,,BICEPS,length,left
+Biceps - Left,2026-02-15,40.50,cm,,BICEPS,length,left
+Biceps - Left,2026-02-22,42.50,cm,,BICEPS,length,left
+Biceps - Left,2026-03-01,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-03-08,42.50,cm,,BICEPS,length,left
+Biceps - Left,2026-03-15,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-03-22,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-03-29,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-04-06,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-04-12,42.00,cm,,BICEPS,length,left
+Biceps - Left,2026-04-19,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-04-26,43.30,cm,,BICEPS,length,left
+Biceps - Left,2026-05-03,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-05-10,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-05-17,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-05-24,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-05-31,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-06-07,44.00,cm,,BICEPS,length,left
+Biceps - Left,2026-06-14,44.50,cm,,BICEPS,length,left
+Biceps - Left,2026-06-21,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-06-28,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-07-05,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-07-12,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-07-19,43.50,cm,,BICEPS,length,left
+Biceps - Left,2026-07-26,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-08-02,42.50,cm,,BICEPS,length,left
+Biceps - Left,2026-08-09,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-08-16,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-08-23,42.00,cm,,BICEPS,length,left
+Biceps - Left,2026-08-30,42.50,cm,,BICEPS,length,left
+Biceps - Left,2026-09-06,42.00,cm,,BICEPS,length,left
+Biceps - Left,2026-09-13,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-09-20,43.00,cm,,BICEPS,length,left
+Biceps - Left,2026-09-27,42.00,cm,,BICEPS,length,left
+Biceps - Right,2026-01-27,43.00,cm,,BICEPS,length,right
+Biceps - Right,2026-02-01,42.00,cm,,BICEPS,length,right
+Biceps - Right,2026-02-08,41.00,cm,,BICEPS,length,right
+Biceps - Right,2026-02-15,40.50,cm,,BICEPS,length,right
+Biceps - Right,2026-02-22,42.00,cm,,BICEPS,length,right
+Biceps - Right,2026-03-01,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-03-08,42.00,cm,,BICEPS,length,right
+Biceps - Right,2026-03-15,43.00,cm,,BICEPS,length,right
+Biceps - Right,2026-03-22,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-03-29,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-04-06,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-04-12,43.00,cm,,BICEPS,length,right
+Biceps - Right,2026-04-19,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-04-26,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-05-03,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-05-10,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-05-17,44.00,cm,,BICEPS,length,right
+Biceps - Right,2026-05-24,44.00,cm,,BICEPS,length,right
+Biceps - Right,2026-05-31,44.00,cm,,BICEPS,length,right
+Biceps - Right,2026-06-07,44.00,cm,,BICEPS,length,right
+Biceps - Right,2026-06-14,44.50,cm,,BICEPS,length,right
+Biceps - Right,2026-06-21,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-06-28,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-07-05,44.00,cm,,BICEPS,length,right
+Biceps - Right,2026-07-12,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-07-19,43.50,cm,,BICEPS,length,right
+Biceps - Right,2026-07-26,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-08-02,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-08-09,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-08-16,43.00,cm,,BICEPS,length,right
+Biceps - Right,2026-08-23,43.00,cm,,BICEPS,length,right
+Biceps - Right,2026-08-30,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-09-06,42.00,cm,,BICEPS,length,right
+Biceps - Right,2026-09-13,42.00,cm,,BICEPS,length,right
+Biceps - Right,2026-09-20,42.50,cm,,BICEPS,length,right
+Biceps - Right,2026-09-27,42.00,cm,,BICEPS,length,right
+Chest,2026-01-27,129.00,cm,,CHEST,length,none
+Chest,2026-02-01,120.00,cm,,CHEST,length,none
+Chest,2026-02-08,119.00,cm,,CHEST,length,none
+Chest,2026-02-15,113.50,cm,,CHEST,length,none
+Chest,2026-02-22,116.00,cm,,CHEST,length,none
+Chest,2026-03-01,116.00,cm,,CHEST,length,none
+Chest,2026-03-08,117.00,cm,,CHEST,length,none
+Chest,2026-03-15,116.00,cm,,CHEST,length,none
+Chest,2026-03-22,116.50,cm,,CHEST,length,none
+Chest,2026-03-29,114.50,cm,,CHEST,length,none
+Chest,2026-04-06,110.00,cm,,CHEST,length,none
+Chest,2026-04-12,113.50,cm,,CHEST,length,none
+Chest,2026-04-19,113.00,cm,,CHEST,length,none
+Chest,2026-04-26,113.00,cm,,CHEST,length,none
+Chest,2026-05-03,111.50,cm,,CHEST,length,none
+Chest,2026-05-10,108.00,cm,,CHEST,length,none
+Chest,2026-05-17,113.00,cm,,CHEST,length,none
+Chest,2026-05-24,108.00,cm,,CHEST,length,none
+Chest,2026-05-31,109.00,cm,,CHEST,length,none
+Chest,2026-06-07,109.50,cm,,CHEST,length,none
+Chest,2026-06-14,108.00,cm,,CHEST,length,none
+Chest,2026-06-21,110.50,cm,,CHEST,length,none
+Chest,2026-06-28,107.00,cm,,CHEST,length,none
+Chest,2026-07-05,105.00,cm,,CHEST,length,none
+Chest,2026-07-12,104.00,cm,,CHEST,length,none
+Chest,2026-07-19,105.00,cm,,CHEST,length,none
+Chest,2026-07-26,104.50,cm,,CHEST,length,none
+Chest,2026-08-02,105.00,cm,,CHEST,length,none
+Chest,2026-08-09,105.00,cm,,CHEST,length,none
+Chest,2026-08-16,105.00,cm,,CHEST,length,none
+Chest,2026-08-23,105.00,cm,,CHEST,length,none
+Chest,2026-08-30,107.50,cm,,CHEST,length,none
+Chest,2026-09-06,104.00,cm,,CHEST,length,none
+Chest,2026-09-13,104.00,cm,,CHEST,length,none
+Chest,2026-09-20,105.00,cm,,CHEST,length,none
+Chest,2026-09-27,104.00,cm,,CHEST,length,none
+Height,2026-01-27,175.00,cm,,HEIGHT,height,none
+Hips,2026-01-27,112.50,cm,,HIPS,length,none
+Hips,2026-02-01,110.00,cm,,HIPS,length,none
+Hips,2026-02-08,111.50,cm,,HIPS,length,none
+Hips,2026-02-15,110.50,cm,,HIPS,length,none
+Hips,2026-02-22,109.50,cm,,HIPS,length,none
+Hips,2026-03-01,108.00,cm,,HIPS,length,none
+Hips,2026-03-08,107.00,cm,,HIPS,length,none
+Hips,2026-03-15,107.00,cm,,HIPS,length,none
+Hips,2026-03-22,106.00,cm,,HIPS,length,none
+Hips,2026-03-29,107.00,cm,,HIPS,length,none
+Hips,2026-04-06,105.00,cm,,HIPS,length,none
+Hips,2026-04-12,104.50,cm,,HIPS,length,none
+Hips,2026-04-19,103.50,cm,,HIPS,length,none
+Hips,2026-04-26,103.50,cm,,HIPS,length,none
+Hips,2026-05-03,104.00,cm,,HIPS,length,none
+Hips,2026-05-10,102.50,cm,,HIPS,length,none
+Hips,2026-05-17,102.50,cm,,HIPS,length,none
+Hips,2026-05-24,102.00,cm,,HIPS,length,none
+Hips,2026-05-31,101.00,cm,,HIPS,length,none
+Hips,2026-06-07,101.50,cm,,HIPS,length,none
+Hips,2026-06-14,101.50,cm,,HIPS,length,none
+Hips,2026-06-21,101.00,cm,,HIPS,length,none
+Hips,2026-06-28,100.00,cm,,HIPS,length,none
+Hips,2026-07-05,100.00,cm,,HIPS,length,none
+Hips,2026-07-12,99.00,cm,,HIPS,length,none
+Hips,2026-07-19,99.00,cm,,HIPS,length,none
+Hips,2026-07-26,98.00,cm,,HIPS,length,none
+Hips,2026-08-02,97.50,cm,,HIPS,length,none
+Hips,2026-08-09,98.50,cm,,HIPS,length,none
+Hips,2026-08-16,97.00,cm,,HIPS,length,none
+Hips,2026-08-23,97.00,cm,,HIPS,length,none
+Hips,2026-08-30,97.00,cm,,HIPS,length,none
+Hips,2026-09-06,97.00,cm,,HIPS,length,none
+Hips,2026-09-13,97.00,cm,,HIPS,length,none
+Hips,2026-09-20,96.00,cm,,HIPS,length,none
+Hips,2026-09-27,95.00,cm,,HIPS,length,none
+Neck,2026-01-27,43.00,cm,,NECK,length,none
+Neck,2026-02-01,42.00,cm,,NECK,length,none
+Neck,2026-02-08,41.50,cm,,NECK,length,none
+Neck,2026-02-15,41.00,cm,,NECK,length,none
+Neck,2026-02-22,40.50,cm,,NECK,length,none
+Neck,2026-03-01,40.50,cm,,NECK,length,none
+Neck,2026-03-08,41.50,cm,,NECK,length,none
+Neck,2026-03-15,41.00,cm,,NECK,length,none
+Neck,2026-03-22,41.00,cm,,NECK,length,none
+Neck,2026-03-29,41.50,cm,,NECK,length,none
+Neck,2026-04-06,40.50,cm,,NECK,length,none
+Neck,2026-04-12,40.50,cm,,NECK,length,none
+Neck,2026-04-19,40.50,cm,,NECK,length,none
+Neck,2026-04-26,40.50,cm,,NECK,length,none
+Neck,2026-05-03,40.00,cm,,NECK,length,none
+Neck,2026-05-10,40.00,cm,,NECK,length,none
+Neck,2026-05-17,39.50,cm,,NECK,length,none
+Neck,2026-05-24,40.00,cm,,NECK,length,none
+Neck,2026-05-31,40.00,cm,,NECK,length,none
+Neck,2026-06-07,39.50,cm,,NECK,length,none
+Neck,2026-06-14,40.00,cm,,NECK,length,none
+Neck,2026-06-21,40.00,cm,,NECK,length,none
+Neck,2026-06-28,40.00,cm,,NECK,length,none
+Neck,2026-07-05,39.00,cm,,NECK,length,none
+Neck,2026-07-12,39.00,cm,,NECK,length,none
+Neck,2026-07-19,39.50,cm,,NECK,length,none
+Neck,2026-07-26,39.50,cm,,NECK,length,none
+Neck,2026-08-02,39.00,cm,,NECK,length,none
+Neck,2026-08-09,39.00,cm,,NECK,length,none
+Neck,2026-08-16,39.00,cm,,NECK,length,none
+Neck,2026-08-23,39.00,cm,,NECK,length,none
+Neck,2026-08-30,39.00,cm,,NECK,length,none
+Neck,2026-09-06,39.00,cm,,NECK,length,none
+Neck,2026-09-13,38.50,cm,,NECK,length,none
+Neck,2026-09-20,39.00,cm,,NECK,length,none
+Neck,2026-09-27,38.00,cm,,NECK,length,none
+Waist,2026-01-27,119.00,cm,,WAIST,length,none
+Waist,2026-02-01,114.00,cm,,WAIST,length,none
+Waist,2026-02-08,113.50,cm,,WAIST,length,none
+Waist,2026-02-15,113.00,cm,,WAIST,length,none
+Waist,2026-02-22,110.00,cm,,WAIST,length,none
+Waist,2026-03-01,110.50,cm,,WAIST,length,none
+Waist,2026-03-08,108.00,cm,,WAIST,length,none
+Waist,2026-03-15,108.00,cm,,WAIST,length,none
+Waist,2026-03-22,106.50,cm,,WAIST,length,none
+Waist,2026-03-29,106.00,cm,,WAIST,length,none
+Waist,2026-04-06,105.50,cm,,WAIST,length,none
+Waist,2026-04-12,103.50,cm,,WAIST,length,none
+Waist,2026-04-19,101.50,cm,,WAIST,length,none
+Waist,2026-04-26,100.00,cm,,WAIST,length,none
+Waist,2026-05-03,99.50,cm,,WAIST,length,none
+Waist,2026-05-10,98.00,cm,,WAIST,length,none
+Waist,2026-05-17,97.50,cm,,WAIST,length,none
+Waist,2026-05-24,97.00,cm,,WAIST,length,none
+Waist,2026-05-31,96.00,cm,,WAIST,length,none
+Waist,2026-06-07,97.50,cm,,WAIST,length,none
+Waist,2026-06-14,96.50,cm,,WAIST,length,none
+Waist,2026-06-21,95.50,cm,,WAIST,length,none
+Waist,2026-06-28,95.00,cm,,WAIST,length,none
+Waist,2026-07-05,93.50,cm,,WAIST,length,none
+Waist,2026-07-12,90.00,cm,,WAIST,length,none
+Waist,2026-07-19,92.50,cm,,WAIST,length,none
+Waist,2026-07-26,92.00,cm,,WAIST,length,none
+Waist,2026-08-02,92.50,cm,,WAIST,length,none
+Waist,2026-08-09,91.00,cm,,WAIST,length,none
+Waist,2026-08-16,89.50,cm,,WAIST,length,none
+Waist,2026-08-23,91.00,cm,,WAIST,length,none
+Waist,2026-08-30,89.00,cm,,WAIST,length,none
+Waist,2026-09-06,90.00,cm,,WAIST,length,none
+Waist,2026-09-13,89.00,cm,,WAIST,length,none
+Waist,2026-09-20,88.50,cm,,WAIST,length,none
+Waist,2026-09-27,88.00,cm,,WAIST,length,none

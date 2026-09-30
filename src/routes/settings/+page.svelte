@@ -7,6 +7,7 @@
 	const p = $derived(data.prefs!);
 	const welcome = $derived(page.url.searchParams.has('welcome'));
 	let importing = $state(false);
+	let importingMeasure = $state(false);
 </script>
 
 <svelte:head><title>Settings · Ironlog</title></svelte:head>
@@ -133,6 +134,45 @@
 			</div>
 		</fieldset>
 		<button class="btn primary" disabled={importing}>{importing ? 'Importing…' : 'Import CSV'}</button>
+	</form>
+
+	<form
+		method="POST"
+		action="?/importMeasurements"
+		enctype="multipart/form-data"
+		class="card stack"
+		use:enhance={() => {
+			importingMeasure = true;
+			return async ({ update }) => {
+				await update({ reset: false });
+				importingMeasure = false;
+			};
+		}}
+	>
+		<h2>Import from Body Measurement Tracker</h2>
+		<p class="muted help">
+			Upload <code>import/bmt-measurements.csv</code> — the Body Measurement Tracker export (the file that
+			starts with <code># BMT Measurement Export</code>). Rows on the same date are combined. Body fat is
+			filled in with the US Navy formula when the file doesn’t include it. Dates you’ve already imported
+			are skipped; empty fields on those dates are filled in.
+		</p>
+		{#if form?.measureImportError}<p class="form-error">{form.measureImportError}</p>{/if}
+		{#if form?.measureImportResult}
+			<p class="ok">
+				Imported {form.measureImportResult.inserted} days
+				{#if form.measureImportResult.updated} · {form.measureImportResult.updated} updated{/if}
+				{#if form.measureImportResult.skipped} · {form.measureImportResult.skipped} already present{/if}
+				{#if form.measureImportResult.unknownRows}
+					· {form.measureImportResult.unknownRows} rows skipped{/if}
+			</p>
+		{/if}
+		<label class="field">
+			Measurements CSV file
+			<input name="file" type="file" accept=".csv,text/csv" required disabled={importingMeasure} />
+		</label>
+		<button class="btn primary" disabled={importingMeasure}
+			>{importingMeasure ? 'Importing…' : 'Import CSV'}</button
+		>
 	</form>
 
 	<div class="card stack">

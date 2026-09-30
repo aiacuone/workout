@@ -8,6 +8,7 @@ import {
 } from '$lib/server/auth';
 import { db, schema } from '$lib/server/db';
 import { createRoutinesFromLatestWorkouts } from '$lib/server/routines';
+import { importBmtCsv } from '$lib/server/measurements-import';
 import { importStrongCsv } from '$lib/server/strong-import';
 import { getPrefs, optNum, requireUser, str } from '$lib/server/util';
 import { displayToCm } from '$lib/units';
@@ -86,6 +87,28 @@ export const actions: Actions = {
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Import failed.';
 			return fail(400, { importError: message });
+		}
+	},
+
+	importMeasurements: async ({ locals, request }) => {
+		const user = requireUser(locals);
+		const form = await request.formData();
+		const file = form.get('file');
+		if (!(file instanceof File) || file.size === 0)
+			return fail(400, { measureImportError: 'Choose a Body Measurement Tracker CSV export.' });
+		if (file.size > 10 * 1024 * 1024)
+			return fail(400, { measureImportError: 'File is too large (max 10 MB).' });
+
+		const prefs = await getPrefs(user.id);
+		try {
+			const result = await importBmtCsv(user.id, await file.text(), {
+				sex: prefs.sex,
+				heightCm: prefs.heightCm
+			});
+			return { measureImportResult: result };
+		} catch (e) {
+			const message = e instanceof Error ? e.message : 'Import failed.';
+			return fail(400, { measureImportError: message });
 		}
 	}
 };

@@ -233,6 +233,7 @@ export const bodyMeasurement = pgTable(
 		calfRCm: doublePrecision('calf_r_cm'),
 		heightCm: doublePrecision('height_cm'),
 		bodyFatPct: doublePrecision('body_fat_pct'),
+		calories: integer('calories'),
 		notes: text('notes'),
 		createdAt: ts('created_at').notNull().defaultNow()
 	},
