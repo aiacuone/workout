@@ -1,0 +1,1954 @@
+{
+  "matched": [
+    {
+      "strong": "Barbell Drag Curl",
+      "app": "Barbell Curl",
+      "how": "fuzzy(152)",
+      "sets": 5,
+      "warn": null,
+      "setsAllTime": 5,
+      "lastUsed": "2026-03-05"
+    },
+    {
+      "strong": "Barbell Row Overhand Grip",
+      "app": "Barbell Row",
+      "how": "fuzzy(151)",
+      "sets": 6,
+      "warn": null,
+      "setsAllTime": 6,
+      "lastUsed": "2026-03-08"
+    },
+    {
+      "strong": "Barbell Row Underhand Grip",
+      "app": "Barbell Row",
+      "how": "fuzzy(151)",
+      "sets": 6,
+      "warn": null,
+      "setsAllTime": 6,
+      "lastUsed": "2026-03-05"
+    },
+    {
+      "strong": "Bayesian Cable Curl",
+      "app": "Bayesian Cable Curl",
+      "how": "exact",
+      "sets": 181,
+      "warn": null,
+      "setsAllTime": 181,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Bayesian Hammer Curl Cable",
+      "app": "Bayesian Hammer Cable Curl",
+      "how": "fuzzy(206)",
+      "sets": 114,
+      "warn": null,
+      "setsAllTime": 114,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Bent Over Row (Barbell)",
+      "app": "Barbell Row",
+      "how": "exact",
+      "sets": 140,
+      "warn": null,
+      "setsAllTime": 221,
+      "lastUsed": "2026-03-03"
+    },
+    {
+      "strong": "Bicep Curl (Barbell)",
+      "app": "Barbell Curl",
+      "how": "exact",
+      "sets": 29,
+      "warn": null,
+      "setsAllTime": 84,
+      "lastUsed": "2026-05-15"
+    },
+    {
+      "strong": "Bicep Curl (Cable)",
+      "app": "Cable Curl",
+      "how": "fuzzy(150)",
+      "sets": 12,
+      "warn": null,
+      "setsAllTime": 62,
+      "lastUsed": "2026-01-29"
+    },
+    {
+      "strong": "Cable Drag Curl",
+      "app": "Cable Curl",
+      "how": "fuzzy(150)",
+      "sets": 5,
+      "warn": null,
+      "setsAllTime": 5,
+      "lastUsed": "2026-03-10"
+    },
+    {
+      "strong": "Cable Kickback",
+      "app": "Cable Kickback",
+      "how": "exact",
+      "sets": 4,
+      "warn": null,
+      "setsAllTime": 197,
+      "lastUsed": "2026-05-01"
+    },
+    {
+      "strong": "Cable Lat Pullover",
+      "app": "Seated Cable Pullover",
+      "how": "fuzzy(70)",
+      "sets": 40,
+      "warn": null,
+      "setsAllTime": 40,
+      "lastUsed": "2026-02-15"
+    },
+    {
+      "strong": "Cable Press Decline",
+      "app": "Decline Cable Press",
+      "how": "fuzzy(179)",
+      "sets": 51,
+      "warn": null,
+      "setsAllTime": 51,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Cable Press Incline",
+      "app": "Incline Cable Press",
+      "how": "fuzzy(179)",
+      "sets": 56,
+      "warn": null,
+      "setsAllTime": 56,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Cable Single Arm Overhead Extension",
+      "app": "Overhead Cable Extension",
+      "how": "fuzzy(184)",
+      "sets": 36,
+      "warn": null,
+      "setsAllTime": 36,
+      "lastUsed": "2026-08-14"
+    },
+    {
+      "strong": "Cable Spider Curls",
+      "app": "Spider Cable Curl",
+      "how": "fuzzy(70)",
+      "sets": 4,
+      "warn": null,
+      "setsAllTime": 4,
+      "lastUsed": "2026-04-10"
+    },
+    {
+      "strong": "Chest Supported Face Pull",
+      "app": "Face Pull",
+      "how": "fuzzy(149)",
+      "sets": 78,
+      "warn": null,
+      "setsAllTime": 78,
+      "lastUsed": "2026-05-12"
+    },
+    {
+      "strong": "Converging Decline Cable Press",
+      "app": "Decline Cable Press",
+      "how": "fuzzy(179)",
+      "sets": 5,
+      "warn": null,
+      "setsAllTime": 5,
+      "lastUsed": "2026-04-20"
+    },
+    {
+      "strong": "Decline Cable Chest Fly",
+      "app": "Cable Fly",
+      "how": "fuzzy(149)",
+      "sets": 5,
+      "warn": null,
+      "setsAllTime": 5,
+      "lastUsed": "2026-03-09"
+    },
+    {
+      "strong": "Decline Smith Press",
+      "app": "Smith Machine Decline Bench Press",
+      "how": "fuzzy(79)",
+      "sets": 72,
+      "warn": null,
+      "setsAllTime": 72,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Face Pull (Cable)",
+      "app": "Face Pull",
+      "how": "exact",
+      "sets": 102,
+      "warn": null,
+      "setsAllTime": 212,
+      "lastUsed": "2026-03-01"
+    },
+    {
+      "strong": "Hip Thrust Smith",
+      "app": "Smith Machine Hip Thrust",
+      "how": "fuzzy(85)",
+      "sets": 4,
+      "warn": null,
+      "setsAllTime": 4,
+      "lastUsed": "2026-03-26"
+    },
+    {
+      "strong": "Incline Bench Press (Barbell)",
+      "app": "Incline Bench Press",
+      "how": "exact",
+      "sets": 164,
+      "warn": null,
+      "setsAllTime": 176,
+      "lastUsed": "2026-03-23"
+    },
+    {
+      "strong": "Incline Bench Press (Smith Machine)",
+      "app": "Smith Machine Incline Bench Press",
+      "how": "fuzzy(233)",
+      "sets": 127,
+      "warn": null,
+      "setsAllTime": 127,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Jammer Arm Chest Press",
+      "app": "Chest Press",
+      "how": "fuzzy(151)",
+      "sets": 17,
+      "warn": null,
+      "setsAllTime": 17,
+      "lastUsed": "2026-04-20"
+    },
+    {
+      "strong": "Jammer Arms Row Neutral Grip",
+      "app": "Jammer Row",
+      "how": "fuzzy(150)",
+      "sets": 60,
+      "warn": null,
+      "setsAllTime": 60,
+      "lastUsed": "2026-09-15"
+    },
+    {
+      "strong": "JM Press",
+      "app": "JM Press",
+      "how": "exact",
+      "sets": 109,
+      "warn": null,
+      "setsAllTime": 109,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Katana Tricep Cable Extension",
+      "app": "Katana Triceps Cable Extension",
+      "how": "fuzzy(79)",
+      "sets": 18,
+      "warn": null,
+      "setsAllTime": 18,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Kelso Shrug Cable Chest Supported",
+      "app": "Kelso Shrug",
+      "how": "fuzzy(151)",
+      "sets": 11,
+      "warn": null,
+      "setsAllTime": 11,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Lat Pulldown Neutral Grip",
+      "app": "Lat Pulldown",
+      "how": "fuzzy(152)",
+      "sets": 48,
+      "warn": null,
+      "setsAllTime": 48,
+      "lastUsed": "2026-08-18"
+    },
+    {
+      "strong": "Lat Pulldown Overhand Grip",
+      "app": "Lat Pulldown",
+      "how": "fuzzy(152)",
+      "sets": 78,
+      "warn": null,
+      "setsAllTime": 78,
+      "lastUsed": "2026-05-05"
+    },
+    {
+      "strong": "Laying Hammer Curl",
+      "app": "Hammer Curl",
+      "how": "fuzzy(151)",
+      "sets": 3,
+      "warn": null,
+      "setsAllTime": 3,
+      "lastUsed": "2026-05-15"
+    },
+    {
+      "strong": "Low Cable Row Neutral Grip",
+      "app": "Seated Cable Row",
+      "how": "fuzzy(70)",
+      "sets": 67,
+      "warn": null,
+      "setsAllTime": 67,
+      "lastUsed": "2026-05-05"
+    },
+    {
+      "strong": "Low Cable Row Underhand Grip",
+      "app": "Seated Cable Row",
+      "how": "fuzzy(70)",
+      "sets": 5,
+      "warn": null,
+      "setsAllTime": 5,
+      "lastUsed": "2026-03-08"
+    },
+    {
+      "strong": "Lying Cable Curl",
+      "app": "Cable Curl",
+      "how": "fuzzy(150)",
+      "sets": 23,
+      "warn": null,
+      "setsAllTime": 23,
+      "lastUsed": "2026-05-15"
+    },
+    {
+      "strong": "Overhead Press (Barbell)",
+      "app": "Overhead Press",
+      "how": "exact",
+      "sets": 17,
+      "warn": null,
+      "setsAllTime": 51,
+      "lastUsed": "2026-03-07"
+    },
+    {
+      "strong": "Overhead Press (Smith Machine)",
+      "app": "Smith Machine Overhead Press",
+      "how": "fuzzy(208)",
+      "sets": 150,
+      "warn": null,
+      "setsAllTime": 150,
+      "lastUsed": "2026-04-07"
+    },
+    {
+      "strong": "Pull Up",
+      "app": "Pull Up",
+      "how": "exact",
+      "sets": 45,
+      "warn": null,
+      "setsAllTime": 100,
+      "lastUsed": "2026-09-01"
+    },
+    {
+      "strong": "Pulldown Cable Single Arm",
+      "app": "Single-Arm Lat Pulldown",
+      "how": "fuzzy(70)",
+      "sets": 12,
+      "warn": null,
+      "setsAllTime": 12,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Pulldown Single Arm Volume",
+      "app": "Single-Arm Lat Pulldown",
+      "how": "fuzzy(70)",
+      "sets": 9,
+      "warn": null,
+      "setsAllTime": 9,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Pullover Seated Rope Cable",
+      "app": "Seated Cable Pullover",
+      "how": "fuzzy(181)",
+      "sets": 112,
+      "warn": null,
+      "setsAllTime": 112,
+      "lastUsed": "2026-09-01"
+    },
+    {
+      "strong": "Rear Delt Row Chest Supported",
+      "app": "Chest-Supported Row",
+      "how": "fuzzy(179)",
+      "sets": 51,
+      "warn": null,
+      "setsAllTime": 51,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Romanian Deadlift Smith",
+      "app": "Smith Machine Romanian Deadlift",
+      "how": "fuzzy(85)",
+      "sets": 86,
+      "warn": null,
+      "setsAllTime": 86,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Scapular Depressions Cable",
+      "app": "Hanging Scapular Depressions",
+      "how": "fuzzy(70)",
+      "sets": 33,
+      "warn": null,
+      "setsAllTime": 33,
+      "lastUsed": "2026-08-04"
+    },
+    {
+      "strong": "Scapular Depressions Hanging",
+      "app": "Hanging Scapular Depressions",
+      "how": "fuzzy(188)",
+      "sets": 9,
+      "warn": null,
+      "setsAllTime": 9,
+      "lastUsed": "2026-09-01"
+    },
+    {
+      "strong": "Seated Row (Cable)",
+      "app": "Seated Cable Row",
+      "how": "exact",
+      "sets": 67,
+      "warn": null,
+      "setsAllTime": 318,
+      "lastUsed": "2026-03-03"
+    },
+    {
+      "strong": "Shrug Cable Leaning Back",
+      "app": "Leaning Back Cable Shrug",
+      "how": "fuzzy(204)",
+      "sets": 54,
+      "warn": null,
+      "setsAllTime": 54,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Smith Sitting Calf Raise",
+      "app": "Smith Machine Calf Raise",
+      "how": "fuzzy(79)",
+      "sets": 42,
+      "warn": null,
+      "setsAllTime": 42,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Spider Curl Cable",
+      "app": "Spider Cable Curl",
+      "how": "fuzzy(177)",
+      "sets": 54,
+      "warn": null,
+      "setsAllTime": 54,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Spider Hammer Curl Cable",
+      "app": "Spider Hammer Cable Curl",
+      "how": "fuzzy(204)",
+      "sets": 54,
+      "warn": null,
+      "setsAllTime": 54,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Squat (Barbell)",
+      "app": "Back Squat",
+      "how": "exact",
+      "sets": 160,
+      "warn": null,
+      "setsAllTime": 397,
+      "lastUsed": "2026-03-23"
+    },
+    {
+      "strong": "Squat (Smith Machine)",
+      "app": "Smith Machine Squat",
+      "how": "fuzzy(179)",
+      "sets": 120,
+      "warn": null,
+      "setsAllTime": 157,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Standing Calf Raise (Smith Machine)",
+      "app": "Smith Machine Calf Raise",
+      "how": "fuzzy(204)",
+      "sets": 65,
+      "warn": null,
+      "setsAllTime": 95,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Tricep Extension Cable Overhead",
+      "app": "Overhead Cable Extension",
+      "how": "fuzzy(184)",
+      "sets": 219,
+      "warn": null,
+      "setsAllTime": 219,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Triceps Pushdown (Cable - Straight Bar)",
+      "app": "Triceps Pushdown",
+      "how": "fuzzy(156)",
+      "sets": 37,
+      "warn": null,
+      "setsAllTime": 126,
+      "lastUsed": "2026-04-24"
+    }
+  ],
+  "unmatched": [],
+  "library": [
+    "Bench Press",
+    "Incline Bench Press",
+    "Decline Bench Press",
+    "Smith Machine Bench Press",
+    "Smith Machine Incline Bench Press",
+    "Smith Machine Decline Bench Press",
+    "Incline Dumbbell Press",
+    "Dumbbell Bench Press",
+    "Chest Press",
+    "Pec Deck",
+    "Cable Fly",
+    "Low-to-High Cable Fly",
+    "Incline Cable Press",
+    "Decline Cable Press",
+    "Dips",
+    "Push Up",
+    "Deadlift",
+    "Smith Machine Deadlift",
+    "Barbell Row",
+    "Smith Machine Bent-Over Row",
+    "Pull Up",
+    "Chin Up",
+    "Lat Pulldown",
+    "Single-Arm Lat Pulldown",
+    "Seated Cable Row",
+    "Seated Cable Row High Elbows",
+    "Jammer Row",
+    "Seated Cable Pullover",
+    "Hanging Scapular Depressions",
+    "Kelso Shrug",
+    "Leaning Back Cable Shrug",
+    "Straight-Arm Pulldown",
+    "Single-Arm Dumbbell Row",
+    "Chest-Supported Row",
+    "T-Bar Row",
+    "Smith Machine Shrug",
+    "Overhead Press",
+    "Smith Machine Overhead Press",
+    "Smith Machine Behind-the-Neck Press",
+    "Seated Dumbbell Press",
+    "Shoulder Press",
+    "Lateral Raise",
+    "Cable Lateral Raise",
+    "Leaning Cable Lateral Raise",
+    "Rear Delt Row",
+    "Reverse Fly",
+    "Reverse Pec Deck",
+    "Face Pull",
+    "Smith Machine Upright Row",
+    "Barbell Curl",
+    "Dumbbell Curl",
+    "Hammer Curl",
+    "Preacher Curl",
+    "Cable Curl",
+    "Bayesian Cable Curl",
+    "Bayesian Hammer Cable Curl",
+    "Spider Cable Curl",
+    "Spider Hammer Cable Curl",
+    "Triceps Pushdown",
+    "Seated Incline Triceps Pushdown",
+    "Overhead Cable Extension",
+    "Katana Triceps Cable Extension",
+    "Skull Crusher",
+    "JM Press",
+    "Close-Grip Bench Press",
+    "Smith Machine Close-Grip Bench Press",
+    "Back Squat",
+    "Front Squat",
+    "Smith Machine Squat",
+    "Smith Machine Front Squat",
+    "Smith Machine Split Squat",
+    "Hack Squat",
+    "Leg Press",
+    "Leg Extension",
+    "Lying Leg Curl",
+    "Seated Leg Curl",
+    "Romanian Deadlift",
+    "Smith Machine Romanian Deadlift",
+    "Bulgarian Split Squat",
+    "Walking Lunge",
+    "Smith Machine Lunge",
+    "Hip Thrust",
+    "Smith Machine Hip Thrust",
+    "Cable Kickback",
+    "Hip Abduction",
+    "Standing Calf Raise",
+    "Seated Calf Raise",
+    "Smith Machine Calf Raise",
+    "Smith Machine Seated Calf Raise",
+    "Cable Crunch",
+    "Hanging Leg Raise",
+    "Plank",
+    "Chest",
+    "Barbell"
+  ],
+  "needsReview": [],
+  "confirmed": [
+    {
+      "strong": "Lateral Raise (Cable)",
+      "app": "Cable Lateral Raise",
+      "note": null,
+      "sets": 290
+    },
+    {
+      "strong": "Double handle tricep pushdown",
+      "app": "Triceps Pushdown",
+      "note": null,
+      "sets": 259
+    },
+    {
+      "strong": "Chest Flies Cable Seated Heavy",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 237
+    },
+    {
+      "strong": "Supinated Pulldown",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 123,
+      "lastUsed": "2026-03-03"
+    },
+    {
+      "strong": "Jammer Arm Rows Underhand Grip",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 68,
+      "lastUsed": "2026-05-05"
+    },
+    {
+      "strong": "Split Squats Smith",
+      "app": "Smith Machine Split Squat",
+      "note": null,
+      "sets": 68,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Pullover (Machine)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 58,
+      "lastUsed": "2026-03-01"
+    },
+    {
+      "strong": "Reverse Fly (Cable)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 57,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Low Cable Row Shoulder Width Neutral Grip",
+      "app": "Seated Cable Row High Elbows",
+      "note": null,
+      "sets": 54,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Lateral Raise Cable Leaning",
+      "app": "Leaning Cable Lateral Raise",
+      "note": null,
+      "sets": 51,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Hamstring Curl with Cuff",
+      "app": "Lying Leg Curl",
+      "note": null,
+      "sets": 48,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Tricep Push down Spreader Bar",
+      "app": "Triceps Pushdown",
+      "note": null,
+      "sets": 47,
+      "lastUsed": "2026-08-20"
+    },
+    {
+      "strong": "Chest Flies Cable Seated Volume",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 43,
+      "lastUsed": "2026-09-21"
+    },
+    {
+      "strong": "Chest Supported Kettle Shrug",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 35,
+      "lastUsed": "2026-08-04"
+    },
+    {
+      "strong": "Glute Kickback (Machine)",
+      "app": "Cable Kickback",
+      "note": null,
+      "sets": 29,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Decline Cable Chest Flies",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 18,
+      "lastUsed": "2026-01-30"
+    },
+    {
+      "strong": "Smith Squat No Lockout",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 15,
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "strong": "Tricep Pushdowns Seated Incline Spreader Bar",
+      "app": "Seated Incline Triceps Pushdown",
+      "note": null,
+      "sets": 11,
+      "lastUsed": "2026-09-29"
+    },
+    {
+      "strong": "Shrug Smith Chest Supported",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 6,
+      "lastUsed": "2026-08-18"
+    },
+    {
+      "strong": "Jammer Arm Rows Overhand Grip",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 3,
+      "lastUsed": "2026-09-22"
+    },
+    {
+      "strong": "Cable Chest Flies Static Hold",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 2,
+      "lastUsed": "2026-05-18"
+    }
+  ],
+  "cutoff": "2024-09-30",
+  "confirmedStaleExcluded": [
+    {
+      "strong": "Dumbell Partial Raises",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 277
+    },
+    {
+      "strong": "Seated Wide-Grip Row (Cable)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 310
+    },
+    {
+      "strong": "Incline Bench Press (Dumbbell)",
+      "app": "Incline Dumbbell Press",
+      "note": null,
+      "sets": 306
+    },
+    {
+      "strong": "Pull Up (Assisted)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 301
+    },
+    {
+      "strong": "Shrug (Dumbbell)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 233
+    },
+    {
+      "strong": "Ez bar standing curl",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 226
+    }
+  ],
+  "staleExcluded": [
+    {
+      "strong": "Bent Over One Arm Row (Dumbbell)",
+      "sets": 393,
+      "lastUsed": "2021-05-25"
+    },
+    {
+      "strong": "Lat Pulldown (Cable)",
+      "sets": 340,
+      "lastUsed": "2021-07-24"
+    },
+    {
+      "strong": "Seated Wide-Grip Row (Cable)",
+      "sets": 310,
+      "lastUsed": "2021-06-26"
+    },
+    {
+      "strong": "Incline Bench Press (Dumbbell)",
+      "sets": 306,
+      "lastUsed": "2021-10-09"
+    },
+    {
+      "strong": "Pull Up (Assisted)",
+      "sets": 301,
+      "lastUsed": "2022-03-20"
+    },
+    {
+      "strong": "Dumbell Partial Raises",
+      "sets": 277,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Shrug (Dumbbell)",
+      "sets": 233,
+      "lastUsed": "2021-07-04"
+    },
+    {
+      "strong": "Ez bar standing curl",
+      "sets": 226,
+      "lastUsed": "2020-03-20"
+    },
+    {
+      "strong": "Decline Bench Press (Smith Machine)",
+      "sets": 205,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Single Handed Cable Extension",
+      "sets": 198,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Incline Row (Dumbbell)",
+      "sets": 180,
+      "lastUsed": "2021-10-23"
+    },
+    {
+      "strong": "Across body lateral raise",
+      "sets": 168,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Incline Lateral Raise",
+      "sets": 167,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Calf Press on Seated Leg Press",
+      "sets": 157,
+      "lastUsed": "2020-02-16"
+    },
+    {
+      "strong": "Upright Row (Cable)",
+      "sets": 152,
+      "lastUsed": "2021-06-23"
+    },
+    {
+      "strong": "Leg Extension (Machine)",
+      "sets": 144,
+      "lastUsed": "2021-07-07"
+    },
+    {
+      "strong": "Lying Leg Curl (Machine)",
+      "sets": 124,
+      "lastUsed": "2019-12-17"
+    },
+    {
+      "strong": "Bench Press (Dumbbell)",
+      "sets": 110,
+      "lastUsed": "2019-04-26"
+    },
+    {
+      "strong": "Egyptian Lateral Raise",
+      "sets": 101,
+      "lastUsed": "2019-04-26"
+    },
+    {
+      "strong": "Overhead Press (Dumbbell)",
+      "sets": 100,
+      "lastUsed": "2019-05-19"
+    },
+    {
+      "strong": "Romanian Deadlift (Barbell)",
+      "sets": 100,
+      "lastUsed": "2020-02-16"
+    },
+    {
+      "strong": "Rack Pull (Barbell)",
+      "sets": 100,
+      "lastUsed": "2019-06-07"
+    },
+    {
+      "strong": "Skullcrusher (Barbell)",
+      "sets": 92,
+      "lastUsed": "2022-03-14"
+    },
+    {
+      "strong": "Reverse Fly (Machine)",
+      "sets": 91,
+      "lastUsed": "2021-10-19"
+    },
+    {
+      "strong": "Seated Leg Curl (Machine)",
+      "sets": 85,
+      "lastUsed": "2021-07-07"
+    },
+    {
+      "strong": "Chest Fly",
+      "sets": 84,
+      "lastUsed": "2020-03-19"
+    },
+    {
+      "strong": "Lateral Raise (Dumbbell)",
+      "sets": 82,
+      "lastUsed": "2022-03-14"
+    },
+    {
+      "strong": "Incline chest cable fly",
+      "sets": 79,
+      "lastUsed": "2020-03-04"
+    },
+    {
+      "strong": "Seated Calf Raise (Machine)",
+      "sets": 70,
+      "lastUsed": "2019-11-01"
+    },
+    {
+      "strong": "Decline Lying Shrug",
+      "sets": 69,
+      "lastUsed": "2019-07-23"
+    },
+    {
+      "strong": "Seated Row (Machine)",
+      "sets": 68,
+      "lastUsed": "2021-06-24"
+    },
+    {
+      "strong": "Deadlift (Barbell)",
+      "sets": 68,
+      "lastUsed": "2022-03-14"
+    },
+    {
+      "strong": "Triceps Extension (Cable)",
+      "sets": 66,
+      "lastUsed": "2019-06-06"
+    },
+    {
+      "strong": "Chest Fly (Dumbbell)",
+      "sets": 65,
+      "lastUsed": "2019-11-22"
+    },
+    {
+      "strong": "Lat Pulldown (Machine)",
+      "sets": 64,
+      "lastUsed": "2021-07-13"
+    },
+    {
+      "strong": "Bench Press (Barbell)",
+      "sets": 59,
+      "lastUsed": "2022-03-14"
+    },
+    {
+      "strong": "Elliptical Machine",
+      "sets": 58,
+      "lastUsed": "2020-02-16"
+    },
+    {
+      "strong": "Hack Squat",
+      "sets": 57,
+      "lastUsed": "2020-02-16"
+    },
+    {
+      "strong": "Lunge (Dumbbell)",
+      "sets": 56,
+      "lastUsed": "2019-05-05"
+    },
+    {
+      "strong": "Bicep Curl (Dumbbell)",
+      "sets": 56,
+      "lastUsed": "2019-07-11"
+    },
+    {
+      "strong": "Assisted close grip pull up",
+      "sets": 54,
+      "lastUsed": "2019-07-23"
+    },
+    {
+      "strong": "Concentration Curl (Dumbbell)",
+      "sets": 54,
+      "lastUsed": "2023-05-23"
+    },
+    {
+      "strong": "Upper Back Rope Pull",
+      "sets": 53,
+      "lastUsed": "2023-05-23"
+    },
+    {
+      "strong": "Hip Thrust (Barbell)",
+      "sets": 52,
+      "lastUsed": "2019-12-17"
+    },
+    {
+      "strong": "Lower Back Rope Pull",
+      "sets": 52,
+      "lastUsed": "2023-05-23"
+    },
+    {
+      "strong": "Pendlay Row (Barbell)",
+      "sets": 50,
+      "lastUsed": "2021-06-26"
+    },
+    {
+      "strong": "Low Cable Face Pull",
+      "sets": 49,
+      "lastUsed": "2019-07-21"
+    },
+    {
+      "strong": "Incline Curl (Dumbbell)",
+      "sets": 47,
+      "lastUsed": "2019-06-05"
+    },
+    {
+      "strong": "Cable Crossover",
+      "sets": 47,
+      "lastUsed": "2020-03-12"
+    },
+    {
+      "strong": "Shrug (Barbell)",
+      "sets": 47,
+      "lastUsed": "2019-09-01"
+    },
+    {
+      "strong": "dips",
+      "sets": 46,
+      "lastUsed": "2023-05-22"
+    },
+    {
+      "strong": "Hanging Knee Raise",
+      "sets": 46,
+      "lastUsed": "2023-05-22"
+    },
+    {
+      "strong": "Romanian Deadlift (Dumbbell)",
+      "sets": 44,
+      "lastUsed": "2019-12-24"
+    },
+    {
+      "strong": "Bench Press - Wide Grip (Barbell)",
+      "sets": 44,
+      "lastUsed": "2019-09-02"
+    },
+    {
+      "strong": "Reverse close grip pull down",
+      "sets": 44,
+      "lastUsed": "2022-02-04"
+    },
+    {
+      "strong": "Chest Dip",
+      "sets": 43,
+      "lastUsed": "2021-10-09"
+    },
+    {
+      "strong": "Triceps Extension (Machine)",
+      "sets": 42,
+      "lastUsed": "2019-05-01"
+    },
+    {
+      "strong": "Front Squat (Barbell)",
+      "sets": 41,
+      "lastUsed": "2019-06-11"
+    },
+    {
+      "strong": "T Bar Row",
+      "sets": 40,
+      "lastUsed": "2020-01-03"
+    },
+    {
+      "strong": "Crucifix",
+      "sets": 40,
+      "lastUsed": "2019-09-02"
+    },
+    {
+      "strong": "Decline lying barbell curl",
+      "sets": 39,
+      "lastUsed": "2019-04-28"
+    },
+    {
+      "strong": "Tricep Pushdown Angled Bar",
+      "sets": 39,
+      "lastUsed": "2019-05-23"
+    },
+    {
+      "strong": "Bulgarian Split Squat",
+      "sets": 39,
+      "lastUsed": "2019-07-12"
+    },
+    {
+      "strong": "Lateral Raise (Machine)",
+      "sets": 39,
+      "lastUsed": "2019-07-18"
+    },
+    {
+      "strong": "Lying lateral raise",
+      "sets": 38,
+      "lastUsed": "2019-07-18"
+    },
+    {
+      "strong": "Triceps Extension (Dumbbell)",
+      "sets": 37,
+      "lastUsed": "2021-10-09"
+    },
+    {
+      "strong": "Incline Chest Fly (Dumbbell)",
+      "sets": 37,
+      "lastUsed": "2019-07-18"
+    },
+    {
+      "strong": "Overhead lat lying pullover",
+      "sets": 37,
+      "lastUsed": "2019-09-01"
+    },
+    {
+      "strong": "Lat Pulldown (Single Arm)",
+      "sets": 37,
+      "lastUsed": "2019-07-23"
+    },
+    {
+      "strong": "Skullcrusher (Dumbbell)",
+      "sets": 37,
+      "lastUsed": "2019-09-02"
+    },
+    {
+      "strong": "Push Up",
+      "sets": 37,
+      "lastUsed": "2023-05-22"
+    },
+    {
+      "strong": "Hanging Leg Raise",
+      "sets": 36,
+      "lastUsed": "2022-03-20"
+    },
+    {
+      "strong": "Reverse Fly (Dumbbell)",
+      "sets": 34,
+      "lastUsed": "2019-06-09"
+    },
+    {
+      "strong": "Decline Dumbell row",
+      "sets": 34,
+      "lastUsed": "2019-07-23"
+    },
+    {
+      "strong": "Meadow Row",
+      "sets": 34,
+      "lastUsed": "2019-08-29"
+    },
+    {
+      "strong": "Shoulder Press (Machine)",
+      "sets": 33,
+      "lastUsed": "2021-10-22"
+    },
+    {
+      "strong": "Leg Press",
+      "sets": 33,
+      "lastUsed": "2021-05-29"
+    },
+    {
+      "strong": "Bent over cable rear delt fly",
+      "sets": 30,
+      "lastUsed": "2019-08-29"
+    },
+    {
+      "strong": "Inverted Row (Bodyweight)",
+      "sets": 28,
+      "lastUsed": "2019-08-29"
+    },
+    {
+      "strong": "Hammer Curl (Dumbbell)",
+      "sets": 27,
+      "lastUsed": "2019-07-23"
+    },
+    {
+      "strong": "Rope rows",
+      "sets": 27,
+      "lastUsed": "2019-08-29"
+    },
+    {
+      "strong": "Bicep Curl (Machine)",
+      "sets": 25,
+      "lastUsed": "2019-03-08"
+    },
+    {
+      "strong": "Cable Pull Through",
+      "sets": 24,
+      "lastUsed": "2020-02-16"
+    },
+    {
+      "strong": "Dumbell Kickback",
+      "sets": 22,
+      "lastUsed": "2019-06-14"
+    },
+    {
+      "strong": "Calf Raises on angled leg press",
+      "sets": 18,
+      "lastUsed": "2019-08-18"
+    },
+    {
+      "strong": "Cable Partial Lateral Raise",
+      "sets": 18,
+      "lastUsed": "2019-09-02"
+    },
+    {
+      "strong": "Static Dumbell Chest Hold",
+      "sets": 16,
+      "lastUsed": "2019-03-01"
+    },
+    {
+      "strong": "Lat Cable Pull In",
+      "sets": 14,
+      "lastUsed": "2019-04-21"
+    },
+    {
+      "strong": "Sled Push",
+      "sets": 14,
+      "lastUsed": "2019-08-18"
+    },
+    {
+      "strong": "Elevated Lunge",
+      "sets": 13,
+      "lastUsed": "2019-08-30"
+    },
+    {
+      "strong": "Lateral raise + quarter raise super set",
+      "sets": 13,
+      "lastUsed": "2021-12-22"
+    },
+    {
+      "strong": "Dumbell Preacher Curl",
+      "sets": 12,
+      "lastUsed": "2019-06-16"
+    },
+    {
+      "strong": "Seated Calf Raise (Plate Loaded)",
+      "sets": 12,
+      "lastUsed": "2019-09-21"
+    },
+    {
+      "strong": "Preacher Curl (Barbell)",
+      "sets": 12,
+      "lastUsed": "2021-12-16"
+    },
+    {
+      "strong": "Lat Activation",
+      "sets": 11,
+      "lastUsed": "2019-03-15"
+    },
+    {
+      "strong": "Pullover (Dumbbell)",
+      "sets": 9,
+      "lastUsed": "2021-07-13"
+    },
+    {
+      "strong": "Rope Push",
+      "sets": 9,
+      "lastUsed": "2023-04-15"
+    },
+    {
+      "strong": "Decline Bench Press (Dumbbell)",
+      "sets": 7,
+      "lastUsed": "2020-03-12"
+    },
+    {
+      "strong": "Incline dumbbell row",
+      "sets": 7,
+      "lastUsed": "2021-10-21"
+    },
+    {
+      "strong": "Small Platform Split Squats",
+      "sets": 6,
+      "lastUsed": "2019-07-28"
+    },
+    {
+      "strong": "Chest Dip (Assisted)",
+      "sets": 6,
+      "lastUsed": "2019-07-22"
+    },
+    {
+      "strong": "Tricep dip machine",
+      "sets": 6,
+      "lastUsed": "2022-02-01"
+    },
+    {
+      "strong": "Bench Press (Smith Machine)",
+      "sets": 6,
+      "lastUsed": "2021-10-22"
+    },
+    {
+      "strong": "Reverse Grip Pulldown",
+      "sets": 6,
+      "lastUsed": "2021-10-21"
+    },
+    {
+      "strong": "Incline overhead pullover",
+      "sets": 6,
+      "lastUsed": "2021-10-21"
+    },
+    {
+      "strong": "Above Head Lateral Raise",
+      "sets": 5,
+      "lastUsed": "2019-07-22"
+    },
+    {
+      "strong": "Single hand cable bicep curl",
+      "sets": 4,
+      "lastUsed": "2019-04-14"
+    },
+    {
+      "strong": "Bent Over Row (Dumbbell)",
+      "sets": 4,
+      "lastUsed": "2021-10-17"
+    },
+    {
+      "strong": "Wide Grip Hang",
+      "sets": 4,
+      "lastUsed": "2023-04-10"
+    },
+    {
+      "strong": "Decline dumbell Curl",
+      "sets": 3,
+      "lastUsed": "2019-05-06"
+    },
+    {
+      "strong": "Seated Shrug",
+      "sets": 3,
+      "lastUsed": "2019-06-16"
+    },
+    {
+      "strong": "Heavy Reverse Fly",
+      "sets": 3,
+      "lastUsed": "2019-06-19"
+    },
+    {
+      "strong": "Dip Machine",
+      "sets": 3,
+      "lastUsed": "2021-06-09"
+    },
+    {
+      "strong": "Row Smith machine",
+      "sets": 3,
+      "lastUsed": "2021-10-19"
+    },
+    {
+      "strong": "Double leg lying leg curl",
+      "sets": 2,
+      "lastUsed": "2019-09-28"
+    },
+    {
+      "strong": "Skipping",
+      "sets": 1,
+      "lastUsed": "2021-05-25"
+    }
+  ],
+  "finalMappings": [
+    {
+      "strong": "Barbell Drag Curl",
+      "app": "Barbell Curl",
+      "action": "map",
+      "sets": 5,
+      "lastUsed": "2026-03-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Barbell Row Overhand Grip",
+      "app": "Barbell Row",
+      "action": "map",
+      "sets": 6,
+      "lastUsed": "2026-03-08",
+      "source": "auto"
+    },
+    {
+      "strong": "Barbell Row Underhand Grip",
+      "app": "Barbell Row",
+      "action": "map",
+      "sets": 6,
+      "lastUsed": "2026-03-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Bayesian Cable Curl",
+      "app": "Bayesian Cable Curl",
+      "action": "map",
+      "sets": 181,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Bayesian Hammer Curl Cable",
+      "app": "Bayesian Hammer Cable Curl",
+      "action": "map",
+      "sets": 114,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Bent Over Row (Barbell)",
+      "app": "Barbell Row",
+      "action": "map",
+      "sets": 140,
+      "lastUsed": "2026-03-03",
+      "source": "auto"
+    },
+    {
+      "strong": "Bicep Curl (Barbell)",
+      "app": "Barbell Curl",
+      "action": "map",
+      "sets": 29,
+      "lastUsed": "2026-05-15",
+      "source": "auto"
+    },
+    {
+      "strong": "Bicep Curl (Cable)",
+      "app": "Cable Curl",
+      "action": "map",
+      "sets": 12,
+      "lastUsed": "2026-01-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Chest Flies Static Hold",
+      "app": null,
+      "action": "create",
+      "sets": 2,
+      "lastUsed": "2026-05-18",
+      "source": "manual"
+    },
+    {
+      "strong": "Cable Drag Curl",
+      "app": "Cable Curl",
+      "action": "map",
+      "sets": 5,
+      "lastUsed": "2026-03-10",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Kickback",
+      "app": "Cable Kickback",
+      "action": "map",
+      "sets": 4,
+      "lastUsed": "2026-05-01",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Lat Pullover",
+      "app": "Seated Cable Pullover",
+      "action": "map",
+      "sets": 40,
+      "lastUsed": "2026-02-15",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Press Decline",
+      "app": "Decline Cable Press",
+      "action": "map",
+      "sets": 51,
+      "lastUsed": "2026-09-21",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Press Incline",
+      "app": "Incline Cable Press",
+      "action": "map",
+      "sets": 56,
+      "lastUsed": "2026-09-21",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Single Arm Overhead Extension",
+      "app": "Overhead Cable Extension",
+      "action": "map",
+      "sets": 36,
+      "lastUsed": "2026-08-14",
+      "source": "auto"
+    },
+    {
+      "strong": "Cable Spider Curls",
+      "app": "Spider Cable Curl",
+      "action": "map",
+      "sets": 4,
+      "lastUsed": "2026-04-10",
+      "source": "auto"
+    },
+    {
+      "strong": "Chest Flies Cable Seated Heavy",
+      "app": null,
+      "action": "create",
+      "sets": 237,
+      "source": "manual"
+    },
+    {
+      "strong": "Chest Flies Cable Seated Volume",
+      "app": null,
+      "action": "create",
+      "sets": 43,
+      "lastUsed": "2026-09-21",
+      "source": "manual"
+    },
+    {
+      "strong": "Chest Supported Face Pull",
+      "app": "Face Pull",
+      "action": "map",
+      "sets": 78,
+      "lastUsed": "2026-05-12",
+      "source": "auto"
+    },
+    {
+      "strong": "Chest Supported Kettle Shrug",
+      "app": null,
+      "action": "create",
+      "sets": 35,
+      "lastUsed": "2026-08-04",
+      "source": "manual"
+    },
+    {
+      "strong": "Converging Decline Cable Press",
+      "app": "Decline Cable Press",
+      "action": "map",
+      "sets": 5,
+      "lastUsed": "2026-04-20",
+      "source": "auto"
+    },
+    {
+      "strong": "Decline Cable Chest Flies",
+      "app": null,
+      "action": "create",
+      "sets": 18,
+      "lastUsed": "2026-01-30",
+      "source": "manual"
+    },
+    {
+      "strong": "Decline Cable Chest Fly",
+      "app": "Cable Fly",
+      "action": "map",
+      "sets": 5,
+      "lastUsed": "2026-03-09",
+      "source": "auto"
+    },
+    {
+      "strong": "Decline Smith Press",
+      "app": "Smith Machine Decline Bench Press",
+      "action": "map",
+      "sets": 72,
+      "lastUsed": "2026-09-21",
+      "source": "auto"
+    },
+    {
+      "strong": "Double handle tricep pushdown",
+      "app": "Triceps Pushdown",
+      "action": "map",
+      "sets": 259,
+      "source": "manual"
+    },
+    {
+      "strong": "Face Pull (Cable)",
+      "app": "Face Pull",
+      "action": "map",
+      "sets": 102,
+      "lastUsed": "2026-03-01",
+      "source": "auto"
+    },
+    {
+      "strong": "Glute Kickback (Machine)",
+      "app": "Cable Kickback",
+      "action": "map",
+      "sets": 29,
+      "lastUsed": "2026-09-05",
+      "source": "manual"
+    },
+    {
+      "strong": "Hamstring Curl with Cuff",
+      "app": "Lying Leg Curl",
+      "action": "map",
+      "sets": 48,
+      "lastUsed": "2026-09-05",
+      "source": "manual"
+    },
+    {
+      "strong": "Hip Thrust Smith",
+      "app": "Smith Machine Hip Thrust",
+      "action": "map",
+      "sets": 4,
+      "lastUsed": "2026-03-26",
+      "source": "auto"
+    },
+    {
+      "strong": "Incline Bench Press (Barbell)",
+      "app": "Incline Bench Press",
+      "action": "map",
+      "sets": 164,
+      "lastUsed": "2026-03-23",
+      "source": "auto"
+    },
+    {
+      "strong": "Incline Bench Press (Smith Machine)",
+      "app": "Smith Machine Incline Bench Press",
+      "action": "map",
+      "sets": 127,
+      "lastUsed": "2026-09-21",
+      "source": "auto"
+    },
+    {
+      "strong": "Jammer Arm Chest Press",
+      "app": "Chest Press",
+      "action": "map",
+      "sets": 17,
+      "lastUsed": "2026-04-20",
+      "source": "auto"
+    },
+    {
+      "strong": "Jammer Arm Rows Overhand Grip",
+      "app": null,
+      "action": "create",
+      "sets": 3,
+      "lastUsed": "2026-09-22",
+      "source": "manual"
+    },
+    {
+      "strong": "Jammer Arm Rows Underhand Grip",
+      "app": null,
+      "action": "create",
+      "sets": 68,
+      "lastUsed": "2026-05-05",
+      "source": "manual"
+    },
+    {
+      "strong": "Jammer Arms Row Neutral Grip",
+      "app": "Jammer Row",
+      "action": "map",
+      "sets": 60,
+      "lastUsed": "2026-09-15",
+      "source": "auto"
+    },
+    {
+      "strong": "JM Press",
+      "app": "JM Press",
+      "action": "map",
+      "sets": 109,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Katana Tricep Cable Extension",
+      "app": "Katana Triceps Cable Extension",
+      "action": "map",
+      "sets": 18,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Kelso Shrug Cable Chest Supported",
+      "app": "Kelso Shrug",
+      "action": "map",
+      "sets": 11,
+      "lastUsed": "2026-09-22",
+      "source": "auto"
+    },
+    {
+      "strong": "Lat Pulldown Neutral Grip",
+      "app": "Lat Pulldown",
+      "action": "map",
+      "sets": 48,
+      "lastUsed": "2026-08-18",
+      "source": "auto"
+    },
+    {
+      "strong": "Lat Pulldown Overhand Grip",
+      "app": "Lat Pulldown",
+      "action": "map",
+      "sets": 78,
+      "lastUsed": "2026-05-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Lateral Raise (Cable)",
+      "app": "Cable Lateral Raise",
+      "action": "map",
+      "sets": 290,
+      "source": "manual"
+    },
+    {
+      "strong": "Lateral Raise Cable Leaning",
+      "app": "Leaning Cable Lateral Raise",
+      "action": "map",
+      "sets": 51,
+      "lastUsed": "2026-09-21",
+      "source": "manual"
+    },
+    {
+      "strong": "Laying Hammer Curl",
+      "app": "Hammer Curl",
+      "action": "map",
+      "sets": 3,
+      "lastUsed": "2026-05-15",
+      "source": "auto"
+    },
+    {
+      "strong": "Low Cable Row Neutral Grip",
+      "app": "Seated Cable Row",
+      "action": "map",
+      "sets": 67,
+      "lastUsed": "2026-05-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Low Cable Row Shoulder Width Neutral Grip",
+      "app": "Seated Cable Row High Elbows",
+      "action": "map",
+      "sets": 54,
+      "lastUsed": "2026-09-22",
+      "source": "manual"
+    },
+    {
+      "strong": "Low Cable Row Underhand Grip",
+      "app": "Seated Cable Row",
+      "action": "map",
+      "sets": 5,
+      "lastUsed": "2026-03-08",
+      "source": "auto"
+    },
+    {
+      "strong": "Lying Cable Curl",
+      "app": "Cable Curl",
+      "action": "map",
+      "sets": 23,
+      "lastUsed": "2026-05-15",
+      "source": "auto"
+    },
+    {
+      "strong": "Overhead Press (Barbell)",
+      "app": "Overhead Press",
+      "action": "map",
+      "sets": 17,
+      "lastUsed": "2026-03-07",
+      "source": "auto"
+    },
+    {
+      "strong": "Overhead Press (Smith Machine)",
+      "app": "Smith Machine Overhead Press",
+      "action": "map",
+      "sets": 150,
+      "lastUsed": "2026-04-07",
+      "source": "auto"
+    },
+    {
+      "strong": "Pull Up",
+      "app": "Pull Up",
+      "action": "map",
+      "sets": 45,
+      "lastUsed": "2026-09-01",
+      "source": "auto"
+    },
+    {
+      "strong": "Pulldown Cable Single Arm",
+      "app": "Single-Arm Lat Pulldown",
+      "action": "map",
+      "sets": 12,
+      "lastUsed": "2026-09-22",
+      "source": "auto"
+    },
+    {
+      "strong": "Pulldown Single Arm Volume",
+      "app": "Single-Arm Lat Pulldown",
+      "action": "map",
+      "sets": 9,
+      "lastUsed": "2026-09-22",
+      "source": "auto"
+    },
+    {
+      "strong": "Pullover (Machine)",
+      "app": null,
+      "action": "create",
+      "sets": 58,
+      "lastUsed": "2026-03-01",
+      "source": "manual"
+    },
+    {
+      "strong": "Pullover Seated Rope Cable",
+      "app": "Seated Cable Pullover",
+      "action": "map",
+      "sets": 112,
+      "lastUsed": "2026-09-01",
+      "source": "auto"
+    },
+    {
+      "strong": "Rear Delt Row Chest Supported",
+      "app": "Chest-Supported Row",
+      "action": "map",
+      "sets": 51,
+      "lastUsed": "2026-09-22",
+      "source": "auto"
+    },
+    {
+      "strong": "Reverse Fly (Cable)",
+      "app": null,
+      "action": "create",
+      "sets": 57,
+      "lastUsed": "2026-09-22",
+      "source": "manual"
+    },
+    {
+      "strong": "Romanian Deadlift Smith",
+      "app": "Smith Machine Romanian Deadlift",
+      "action": "map",
+      "sets": 86,
+      "lastUsed": "2026-09-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Scapular Depressions Cable",
+      "app": "Hanging Scapular Depressions",
+      "action": "map",
+      "sets": 33,
+      "lastUsed": "2026-08-04",
+      "source": "auto"
+    },
+    {
+      "strong": "Scapular Depressions Hanging",
+      "app": "Hanging Scapular Depressions",
+      "action": "map",
+      "sets": 9,
+      "lastUsed": "2026-09-01",
+      "source": "auto"
+    },
+    {
+      "strong": "Seated Row (Cable)",
+      "app": "Seated Cable Row",
+      "action": "map",
+      "sets": 67,
+      "lastUsed": "2026-03-03",
+      "source": "auto"
+    },
+    {
+      "strong": "Shrug Cable Leaning Back",
+      "app": "Leaning Back Cable Shrug",
+      "action": "map",
+      "sets": 54,
+      "lastUsed": "2026-09-22",
+      "source": "auto"
+    },
+    {
+      "strong": "Shrug Smith Chest Supported",
+      "app": null,
+      "action": "create",
+      "sets": 6,
+      "lastUsed": "2026-08-18",
+      "source": "manual"
+    },
+    {
+      "strong": "Smith Sitting Calf Raise",
+      "app": "Smith Machine Calf Raise",
+      "action": "map",
+      "sets": 42,
+      "lastUsed": "2026-09-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Smith Squat No Lockout",
+      "app": null,
+      "action": "create",
+      "sets": 15,
+      "lastUsed": "2026-09-05",
+      "source": "manual"
+    },
+    {
+      "strong": "Spider Curl Cable",
+      "app": "Spider Cable Curl",
+      "action": "map",
+      "sets": 54,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Spider Hammer Curl Cable",
+      "app": "Spider Hammer Cable Curl",
+      "action": "map",
+      "sets": 54,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Split Squats Smith",
+      "app": "Smith Machine Split Squat",
+      "action": "map",
+      "sets": 68,
+      "lastUsed": "2026-09-05",
+      "source": "manual"
+    },
+    {
+      "strong": "Squat (Barbell)",
+      "app": "Back Squat",
+      "action": "map",
+      "sets": 160,
+      "lastUsed": "2026-03-23",
+      "source": "auto"
+    },
+    {
+      "strong": "Squat (Smith Machine)",
+      "app": "Smith Machine Squat",
+      "action": "map",
+      "sets": 120,
+      "lastUsed": "2026-09-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Standing Calf Raise (Smith Machine)",
+      "app": "Smith Machine Calf Raise",
+      "action": "map",
+      "sets": 65,
+      "lastUsed": "2026-09-05",
+      "source": "auto"
+    },
+    {
+      "strong": "Supinated Pulldown",
+      "app": null,
+      "action": "create",
+      "sets": 123,
+      "lastUsed": "2026-03-03",
+      "source": "manual"
+    },
+    {
+      "strong": "Tricep Extension Cable Overhead",
+      "app": "Overhead Cable Extension",
+      "action": "map",
+      "sets": 219,
+      "lastUsed": "2026-09-29",
+      "source": "auto"
+    },
+    {
+      "strong": "Tricep Push down Spreader Bar",
+      "app": "Triceps Pushdown",
+      "action": "map",
+      "sets": 47,
+      "lastUsed": "2026-08-20",
+      "source": "manual"
+    },
+    {
+      "strong": "Tricep Pushdowns Seated Incline Spreader Bar",
+      "app": "Seated Incline Triceps Pushdown",
+      "action": "map",
+      "sets": 11,
+      "lastUsed": "2026-09-29",
+      "source": "manual"
+    },
+    {
+      "strong": "Triceps Pushdown (Cable - Straight Bar)",
+      "app": "Triceps Pushdown",
+      "action": "map",
+      "sets": 37,
+      "lastUsed": "2026-04-24",
+      "source": "auto"
+    }
+  ]
+}

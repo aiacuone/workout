@@ -1,0 +1,1636 @@
+{
+  "remaining": [
+    {
+      "n": 1,
+      "strong": "Single Handed Cable Extension",
+      "sets": 198,
+      "kind": "review",
+      "autoSuggested": "Overhead Cable Extension",
+      "options": [
+        {
+          "name": "Overhead Cable Extension",
+          "score": 50
+        },
+        {
+          "name": "Leg Extension",
+          "score": 50
+        },
+        {
+          "name": "Katana Triceps Cable Extension",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "strong": "Incline Row (Dumbbell)",
+      "sets": 180,
+      "kind": "review",
+      "autoSuggested": "Incline Dumbbell Press",
+      "options": [
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        },
+        {
+          "name": "Jammer Row",
+          "score": 50
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "strong": "Across body lateral raise",
+      "sets": 168,
+      "kind": "review",
+      "autoSuggested": "Lateral Raise",
+      "options": [
+        {
+          "name": "Cable Lateral Raise",
+          "score": 159
+        },
+        {
+          "name": "Lateral Raise",
+          "score": 153
+        },
+        {
+          "name": "Leaning Cable Lateral Raise",
+          "score": 52
+        },
+        {
+          "name": "Standing Calf Raise",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "strong": "Incline Lateral Raise",
+      "sets": 167,
+      "kind": "review",
+      "autoSuggested": "Lateral Raise",
+      "options": [
+        {
+          "name": "Cable Lateral Raise",
+          "score": 159
+        },
+        {
+          "name": "Lateral Raise",
+          "score": 153
+        },
+        {
+          "name": "Leaning Cable Lateral Raise",
+          "score": 73
+        },
+        {
+          "name": "Standing Calf Raise",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "strong": "Calf Press on Seated Leg Press",
+      "sets": 157,
+      "kind": "review",
+      "autoSuggested": "Leg Press",
+      "options": [
+        {
+          "name": "Leg Press",
+          "score": 149
+        },
+        {
+          "name": "Incline Dumbbell Press",
+          "score": 142
+        },
+        {
+          "name": "Seated Dumbbell Press",
+          "score": 141
+        },
+        {
+          "name": "Incline Cable Press",
+          "score": 139
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "strong": "Upright Row (Cable)",
+      "sets": 152,
+      "kind": "review",
+      "autoSuggested": "Smith Machine Upright Row",
+      "options": [
+        {
+          "name": "Smith Machine Upright Row",
+          "score": 165
+        },
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "strong": "Supinated Pulldown",
+      "sets": 123,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Lat Pulldown",
+          "score": 50
+        },
+        {
+          "name": "Single-Arm Lat Pulldown",
+          "score": 50
+        },
+        {
+          "name": "Straight-Arm Pulldown",
+          "score": 50
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "strong": "Bench Press (Dumbbell)",
+      "sets": 110,
+      "kind": "review",
+      "autoSuggested": "Bench Press",
+      "options": [
+        {
+          "name": "Smith Machine Close-Grip Bench Press",
+          "score": 176
+        },
+        {
+          "name": "Smith Machine Incline Bench Press",
+          "score": 173
+        },
+        {
+          "name": "Smith Machine Decline Bench Press",
+          "score": 173
+        },
+        {
+          "name": "Smith Machine Bench Press",
+          "score": 165
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "strong": "Reverse Fly (Cable)",
+      "sets": 102,
+      "kind": "review",
+      "autoSuggested": "Reverse Fly",
+      "options": [
+        {
+          "name": "Reverse Fly",
+          "score": 151
+        },
+        {
+          "name": "Cable Fly",
+          "score": 129
+        },
+        {
+          "name": "Reverse Pec Deck",
+          "score": 30
+        },
+        {
+          "name": "Low-to-High Cable Fly",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "strong": "Egyptian Lateral Raise",
+      "sets": 101,
+      "kind": "review",
+      "autoSuggested": "Lateral Raise",
+      "options": [
+        {
+          "name": "Cable Lateral Raise",
+          "score": 159
+        },
+        {
+          "name": "Lateral Raise",
+          "score": 153
+        },
+        {
+          "name": "Leaning Cable Lateral Raise",
+          "score": 60
+        },
+        {
+          "name": "Standing Calf Raise",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "strong": "Rack Pull (Barbell)",
+      "sets": 100,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 37
+        },
+        {
+          "name": "Face Pull",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 12,
+      "strong": "Overhead Press (Dumbbell)",
+      "sets": 100,
+      "kind": "review",
+      "autoSuggested": "Overhead Press",
+      "options": [
+        {
+          "name": "Smith Machine Overhead Press",
+          "score": 168
+        },
+        {
+          "name": "Overhead Press",
+          "score": 154
+        },
+        {
+          "name": "Incline Dumbbell Press",
+          "score": 142
+        },
+        {
+          "name": "Seated Dumbbell Press",
+          "score": 141
+        }
+      ]
+    },
+    {
+      "n": 13,
+      "strong": "Reverse Fly (Machine)",
+      "sets": 91,
+      "kind": "review",
+      "autoSuggested": "Reverse Fly",
+      "options": [
+        {
+          "name": "Reverse Fly",
+          "score": 151
+        },
+        {
+          "name": "Cable Fly",
+          "score": 129
+        },
+        {
+          "name": "Reverse Pec Deck",
+          "score": 30
+        },
+        {
+          "name": "Low-to-High Cable Fly",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 14,
+      "strong": "Chest Fly",
+      "sets": 84,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Cable Fly",
+          "score": 129
+        },
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Reverse Fly",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 15,
+      "strong": "Decline Lying Shrug",
+      "sets": 69,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Shrug",
+          "score": 139
+        },
+        {
+          "name": "Kelso Shrug",
+          "score": 50
+        },
+        {
+          "name": "Leaning Back Cable Shrug",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 16,
+      "strong": "Jammer Arm Rows Underhand Grip",
+      "sets": 68,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Jammer Row",
+          "score": 50
+        },
+        {
+          "name": "Barbell Row",
+          "score": 25
+        },
+        {
+          "name": "Smith Machine Bent-Over Row",
+          "score": 25
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 17,
+      "strong": "Split Squats Smith",
+      "sets": 68,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Split Squat",
+          "score": 50
+        },
+        {
+          "name": "Bulgarian Split Squat",
+          "score": 50
+        },
+        {
+          "name": "Back Squat",
+          "score": 25
+        },
+        {
+          "name": "Front Squat",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 18,
+      "strong": "Chest Fly (Dumbbell)",
+      "sets": 65,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Cable Fly",
+          "score": 129
+        },
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Reverse Fly",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 19,
+      "strong": "Hamstring Curl with Cuff",
+      "sets": 60,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Dumbbell Curl",
+          "score": 133
+        },
+        {
+          "name": "Barbell Curl",
+          "score": 132
+        },
+        {
+          "name": "Cable Curl",
+          "score": 130
+        },
+        {
+          "name": "Hammer Curl",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 20,
+      "strong": "Elliptical Machine",
+      "sets": 58,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    },
+    {
+      "n": 21,
+      "strong": "Pullover (Machine)",
+      "sets": 58,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Seated Cable Pullover",
+          "score": 141
+        }
+      ]
+    },
+    {
+      "n": 22,
+      "strong": "Lunge (Dumbbell)",
+      "sets": 56,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Lunge",
+          "score": 139
+        },
+        {
+          "name": "Walking Lunge",
+          "score": 50
+        }
+      ]
+    },
+    {
+      "n": 23,
+      "strong": "Low Cable Row Shoulder Width Neutral Grip",
+      "sets": 54,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        },
+        {
+          "name": "Jammer Row",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 24,
+      "strong": "Assisted close grip pull up",
+      "sets": 54,
+      "kind": "review",
+      "autoSuggested": "Pull Up",
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 147
+        },
+        {
+          "name": "Push Up",
+          "score": 37
+        },
+        {
+          "name": "Chin Up",
+          "score": 37
+        },
+        {
+          "name": "Face Pull",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 25,
+      "strong": "Upper Back Rope Pull",
+      "sets": 53,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 26
+        },
+        {
+          "name": "Face Pull",
+          "score": 26
+        },
+        {
+          "name": "Back Squat",
+          "score": 26
+        },
+        {
+          "name": "Leaning Back Cable Shrug",
+          "score": 23
+        }
+      ]
+    },
+    {
+      "n": 26,
+      "strong": "Lower Back Rope Pull",
+      "sets": 52,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 26
+        },
+        {
+          "name": "Face Pull",
+          "score": 26
+        },
+        {
+          "name": "Back Squat",
+          "score": 26
+        },
+        {
+          "name": "Leaning Back Cable Shrug",
+          "score": 23
+        }
+      ]
+    },
+    {
+      "n": 27,
+      "strong": "Lateral Raise Cable Leaning",
+      "sets": 51,
+      "kind": "review",
+      "autoSuggested": "Leaning Cable Lateral Raise",
+      "options": [
+        {
+          "name": "Leaning Cable Lateral Raise",
+          "score": 187
+        },
+        {
+          "name": "Cable Lateral Raise",
+          "score": 159
+        },
+        {
+          "name": "Lateral Raise",
+          "score": 153
+        },
+        {
+          "name": "Standing Calf Raise",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 28,
+      "strong": "Cable Crossover",
+      "sets": 47,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    },
+    {
+      "n": 29,
+      "strong": "Shrug (Barbell)",
+      "sets": 47,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Shrug",
+          "score": 139
+        },
+        {
+          "name": "Kelso Shrug",
+          "score": 50
+        },
+        {
+          "name": "Leaning Back Cable Shrug",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 30,
+      "strong": "Tricep Push down Spreader Bar",
+      "sets": 47,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Triceps Pushdown",
+          "score": 25
+        },
+        {
+          "name": "Seated Incline Triceps Pushdown",
+          "score": 25
+        },
+        {
+          "name": "Katana Triceps Cable Extension",
+          "score": 25
+        },
+        {
+          "name": "Push Up",
+          "score": 23
+        }
+      ]
+    },
+    {
+      "n": 31,
+      "strong": "dips",
+      "sets": 46,
+      "kind": "review",
+      "autoSuggested": "Dips",
+      "options": [
+        {
+          "name": "Dips",
+          "score": 1000
+        }
+      ]
+    },
+    {
+      "n": 32,
+      "strong": "Reverse close grip pull down",
+      "sets": 44,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 30
+        },
+        {
+          "name": "Reverse Fly",
+          "score": 30
+        },
+        {
+          "name": "Face Pull",
+          "score": 30
+        },
+        {
+          "name": "Reverse Pec Deck",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 33,
+      "strong": "Romanian Deadlift (Dumbbell)",
+      "sets": 44,
+      "kind": "review",
+      "autoSuggested": "Romanian Deadlift",
+      "options": [
+        {
+          "name": "Smith Machine Romanian Deadlift",
+          "score": 171
+        },
+        {
+          "name": "Romanian Deadlift",
+          "score": 157
+        },
+        {
+          "name": "Smith Machine Deadlift",
+          "score": 142
+        },
+        {
+          "name": "Deadlift",
+          "score": 128
+        }
+      ]
+    },
+    {
+      "n": 34,
+      "strong": "Chest Dip",
+      "sets": 43,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 30
+        },
+        {
+          "name": "Dips",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 35,
+      "strong": "Chest Flies Cable Seated Volume",
+      "sets": 43,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 30
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 36,
+      "strong": "Crucifix",
+      "sets": 40,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    },
+    {
+      "n": 37,
+      "strong": "Tricep Pushdown Angled Bar",
+      "sets": 39,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Triceps Pushdown",
+          "score": 50
+        },
+        {
+          "name": "Seated Incline Triceps Pushdown",
+          "score": 50
+        },
+        {
+          "name": "T-Bar Row",
+          "score": 30
+        },
+        {
+          "name": "Katana Triceps Cable Extension",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 38,
+      "strong": "Lateral Raise (Machine)",
+      "sets": 39,
+      "kind": "review",
+      "autoSuggested": "Lateral Raise",
+      "options": [
+        {
+          "name": "Cable Lateral Raise",
+          "score": 159
+        },
+        {
+          "name": "Lateral Raise",
+          "score": 153
+        },
+        {
+          "name": "Leaning Cable Lateral Raise",
+          "score": 73
+        },
+        {
+          "name": "Standing Calf Raise",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 39,
+      "strong": "Incline Chest Fly (Dumbbell)",
+      "sets": 37,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Cable Fly",
+          "score": 129
+        },
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Reverse Fly",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 40,
+      "strong": "Overhead lat lying pullover",
+      "sets": 37,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Seated Cable Pullover",
+          "score": 141
+        },
+        {
+          "name": "Lat Pulldown",
+          "score": 30
+        },
+        {
+          "name": "Single-Arm Lat Pulldown",
+          "score": 30
+        },
+        {
+          "name": "Overhead Press",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 41,
+      "strong": "Skullcrusher (Dumbbell)",
+      "sets": 37,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    },
+    {
+      "n": 42,
+      "strong": "Chest Supported Kettle Shrug",
+      "sets": 35,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Shrug",
+          "score": 139
+        },
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 52
+        },
+        {
+          "name": "Chest Press",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 43,
+      "strong": "Decline Dumbell row",
+      "sets": 34,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        },
+        {
+          "name": "Jammer Row",
+          "score": 50
+        }
+      ]
+    },
+    {
+      "n": 44,
+      "strong": "Meadow Row",
+      "sets": 34,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        },
+        {
+          "name": "Jammer Row",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 45,
+      "strong": "Glute Kickback (Machine)",
+      "sets": 29,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Cable Kickback",
+          "score": 134
+        }
+      ]
+    },
+    {
+      "n": 46,
+      "strong": "Inverted Row (Bodyweight)",
+      "sets": 28,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Single-Arm Dumbbell Row",
+          "score": 143
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 136
+        },
+        {
+          "name": "Barbell Row",
+          "score": 131
+        },
+        {
+          "name": "Jammer Row",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 47,
+      "strong": "Rope rows",
+      "sets": 27,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Barbell Row",
+          "score": 25
+        },
+        {
+          "name": "Smith Machine Bent-Over Row",
+          "score": 25
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 25
+        },
+        {
+          "name": "Seated Cable Row High Elbows",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 48,
+      "strong": "Bicep Curl (Machine)",
+      "sets": 25,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Dumbbell Curl",
+          "score": 133
+        },
+        {
+          "name": "Barbell Curl",
+          "score": 132
+        },
+        {
+          "name": "Cable Curl",
+          "score": 130
+        },
+        {
+          "name": "Hammer Curl",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 49,
+      "strong": "Cable Pull Through",
+      "sets": 24,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 37
+        },
+        {
+          "name": "Face Pull",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 50,
+      "strong": "Dumbell Kickback",
+      "sets": 22,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Cable Kickback",
+          "score": 134
+        }
+      ]
+    },
+    {
+      "n": 51,
+      "strong": "Decline Cable Chest Flies",
+      "sets": 18,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 52,
+      "strong": "Calf Raises on angled leg press",
+      "sets": 18,
+      "kind": "review",
+      "autoSuggested": "Leg Press",
+      "options": [
+        {
+          "name": "Leg Press",
+          "score": 149
+        },
+        {
+          "name": "Incline Dumbbell Press",
+          "score": 142
+        },
+        {
+          "name": "Seated Dumbbell Press",
+          "score": 141
+        },
+        {
+          "name": "Incline Cable Press",
+          "score": 139
+        }
+      ]
+    },
+    {
+      "n": 53,
+      "strong": "Static Dumbell Chest Hold",
+      "sets": 16,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 30
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 26
+        }
+      ]
+    },
+    {
+      "n": 54,
+      "strong": "Smith Squat No Lockout",
+      "sets": 15,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Squat",
+          "score": 139
+        },
+        {
+          "name": "Back Squat",
+          "score": 30
+        },
+        {
+          "name": "Front Squat",
+          "score": 30
+        },
+        {
+          "name": "Smith Machine Front Squat",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 55,
+      "strong": "Lat Cable Pull In",
+      "sets": 14,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Pull Up",
+          "score": 30
+        },
+        {
+          "name": "Lat Pulldown",
+          "score": 30
+        },
+        {
+          "name": "Single-Arm Lat Pulldown",
+          "score": 30
+        },
+        {
+          "name": "Face Pull",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 56,
+      "strong": "Sled Push",
+      "sets": 14,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Push Up",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 57,
+      "strong": "Elevated Lunge",
+      "sets": 13,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Lunge",
+          "score": 139
+        },
+        {
+          "name": "Walking Lunge",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 58,
+      "strong": "Lat Activation",
+      "sets": 11,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Lat Pulldown",
+          "score": 37
+        },
+        {
+          "name": "Single-Arm Lat Pulldown",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 59,
+      "strong": "Tricep Pushdowns Seated Incline Spreader Bar",
+      "sets": 11,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Triceps Pushdown",
+          "score": 50
+        },
+        {
+          "name": "Seated Incline Triceps Pushdown",
+          "score": 50
+        },
+        {
+          "name": "T-Bar Row",
+          "score": 26
+        },
+        {
+          "name": "Katana Triceps Cable Extension",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 60,
+      "strong": "Pullover (Dumbbell)",
+      "sets": 9,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Seated Cable Pullover",
+          "score": 141
+        }
+      ]
+    },
+    {
+      "n": 61,
+      "strong": "Rope Push",
+      "sets": 9,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Push Up",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 62,
+      "strong": "Small Platform Split Squats",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Split Squat",
+          "score": 50
+        },
+        {
+          "name": "Bulgarian Split Squat",
+          "score": 50
+        },
+        {
+          "name": "Back Squat",
+          "score": 25
+        },
+        {
+          "name": "Front Squat",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 63,
+      "strong": "Chest Dip (Assisted)",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 37
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 30
+        },
+        {
+          "name": "Dips",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 64,
+      "strong": "Tricep dip machine",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Dips",
+          "score": 25
+        },
+        {
+          "name": "Triceps Pushdown",
+          "score": 25
+        },
+        {
+          "name": "Seated Incline Triceps Pushdown",
+          "score": 25
+        },
+        {
+          "name": "Katana Triceps Cable Extension",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 65,
+      "strong": "Reverse Grip Pulldown",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Lat Pulldown",
+          "score": 37
+        },
+        {
+          "name": "Single-Arm Lat Pulldown",
+          "score": 37
+        },
+        {
+          "name": "Straight-Arm Pulldown",
+          "score": 37
+        },
+        {
+          "name": "Reverse Fly",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 66,
+      "strong": "Incline overhead pullover",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Seated Cable Pullover",
+          "score": 141
+        },
+        {
+          "name": "Overhead Press",
+          "score": 37
+        },
+        {
+          "name": "Smith Machine Overhead Press",
+          "score": 37
+        },
+        {
+          "name": "Overhead Cable Extension",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 67,
+      "strong": "Shrug Smith Chest Supported",
+      "sets": 6,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Shrug",
+          "score": 139
+        },
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 60
+        },
+        {
+          "name": "Chest Press",
+          "score": 30
+        }
+      ]
+    },
+    {
+      "n": 68,
+      "strong": "Wide Grip Hang",
+      "sets": 4,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    },
+    {
+      "n": 69,
+      "strong": "Decline dumbell Curl",
+      "sets": 3,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Dumbbell Curl",
+          "score": 133
+        },
+        {
+          "name": "Barbell Curl",
+          "score": 132
+        },
+        {
+          "name": "Cable Curl",
+          "score": 130
+        },
+        {
+          "name": "Hammer Curl",
+          "score": 50
+        }
+      ]
+    },
+    {
+      "n": 70,
+      "strong": "Seated Shrug",
+      "sets": 3,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Smith Machine Shrug",
+          "score": 139
+        },
+        {
+          "name": "Kelso Shrug",
+          "score": 50
+        },
+        {
+          "name": "Leaning Back Cable Shrug",
+          "score": 37
+        }
+      ]
+    },
+    {
+      "n": 71,
+      "strong": "Dip Machine",
+      "sets": 3,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Dips",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 72,
+      "strong": "Jammer Arm Rows Overhand Grip",
+      "sets": 3,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Jammer Row",
+          "score": 50
+        },
+        {
+          "name": "Barbell Row",
+          "score": 25
+        },
+        {
+          "name": "Smith Machine Bent-Over Row",
+          "score": 25
+        },
+        {
+          "name": "Seated Cable Row",
+          "score": 25
+        }
+      ]
+    },
+    {
+      "n": 73,
+      "strong": "Cable Chest Flies Static Hold",
+      "sets": 2,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": [
+        {
+          "name": "Chest",
+          "score": 125
+        },
+        {
+          "name": "Chest Press",
+          "score": 26
+        },
+        {
+          "name": "Chest-Supported Row",
+          "score": 23
+        }
+      ]
+    },
+    {
+      "n": 74,
+      "strong": "Skipping",
+      "sets": 1,
+      "kind": "unmatched",
+      "autoSuggested": null,
+      "options": []
+    }
+  ],
+  "confirmed": [
+    {
+      "strong": "Dumbell Partial Raises",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 277
+    },
+    {
+      "strong": "Seated Wide-Grip Row (Cable)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 310
+    },
+    {
+      "strong": "Incline Bench Press (Dumbbell)",
+      "app": "Incline Dumbbell Press",
+      "note": null,
+      "sets": 306
+    },
+    {
+      "strong": "Pull Up (Assisted)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 301
+    },
+    {
+      "strong": "Lateral Raise (Cable)",
+      "app": "Cable Lateral Raise",
+      "note": null,
+      "sets": 290
+    },
+    {
+      "strong": "Double handle tricep pushdown",
+      "app": "Triceps Pushdown",
+      "note": null,
+      "sets": 259
+    },
+    {
+      "strong": "Chest Flies Cable Seated Heavy",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 237
+    },
+    {
+      "strong": "Shrug (Dumbbell)",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 233
+    },
+    {
+      "strong": "Ez bar standing curl",
+      "app": null,
+      "note": "keep as new exercise",
+      "sets": 226
+    }
+  ]
+}

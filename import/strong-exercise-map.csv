@@ -1,0 +1,76 @@
+strong_name,ironlog_name,action
+Barbell Drag Curl,Barbell Curl,map
+Barbell Row Overhand Grip,Barbell Row,map
+Barbell Row Underhand Grip,Barbell Row,map
+Bayesian Cable Curl,Bayesian Cable Curl,map
+Bayesian Hammer Curl Cable,Bayesian Hammer Cable Curl,map
+Bent Over Row (Barbell),Barbell Row,map
+Bicep Curl (Barbell),Barbell Curl,map
+Bicep Curl (Cable),Cable Curl,map
+Cable Chest Flies Static Hold,Cable Chest Flies Static Hold,create
+Cable Drag Curl,Cable Curl,map
+Cable Kickback,Cable Kickback,map
+Cable Lat Pullover,Seated Cable Pullover,map
+Cable Press Decline,Decline Cable Press,map
+Cable Press Incline,Incline Cable Press,map
+Cable Single Arm Overhead Extension,Overhead Cable Extension,map
+Cable Spider Curls,Spider Cable Curl,map
+Chest Flies Cable Seated Heavy,Chest Flies Cable Seated Heavy,create
+Chest Flies Cable Seated Volume,Chest Flies Cable Seated Volume,create
+Chest Supported Face Pull,Face Pull,map
+Chest Supported Kettle Shrug,Chest Supported Kettle Shrug,create
+Converging Decline Cable Press,Decline Cable Press,map
+Decline Cable Chest Flies,Decline Cable Chest Flies,create
+Decline Cable Chest Fly,Cable Fly,map
+Decline Smith Press,Smith Machine Decline Bench Press,map
+Double handle tricep pushdown,Triceps Pushdown,map
+Face Pull (Cable),Face Pull,map
+Glute Kickback (Machine),Cable Kickback,map
+Hamstring Curl with Cuff,Lying Leg Curl,map
+Hip Thrust Smith,Smith Machine Hip Thrust,map
+Incline Bench Press (Barbell),Incline Bench Press,map
+Incline Bench Press (Smith Machine),Smith Machine Incline Bench Press,map
+Jammer Arm Chest Press,Chest Press,map
+Jammer Arm Rows Overhand Grip,Jammer Arm Rows Overhand Grip,create
+Jammer Arm Rows Underhand Grip,Jammer Arm Rows Underhand Grip,create
+Jammer Arms Row Neutral Grip,Jammer Row,map
+JM Press,JM Press,map
+Katana Tricep Cable Extension,Katana Triceps Cable Extension,map
+Kelso Shrug Cable Chest Supported,Kelso Shrug,map
+Lat Pulldown Neutral Grip,Lat Pulldown,map
+Lat Pulldown Overhand Grip,Lat Pulldown,map
+Lateral Raise (Cable),Cable Lateral Raise,map
+Lateral Raise Cable Leaning,Leaning Cable Lateral Raise,map
+Laying Hammer Curl,Hammer Curl,map
+Low Cable Row Neutral Grip,Seated Cable Row,map
+Low Cable Row Shoulder Width Neutral Grip,Seated Cable Row High Elbows,map
+Low Cable Row Underhand Grip,Seated Cable Row,map
+Lying Cable Curl,Cable Curl,map
+Overhead Press (Barbell),Overhead Press,map
+Overhead Press (Smith Machine),Smith Machine Overhead Press,map
+Pull Up,Pull Up,map
+Pulldown Cable Single Arm,Single-Arm Lat Pulldown,map
+Pulldown Single Arm Volume,Single-Arm Lat Pulldown,map
+Pullover (Machine),Pullover (Machine),create
+Pullover Seated Rope Cable,Seated Cable Pullover,map
+Rear Delt Row Chest Supported,Chest-Supported Row,map
+Reverse Fly (Cable),Reverse Fly (Cable),create
+Romanian Deadlift Smith,Smith Machine Romanian Deadlift,map
+Scapular Depressions Cable,Hanging Scapular Depressions,map
+Scapular Depressions Hanging,Hanging Scapular Depressions,map
+Seated Row (Cable),Seated Cable Row,map
+Shrug Cable Leaning Back,Leaning Back Cable Shrug,map
+Shrug Smith Chest Supported,Shrug Smith Chest Supported,create
+Smith Sitting Calf Raise,Smith Machine Calf Raise,map
+Smith Squat No Lockout,Smith Squat No Lockout,create
+Spider Curl Cable,Spider Cable Curl,map
+Spider Hammer Curl Cable,Spider Hammer Cable Curl,map
+Split Squats Smith,Smith Machine Split Squat,map
+Squat (Barbell),Back Squat,map
+Squat (Smith Machine),Smith Machine Squat,map
+Standing Calf Raise (Smith Machine),Smith Machine Calf Raise,map
+Supinated Pulldown,Supinated Pulldown,create
+Tricep Extension Cable Overhead,Overhead Cable Extension,map
+Tricep Push down Spreader Bar,Triceps Pushdown,map
+Tricep Pushdowns Seated Incline Spreader Bar,Seated Incline Triceps Pushdown,map
+Triceps Pushdown (Cable - Straight Bar),Triceps Pushdown,map
