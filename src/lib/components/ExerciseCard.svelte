@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { setSummary } from '$lib/format';
 	import type { SetType, SetView, WorkoutExerciseState } from '$lib/types';
 	import { displayToKg, kgToDisplay, type WeightUnit } from '$lib/units';
@@ -20,7 +21,11 @@
 		idleSec,
 		onhistory,
 		onmenu,
-		onrest
+		onrest,
+		arranging = false,
+		canUp = false,
+		canDown = false,
+		onmove
 	}: {
 		we: WorkoutExerciseState;
 		unit: WeightUnit;
@@ -33,11 +38,17 @@
 		onhistory: () => void;
 		onmenu: () => void;
 		onrest: () => void;
+		arranging?: boolean;
+		canUp?: boolean;
+		canDown?: boolean;
+		onmove?: (dir: 'up' | 'down') => void;
 	} = $props();
 
 	let shake = $state<string | null>(null);
-	let notePicker = $state(false);
-	let noteMenu: HTMLElement | undefined = $state();
+	let addOpen = $state(false);
+	let addMenu: HTMLElement | undefined = $state();
+	let cableInput: HTMLInputElement | undefined = $state();
+	let seatInput: HTMLInputElement | undefined = $state();
 	let permanentOpen = $state(false);
 	let sessionOpen = $state(false);
 	let cableOpen = $state(false);
@@ -51,14 +62,19 @@
 	});
 	const doneCount = $derived(we.sets.filter((s) => s.completed).length);
 	const notesVisible = $derived(permanentOpen || sessionOpen || !!we.exerciseNotes || !!we.notes);
+	const showHeight = $derived(cableOpen || !!we.cableHeight);
+	const showSeat = $derived(seatOpen || !!we.seatHeight);
+	const showPermanent = $derived(permanentOpen || !!we.exerciseNotes);
+	const showSession = $derived(sessionOpen || !!we.notes);
+	const canAdd = $derived(!showHeight || !showSeat || !showPermanent || !showSession);
 
 	$effect(() => {
-		if (!notePicker) return;
+		if (!addOpen) return;
 		const close = (e: PointerEvent) => {
-			if (!noteMenu?.contains(e.target as Node)) notePicker = false;
+			if (!addMenu?.contains(e.target as Node)) addOpen = false;
 		};
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') notePicker = false;
+			if (e.key === 'Escape') addOpen = false;
 		};
 		document.addEventListener('pointerdown', close);
 		document.addEventListener('keydown', onKey);
@@ -104,6 +120,17 @@
 		updateSet(set, patch);
 	}
 
+	async function addDetail(kind: 'height' | 'seat' | 'permanent' | 'session') {
+		addOpen = false;
+		if (kind === 'height') cableOpen = true;
+		else if (kind === 'seat') seatOpen = true;
+		else if (kind === 'permanent') permanentOpen = true;
+		else sessionOpen = true;
+		await tick();
+		if (kind === 'height') cableInput?.focus();
+		else if (kind === 'seat') seatInput?.focus();
+	}
+
 	function removeLastSet() {
 		const target = [...we.sets].reverse().find((s) => !s.completed) ?? we.sets.at(-1);
 		if (target) session.send({ op: 'removeSet', setId: target.id });
@@ -118,6 +145,16 @@
 		</button>
 		<button type="button" class="icon-btn" aria-label="Exercise options" onclick={onmenu}><Icon name="more" /></button>
 	</header>
+	{#if arranging}
+		<div class="move">
+			<button type="button" class="btn sm" disabled={!canUp} onclick={() => onmove?.('up')}>
+				<Icon name="up" size={16} />Up
+			</button>
+			<button type="button" class="btn sm" disabled={!canDown} onclick={() => onmove?.('down')}>
+				<Icon name="down" size={16} />Down
+			</button>
+		</div>
+	{/if}
 
 	<RestTimer endsAt={restEndsAt} total={restTotal} {offsetMs} {idleSec} onedit={onrest} />
 
@@ -227,10 +264,11 @@
 					onchange={(e) => updateExercise({ repRange: e.currentTarget.value.trim() || null })}
 				/>
 			</label>
-			{#if cableOpen || we.cableHeight}
+			{#if showHeight}
 				<label class="chip">
 					<span>Height</span>
 					<input
+						bind:this={cableInput}
 						placeholder="–"
 						value={we.cableHeight ?? ''}
 						onchange={(e) => {
@@ -240,15 +278,12 @@
 						}}
 					/>
 				</label>
-			{:else}
-				<button type="button" class="add-note" onclick={() => (cableOpen = true)}>
-					<Icon name="plus" size={16} />Height
-				</button>
 			{/if}
-			{#if seatOpen || we.seatHeight}
+			{#if showSeat}
 				<label class="chip">
 					<span>Seat</span>
 					<input
+						bind:this={seatInput}
 						placeholder="–"
 						value={we.seatHeight ?? ''}
 						onchange={(e) => {
@@ -258,36 +293,36 @@
 						}}
 					/>
 				</label>
-			{:else}
-				<button type="button" class="add-note" onclick={() => (seatOpen = true)}>
-					<Icon name="plus" size={16} />Seat
-				</button>
 			{/if}
-			<div class="note-actions" bind:this={noteMenu}>
-				<button type="button" class="add-note" aria-expanded={notePicker} onclick={() => (notePicker = !notePicker)}>
-					<Icon name="plus" size={16} />Note
-				</button>
-				{#if notePicker}
-					<div class="note-pick" role="menu">
-						<button
-							type="button"
-							role="menuitem"
-							onclick={() => {
-								permanentOpen = true;
-								notePicker = false;
-							}}>Permanent</button
-						>
-						<button
-							type="button"
-							role="menuitem"
-							onclick={() => {
-								sessionOpen = true;
-								notePicker = false;
-							}}>Session</button
-						>
-					</div>
-				{/if}
-			</div>
+			{#if canAdd}
+				<div class="note-actions" bind:this={addMenu}>
+					<button
+						type="button"
+						class="add-note"
+						aria-expanded={addOpen}
+						aria-haspopup="menu"
+						onclick={() => (addOpen = !addOpen)}
+					>
+						<Icon name="plus" size={16} />Add
+					</button>
+					{#if addOpen}
+						<div class="note-pick" role="menu">
+							{#if !showHeight}
+								<button type="button" role="menuitem" onclick={() => addDetail('height')}>Height</button>
+							{/if}
+							{#if !showSeat}
+								<button type="button" role="menuitem" onclick={() => addDetail('seat')}>Seat</button>
+							{/if}
+							{#if !showPermanent}
+								<button type="button" role="menuitem" onclick={() => addDetail('permanent')}>Permanent note</button>
+							{/if}
+							{#if !showSession}
+								<button type="button" role="menuitem" onclick={() => addDetail('session')}>Session note</button>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
 		</div>
 		<Rating value={we.rating} onchange={(v) => updateExercise({ rating: v })} />
 	</footer>
@@ -306,8 +341,20 @@
 		align-items: start;
 		gap: 0.5rem;
 	}
+	.move {
+		display: flex;
+		gap: 0.4rem;
+		margin-top: 0.65rem;
+	}
+	.move .btn {
+		flex: 1;
+	}
+	.move .btn:disabled {
+		opacity: 0.4;
+	}
 	.title {
 		flex: 1;
+		min-width: 0;
 		display: grid;
 		gap: 0.1rem;
 		padding: 0;

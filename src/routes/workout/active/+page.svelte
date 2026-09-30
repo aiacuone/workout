@@ -35,6 +35,8 @@
 	let history = $state<Session[] | null>(null);
 	let finishing = $state(false);
 	let renaming = $state(false);
+	let workoutMenu = $state(false);
+	let arranging = $state(false);
 	let restEditId = $state<string | null>(null);
 	let customRest = $state('');
 
@@ -109,7 +111,15 @@
 	<div class="head">
 		<div class="head-row">
 			<div class="title">
-				<button type="button" class="name" onclick={() => (renaming = true)}>{w.name}</button>
+				<div class="name-row">
+					<button type="button" class="name" onclick={() => (renaming = true)}>{w.name}</button>
+					<button type="button" class="icon-btn" aria-label="Workout options" onclick={() => (workoutMenu = true)}>
+						<Icon name="more" size={20} />
+					</button>
+					{#if arranging}
+						<button type="button" class="btn sm" onclick={() => (arranging = false)}>Done</button>
+					{/if}
+				</div>
 				<div class="sub">
 					<span class="clock"><Icon name="timer" size={15} /><Elapsed since={w.startedAt} offsetMs={session.offsetMs} /></span>
 					<span class="sync" class:busy={session.pending > 0} title="Syncs across your devices">
@@ -133,7 +143,7 @@
 	{/if}
 
 	<ol class="cards">
-		{#each w.exercises as we (we.id)}
+		{#each w.exercises as we, i (we.id)}
 			<li>
 				<ExerciseCard
 					{we}
@@ -144,6 +154,10 @@
 					restTotal={w.restWeId === we.id ? w.restTotalSec : null}
 					offsetMs={session.offsetMs}
 					idleSec={we.restSec ?? defaultRest}
+					{arranging}
+					canUp={i > 0}
+					canDown={i < w.exercises.length - 1}
+					onmove={(dir) => session.send({ op: 'moveExercise', weId: we.id, dir })}
 					onhistory={() => openHistory(we)}
 					onmenu={() => (menuFor = we)}
 					onrest={() => openRest(we)}
@@ -170,23 +184,25 @@
 	<ExercisePicker exercises={data.exercises} onpick={addExercise} />
 </Sheet>
 
+<Sheet bind:open={workoutMenu} title={w.name}>
+	<div class="stack">
+		<button
+			type="button"
+			class="btn"
+			onclick={() => {
+				arranging = true;
+				workoutMenu = false;
+			}}
+		>
+			<Icon name="list" size={18} />Arrange
+		</button>
+	</div>
+</Sheet>
+
 <Sheet open={!!menuFor} title={menuFor?.name ?? ''} onclose={() => (menuFor = null)}>
 	{#if menuFor}
 		{@const we = menuFor}
-		{@const idx = w.exercises.findIndex((e) => e.id === we.id)}
 		<div class="stack">
-			<div class="two">
-				<button class="btn" disabled={idx <= 0} onclick={() => session.send({ op: 'moveExercise', weId: we.id, dir: 'up' })}>
-					<Icon name="up" size={18} />Move up
-				</button>
-				<button
-					class="btn"
-					disabled={idx >= w.exercises.length - 1}
-					onclick={() => session.send({ op: 'moveExercise', weId: we.id, dir: 'down' })}
-				>
-					<Icon name="down" size={18} />Move down
-				</button>
-			</div>
 			<button class="btn" onclick={() => { const target = we; menuFor = null; openHistory(target); }}>
 				<Icon name="chart" size={18} />History & graphs
 			</button>
@@ -367,6 +383,16 @@
 	.title {
 		flex: 1;
 		min-width: 0;
+	}
+	.name-row {
+		display: flex;
+		align-items: center;
+		gap: 0.15rem;
+		min-width: 0;
+	}
+	.name-row .name {
+		flex: 1;
+		width: auto;
 	}
 	.name {
 		display: block;
