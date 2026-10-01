@@ -1,13 +1,59 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import Sheet from '$lib/components/Sheet.svelte';
+	import { toast, toastFormError } from '$lib/toast.svelte';
 	import { cmToDisplay } from '$lib/units';
 
-	let { data, form } = $props();
+	let { data } = $props();
 	const p = $derived(data.prefs!);
 	const welcome = $derived(page.url.searchParams.has('welcome'));
 	let importing = $state(false);
 	let importingMeasure = $state(false);
+	let confirmingHistory = $state(false);
+	let deletingHistory = $state(false);
+
+	function num(data: unknown, key: string) {
+		if (!data || typeof data !== 'object' || !(key in data)) return 0;
+		const value = (data as Record<string, unknown>)[key];
+		return typeof value === 'number' ? value : 0;
+	}
+
+	function nested(data: unknown, key: string) {
+		if (!data || typeof data !== 'object' || !(key in data)) return null;
+		const value = (data as Record<string, unknown>)[key];
+		return value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+	}
+
+	function strongImportMessage(data: unknown) {
+		const result = nested(data, 'importResult');
+		if (!result) return 'Import finished.';
+		const bits = [`Imported ${num(result, 'workouts')} workouts`, `${num(result, 'sets')} sets`];
+		const created = num(result, 'exercisesCreated');
+		const skipped = num(result, 'skippedExisting');
+		if (created) bits.push(`${created} new exercises`);
+		if (skipped) bits.push(`${skipped} already present`);
+		const routines = nested(data, 'routinesFromLatest');
+		if (routines) {
+			bits.push(`${num(routines, 'created')} routines created`);
+			const existing = num(routines, 'skippedExisting');
+			if (existing) bits.push(`${existing} routines already existed`);
+		}
+		return bits.join(' · ');
+	}
+
+	function measureImportMessage(data: unknown) {
+		const result = nested(data, 'measureImportResult');
+		if (!result) return 'Import finished.';
+		const bits = [`Imported ${num(result, 'inserted')} days`];
+		const updated = num(result, 'updated');
+		const skipped = num(result, 'skipped');
+		const unknown = num(result, 'unknownRows');
+		if (updated) bits.push(`${updated} updated`);
+		if (skipped) bits.push(`${skipped} already present`);
+		if (unknown) bits.push(`${unknown} rows skipped`);
+		return bits.join(' · ');
+	}
 </script>
 
 <svelte:head><title>Settings · Ironlog</title></svelte:head>
@@ -27,7 +73,16 @@
 		</div>
 	{/if}
 
-	<form method="POST" action="?/prefs" class="card stack" use:enhance={() => async ({ update }) => update({ reset: false })}>
+	<form
+		method="POST"
+		action="?/prefs"
+		class="card stack"
+		use:enhance={() =>
+			async ({ result, update }) => {
+				await update({ reset: false });
+				if (result.type === 'success') toast('Saved.');
+			}}
+	>
 		<h2>Preferences</h2>
 		<div class="grid">
 			<fieldset>
@@ -60,14 +115,21 @@
 				<input name="defaultRestSec" type="number" inputmode="numeric" min="0" max="900" value={p.defaultRestSec} />
 			</label>
 		</div>
-		{#if form?.prefsSaved}<p class="ok">Saved.</p>{/if}
 		<button class="btn primary">Save preferences</button>
 	</form>
 
-	<form method="POST" action="?/password" class="card stack" use:enhance>
+	<form
+		method="POST"
+		action="?/password"
+		class="card stack"
+		use:enhance={() =>
+			async ({ result, update }) => {
+				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
+				if (result.type === 'success') toast('Password changed. Other devices were signed out.');
+			}}
+	>
 		<h2>Change password</h2>
-		{#if form?.pwError}<p class="form-error">{form.pwError}</p>{/if}
-		{#if form?.pwSaved}<p class="ok">Password changed. Other devices were signed out.</p>{/if}
 		<input type="text" name="username" autocomplete="username" value={data.user?.username} hidden />
 		<label class="field">Current password<input name="current" type="password" autocomplete="current-password" required /></label>
 		<label class="field">New password<input name="next" type="password" autocomplete="new-password" minlength="8" required /></label>
@@ -82,9 +144,11 @@
 		class="card stack"
 		use:enhance={() => {
 			importing = true;
-			return async ({ update }) => {
+			return async ({ result, update }) => {
 				await update({ reset: false });
 				importing = false;
+				if (result.type === 'failure') toastFormError(result.data);
+				if (result.type === 'success') toast(strongImportMessage(result.data));
 			};
 		}}
 	>
@@ -95,19 +159,6 @@
 			<strong>latest</strong> session of each workout name (skipped if that routine already exists).
 			Workouts you’ve already imported (same name + start time) are skipped.
 		</p>
-		{#if form?.importError}<p class="form-error">{form.importError}</p>{/if}
-		{#if form?.importResult}
-			<p class="ok">
-				Imported {form.importResult.workouts} workouts · {form.importResult.sets} sets
-				{#if form.importResult.exercisesCreated} · {form.importResult.exercisesCreated} new exercises{/if}
-				{#if form.importResult.skippedExisting} · {form.importResult.skippedExisting} already present{/if}
-				{#if form.routinesFromLatest}
-					· {form.routinesFromLatest.created} routines created
-					{#if form.routinesFromLatest.skippedExisting}
-						({form.routinesFromLatest.skippedExisting} already existed){/if}
-				{/if}
-			</p>
-		{/if}
 		<label class="field">
 			Strong CSV file
 			<input name="file" type="file" accept=".csv,text/csv" required disabled={importing} />
@@ -143,9 +194,11 @@
 		class="card stack"
 		use:enhance={() => {
 			importingMeasure = true;
-			return async ({ update }) => {
+			return async ({ result, update }) => {
 				await update({ reset: false });
 				importingMeasure = false;
+				if (result.type === 'failure') toastFormError(result.data);
+				if (result.type === 'success') toast(measureImportMessage(result.data));
 			};
 		}}
 	>
@@ -156,16 +209,6 @@
 			filled in with the US Navy formula when the file doesn’t include it. Dates you’ve already imported
 			are skipped; empty fields on those dates are filled in.
 		</p>
-		{#if form?.measureImportError}<p class="form-error">{form.measureImportError}</p>{/if}
-		{#if form?.measureImportResult}
-			<p class="ok">
-				Imported {form.measureImportResult.inserted} days
-				{#if form.measureImportResult.updated} · {form.measureImportResult.updated} updated{/if}
-				{#if form.measureImportResult.skipped} · {form.measureImportResult.skipped} already present{/if}
-				{#if form.measureImportResult.unknownRows}
-					· {form.measureImportResult.unknownRows} rows skipped{/if}
-			</p>
-		{/if}
 		<label class="field">
 			Measurements CSV file
 			<input name="file" type="file" accept=".csv,text/csv" required disabled={importingMeasure} />
@@ -179,9 +222,44 @@
 		<h2>More</h2>
 		<a class="btn" href="/routines">Manage routines</a>
 		<a class="btn" href="/history">View history</a>
+		<button type="button" class="btn danger" onclick={() => (confirmingHistory = true)}>
+			Delete all workout history
+		</button>
 		<form method="POST" action="/logout"><button class="btn danger block">Sign out</button></form>
 	</div>
 </div>
+
+<Sheet bind:open={confirmingHistory} title="Delete all workout history?">
+	<p class="muted">
+		This removes every finished workout and its sets. Measurements, exercises, and routines stay. A workout
+		in progress is left alone.
+	</p>
+	{#snippet footer()}
+		<form
+			method="POST"
+			action="?/deleteHistory"
+			class="actions"
+			use:enhance={() => {
+				deletingHistory = true;
+				return async ({ result, update }) => {
+					deletingHistory = false;
+					if (result.type === 'success') {
+						confirmingHistory = false;
+						await update({ reset: false });
+						toast('Workout history deleted. Measurements were kept.');
+					}
+				};
+			}}
+		>
+			<button type="button" class="btn block" disabled={deletingHistory} onclick={() => (confirmingHistory = false)}>
+				Cancel
+			</button>
+			<button class="btn danger block" disabled={deletingHistory}>
+				{deletingHistory ? 'Deleting…' : 'Delete all workout history'}
+			</button>
+		</form>
+	{/snippet}
+</Sheet>
 
 <style>
 	.welcome {
@@ -246,10 +324,6 @@
 	.seg input:focus-visible + span {
 		outline: 3px solid var(--lime);
 	}
-	.ok {
-		font-weight: 700;
-		color: var(--lime-deep);
-	}
 	.help {
 		font-size: 0.9rem;
 		line-height: 1.4;
@@ -259,5 +333,9 @@
 		border: 0;
 		background: transparent;
 		color: var(--ink-2);
+	}
+	.actions {
+		display: grid;
+		gap: 0.5rem;
 	}
 </style>

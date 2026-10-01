@@ -132,10 +132,6 @@
 		</div>
 	</div>
 
-	{#if session.error}
-		<p class="form-error" role="alert">{session.error}</p>
-	{/if}
-
 	{#if w.exercises.length === 0}
 		<div class="empty-state">
 			<p>Empty workout. Add your first exercise to start logging.</p>

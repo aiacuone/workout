@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { toastFormError } from '$lib/toast.svelte';
 
 	let { data, form } = $props();
 	let busy = $state(false);
@@ -23,13 +24,13 @@
 			class="stack"
 			use:enhance={() => {
 				busy = true;
-				return async ({ update }) => {
+				return async ({ result, update }) => {
 					await update();
 					busy = false;
+					if (result.type === 'failure') toastFormError(result.data);
 				};
 			}}
 		>
-			{#if form?.error}<p class="form-error">{form.error}</p>{/if}
 			<label class="field">
 				Username
 				<input

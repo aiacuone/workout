@@ -3,8 +3,9 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import ExerciseForm from '$lib/components/ExerciseForm.svelte';
+	import { toastFormError } from '$lib/toast.svelte';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	let q = $state('');
 	let group = $state('');
@@ -68,8 +69,17 @@
 </div>
 
 <Sheet bind:open={creating} title="New exercise">
-	<form method="POST" action="?/create" use:enhance class="stack">
-		{#if form?.error}<p class="form-error">{form.error}</p>{/if}
+	<form
+		method="POST"
+		action="?/create"
+		use:enhance={() =>
+			async ({ result, update }) => {
+				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
+				if (result.type === 'success') creating = false;
+			}}
+		class="stack"
+	>
 		<ExerciseForm muscleGroups={data.muscleGroups} equipment={data.equipment} />
 		<button class="btn primary block">Create exercise</button>
 	</form>

@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Oracle VM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' 'strongr.duckdns.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEuGjnv8RR15sEMxm7/yjw6ydggXKu+qe+FIOJQNOm/j' > ~/.ssh/known_hosts
+
+      - name: Sync source and publish
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            --exclude '.git/' \
+            --exclude 'node_modules/' \
+            --exclude 'build/' \
+            --exclude '.svelte-kit/' \
+            --exclude 'data/' \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            ./ ubuntu@strongr.duckdns.org:workout-src/
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes ubuntu@strongr.duckdns.org \
+            'bash ~/workout-src/scripts/activate-release.sh'

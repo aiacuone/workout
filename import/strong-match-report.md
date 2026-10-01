@@ -91,7 +91,7 @@ source: Strong CSV export
 - `Preacher Curl (Barbell)` → **Preacher Curl** (12 sets)
 - `Pull Up` → **Pull Up** (100 sets)
 - `Pulldown Cable Single Arm` → **Single-Arm Lat Pulldown** (12 sets)
-- `Pulldown Single Arm Volume` → **Single-Arm Lat Pulldown** (9 sets)
+- `Pulldown Single Arm Volume` → **Pulldown Single Arm Volume** (kept separate from Single-Arm Lat Pulldown)
 - `Pullover Seated Rope Cable` → **Seated Cable Pullover** (112 sets)
 - `Push Up` → **Push Up** (37 sets)
 - `Rear Delt Row Chest Supported` → **Chest-Supported Row** (51 sets)

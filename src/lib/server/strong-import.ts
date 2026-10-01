@@ -201,6 +201,12 @@ function guessEquipment(name: string) {
 	return m ? titleEquip(m[1]) : 'Other';
 }
 
+/**
+ * Words that name a different exercise, not a grip variant.
+ * A match is rejected when only one side has the word.
+ */
+const IDENTITY_TOKENS = new Set(['volume']);
+
 /** Extra Strong wording we ignore when matching (grip style, laterality, etc.). */
 const MODIFIER_TOKENS = new Set([
 	'grip',
@@ -239,6 +245,15 @@ function significantTokens(name: string) {
 	return tokens(name).filter((t) => !MODIFIER_TOKENS.has(t) && t.length > 1);
 }
 
+function identityMismatch(a: string, b: string) {
+	const aTok = new Set(tokens(a));
+	const bTok = new Set(tokens(b));
+	for (const t of IDENTITY_TOKENS) {
+		if (aTok.has(t) !== bTok.has(t)) return true;
+	}
+	return false;
+}
+
 /**
  * Score how well a Strong exercise name matches a library name.
  * e.g. "Jammer Arms Row Neutral Grip" → "Jammer Row"
@@ -248,6 +263,7 @@ export function scoreExerciseMatch(strongName: string, libraryName: string): num
 	const l = libraryName.toLowerCase().trim();
 	if (!s || !l) return 0;
 	if (s === l) return 1000;
+	if (identityMismatch(s, l)) return 0;
 
 	const sTok = tokens(s);
 	const lTok = tokens(l);

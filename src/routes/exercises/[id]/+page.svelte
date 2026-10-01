@@ -5,8 +5,9 @@
 	import ExerciseHistory from '$lib/components/ExerciseHistory.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
+	import { toastFormError } from '$lib/toast.svelte';
 
-	let { data, form } = $props();
+	let { data } = $props();
 	let editing = $state(false);
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
@@ -54,10 +55,10 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
 				if (result.type === 'success') editing = false;
 			}}
 	>
-		{#if form?.error}<p class="form-error">{form.error}</p>{/if}
 		<ExerciseForm values={data.exercise} muscleGroups={data.muscleGroups} equipment={data.equipment} />
 		<button class="btn primary block">Save</button>
 	</form>

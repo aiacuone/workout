@@ -56,6 +56,8 @@
 <style>
 	.card {
 		display: block;
+		min-width: 0;
+		max-width: 100%;
 		padding: 0.9rem 1rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
@@ -71,6 +73,9 @@
 		justify-content: space-between;
 		gap: 1rem;
 		margin-bottom: 0.5rem;
+	}
+	header > :first-child {
+		min-width: 0;
 	}
 	header p {
 		font-size: 0.82rem;
@@ -94,9 +99,11 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
+		min-width: 0;
 		font-size: 0.88rem;
 	}
 	.ex {
+		min-width: 0;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;

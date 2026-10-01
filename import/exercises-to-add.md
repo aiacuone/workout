@@ -4,7 +4,7 @@ date: 2026-09-30
 cutoff: 2024-09-30
 ---
 
-# Exercises to add (12)
+# Exercises to add (13)
 
 - Cable Chest Flies Static Hold
 - Chest Flies Cable Seated Heavy
@@ -13,13 +13,14 @@ cutoff: 2024-09-30
 - Decline Cable Chest Flies
 - Jammer Arm Rows Overhand Grip
 - Jammer Arm Rows Underhand Grip
+- Pulldown Single Arm Volume
 - Pullover (Machine)
 - Reverse Fly (Cable)
 - Shrug Smith Chest Supported
 - Smith Squat No Lockout
 - Supinated Pulldown
 
-# Mapped to existing (63)
+# Mapped to existing (62)
 
 - Barbell Drag Curl → Barbell Curl
 - Barbell Row Overhand Grip → Barbell Row
@@ -65,7 +66,6 @@ cutoff: 2024-09-30
 - Overhead Press (Smith Machine) → Smith Machine Overhead Press
 - Pull Up → Pull Up
 - Pulldown Cable Single Arm → Single-Arm Lat Pulldown
-- Pulldown Single Arm Volume → Single-Arm Lat Pulldown
 - Pullover Seated Rope Cable → Seated Cable Pullover
 - Rear Delt Row Chest Supported → Chest-Supported Row
 - Romanian Deadlift Smith → Smith Machine Romanian Deadlift

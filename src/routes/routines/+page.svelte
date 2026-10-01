@@ -3,8 +3,9 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import RoutineCard from '$lib/components/RoutineCard.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
+	import { toastFormError } from '$lib/toast.svelte';
 
-	let { data, form } = $props();
+	let { data } = $props();
 	let creating = $state(false);
 </script>
 
@@ -39,8 +40,17 @@
 </div>
 
 <Sheet bind:open={creating} title="New routine">
-	<form method="POST" action="?/create" use:enhance class="stack">
-		{#if form?.error}<p class="form-error">{form.error}</p>{/if}
+	<form
+		method="POST"
+		action="?/create"
+		use:enhance={() =>
+			async ({ result, update }) => {
+				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
+				if (result.type === 'success') creating = false;
+			}}
+		class="stack"
+	>
 		<label class="field">
 			Name
 			<input name="name" required maxlength="80" placeholder="e.g. Push A" />

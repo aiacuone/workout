@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import {
 	hashPassword,
 	invalidateUserSessions,
@@ -110,5 +110,14 @@ export const actions: Actions = {
 			const message = e instanceof Error ? e.message : 'Import failed.';
 			return fail(400, { measureImportError: message });
 		}
+	},
+
+	deleteHistory: async ({ locals }) => {
+		const user = requireUser(locals);
+		const deleted = await db
+			.delete(schema.workout)
+			.where(and(eq(schema.workout.userId, user.id), eq(schema.workout.status, 'completed')))
+			.returning({ id: schema.workout.id });
+		return { historyDeleted: deleted.length };
 	}
 };

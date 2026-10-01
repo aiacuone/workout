@@ -1,3 +1,4 @@
+import { toast } from '$lib/toast.svelte';
 import type { WorkoutState } from '$lib/types';
 
 type Ended = (status: 'completed' | 'discarded', workoutId: string) => void;
@@ -49,7 +50,9 @@ export class WorkoutSession {
 				});
 				if (!res.ok) {
 					const body = await res.json().catch(() => null);
-					this.error = body?.message ?? `Could not save (${res.status})`;
+					const message = body?.message ?? `Could not save (${res.status})`;
+					this.error = message;
+					toast(message, 'error');
 					if (res.status === 404 || res.status === 409) await this.refresh(true);
 					else if (this.pending === 1) await this.refresh(true);
 					return;
@@ -63,7 +66,9 @@ export class WorkoutSession {
 				// Later queued edits would be clobbered by this snapshot; the last one applies.
 				if (this.pending === 1) this.apply(body);
 			} catch {
-				this.error = 'Connection lost — change not saved. Retrying on next sync.';
+				const message = 'Connection lost — change not saved. Retrying on next sync.';
+				this.error = message;
+				toast(message, 'error');
 			} finally {
 				this.pending--;
 			}

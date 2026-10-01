@@ -6,9 +6,10 @@
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { navyBodyFat } from '$lib/bodyfat';
 	import { MEASUREMENT_FIELDS, type MeasurementKey } from '$lib/measurements';
+	import { toastFormError } from '$lib/toast.svelte';
 	import { cmToDisplay, displayToCm, kgToDisplay } from '$lib/units';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	type Entry = (typeof data.entries)[number];
 
@@ -412,10 +413,10 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
 				if (result.type === 'success') weightOpen = false;
 			}}
 	>
-		{#if form?.error && form?.kind === 'weight'}<p class="form-error">{form.error}</p>{/if}
 		{#if editing}<input type="hidden" name="id" value={editing.id} />{/if}
 		<label class="field">Date<input type="date" name="measuredOn" required bind:value={vals.measuredOn} /></label>
 		<label class="field">
@@ -466,10 +467,10 @@
 			use:enhance={() =>
 				async ({ result, update }) => {
 					await update({ reset: false });
+					if (result.type === 'failure') toastFormError(result.data);
 					if (result.type === 'success') caloriesOpen = false;
 				}}
 		>
-			{#if form?.error && form?.kind === 'calories'}<p class="form-error">{form.error}</p>{/if}
 			{#if editing}<input type="hidden" name="id" value={editing.id} />{/if}
 			<label class="field">Date<input type="date" name="measuredOn" required bind:value={vals.measuredOn} /></label>
 			<label class="field">
@@ -520,10 +521,10 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
 				if (result.type === 'success') measureOpen = false;
 			}}
 	>
-		{#if form?.error && form?.kind === 'measure'}<p class="form-error">{form.error}</p>{/if}
 		{#if editing}<input type="hidden" name="id" value={editing.id} />{/if}
 
 		<div class="bf-preview" class:ready={preview != null}>
@@ -585,11 +586,13 @@
 <style>
 	.actions {
 		display: flex;
+		flex-wrap: wrap;
+		max-width: 100%;
 		gap: 0.5rem;
 	}
 	.summary {
 		display: grid;
-		grid-template-columns: 1.4fr 1fr 1fr;
+		grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
 		gap: 0.75rem;
 		margin-bottom: 1rem;
 	}
@@ -597,6 +600,7 @@
 		display: grid;
 		align-content: space-between;
 		gap: 0.3rem;
+		min-width: 0;
 		min-height: 130px;
 		padding: 0.9rem;
 		border: 1.5px solid var(--ink);
@@ -617,7 +621,7 @@
 		color: var(--steel);
 	}
 	.summary strong {
-		font-size: 2.8rem;
+		font-size: clamp(1.8rem, 8vw, 2.8rem);
 		font-weight: 850;
 		font-stretch: 120%;
 		line-height: 1;
@@ -797,6 +801,7 @@
 		}
 		.actions {
 			flex-direction: column;
+			width: 100%;
 		}
 		.grid {
 			grid-template-columns: repeat(2, 1fr);

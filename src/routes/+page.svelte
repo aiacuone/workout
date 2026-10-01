@@ -104,13 +104,14 @@
 	}
 	.tiles {
 		display: grid;
-		grid-template-columns: 1.3fr 1fr;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
 		gap: 0.75rem;
 	}
 	.tile {
 		display: grid;
 		align-content: space-between;
 		gap: 0.4rem;
+		min-width: 0;
 		min-height: 140px;
 		padding: 0.85rem;
 		border: 1.5px solid var(--ink);
@@ -132,7 +133,7 @@
 		font-stretch: 118%;
 	}
 	.tile .big {
-		font-size: 2.6rem;
+		font-size: clamp(1.7rem, 9vw, 2.6rem);
 		line-height: 1;
 		color: var(--lime);
 	}

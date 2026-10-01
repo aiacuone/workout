@@ -3,9 +3,10 @@
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
+	import { toastFormError } from '$lib/toast.svelte';
 	import { kgToDisplay } from '$lib/units';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	let picking = $state(false);
 	let renaming = $state(false);
@@ -136,10 +137,10 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
+				if (result.type === 'failure') toastFormError(result.data);
 				if (result.type === 'success') renaming = false;
 			}}
 	>
-		{#if form?.error}<p class="form-error">{form.error}</p>{/if}
 		<label class="field">Name<input name="name" required maxlength="80" value={data.routine.name} /></label>
 		<label class="field">Notes<textarea name="notes" rows="3">{data.routine.notes ?? ''}</textarea></label>
 		<button class="btn primary block">Save</button>

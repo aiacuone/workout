@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import Icon from '$lib/components/Icon.svelte';
 	import Elapsed from '$lib/components/Elapsed.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 
 	let { data, children } = $props();
 
@@ -92,6 +93,8 @@
 	</nav>
 {/if}
 
+<Toast lift={chrome} raised={chrome && !!data.active && !onActive} />
+
 <style>
 	.topbar {
 		position: sticky;
@@ -134,7 +137,7 @@
 		inset: auto 0 0 0;
 		z-index: 30;
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(5, minmax(0, 1fr));
 		height: calc(var(--nav-h) + env(safe-area-inset-bottom));
 		padding-bottom: env(safe-area-inset-bottom);
 		background: var(--chrome);
@@ -144,6 +147,7 @@
 		place-items: center;
 		align-content: center;
 		gap: 2px;
+		min-width: 0;
 		color: var(--steel);
 		font-size: 0.7rem;
 		font-weight: 650;
