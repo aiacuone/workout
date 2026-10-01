@@ -56,7 +56,7 @@
 	}
 </script>
 
-<svelte:head><title>Settings · Ironlog</title></svelte:head>
+<svelte:head><title>Settings · Strongr</title></svelte:head>
 
 <div class="page">
 	<div class="page-head">
@@ -68,7 +68,7 @@
 
 	{#if welcome}
 		<div class="welcome">
-			<strong>Welcome to Ironlog.</strong>
+			<strong>Welcome to Strongr.</strong>
 			<span>Set your units, sex and height so body-fat estimates are right. 54 common exercises are already in your library.</span>
 		</div>
 	{/if}

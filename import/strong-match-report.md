@@ -1,10 +1,10 @@
 ---
-title: Strong → Ironlog exercise matching
+title: Strong → Strongr exercise matching
 date: 2026-09-30
 source: Strong CSV export
 ---
 
-# Strong → Ironlog matching
+# Strong → Strongr matching
 
 - Library exercises: 94
 - Unique Strong names: 191

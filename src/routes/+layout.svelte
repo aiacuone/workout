@@ -59,7 +59,7 @@
 
 {#if chrome}
 	<header class="topbar">
-		<a class="brand" href="/">IRONLOG</a>
+		<a class="brand" href="/">STRONGR</a>
 		<nav class="desk-nav" aria-label="Primary">
 			{#each tabs as t (t.href)}
 				<a href={t.href} aria-current={isCurrent(t.href) ? 'page' : undefined}>{t.label}</a>

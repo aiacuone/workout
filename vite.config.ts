@@ -9,8 +9,8 @@ export default defineConfig({
 			registerType: 'autoUpdate',
 			injectRegister: false,
 			manifest: {
-				name: 'Ironlog',
-				short_name: 'Ironlog',
+				name: 'Strongr',
+				short_name: 'Strongr',
 				description: 'Personal strength training log with HIT methods and body measurements.',
 				start_url: '/',
 				scope: '/',

@@ -126,7 +126,7 @@ function parseNum(raw: string): number | null {
 const EQUIP_SUFFIX =
 	/\s*\((Barbell|Dumbbell|Cable|Machine|Smith Machine|Bodyweight|Kettlebell|Band|EZ Bar|Trap Bar)\)$/i;
 
-/** Map common Strong names onto Ironlog library names. */
+/** Map common Strong names onto Strongr library names. */
 const NAME_ALIASES: Record<string, string> = {
 	'Squat (Barbell)': 'Back Squat',
 	'Squat': 'Back Squat',

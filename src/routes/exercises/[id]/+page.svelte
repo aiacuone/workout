@@ -24,7 +24,7 @@
 	});
 </script>
 
-<svelte:head><title>{data.exercise.name} · Ironlog</title></svelte:head>
+<svelte:head><title>{data.exercise.name} · Strongr</title></svelte:head>
 
 <div class="page">
 	<a class="back" href={back.href}><Icon name="back" size={18} />{back.label}</a>

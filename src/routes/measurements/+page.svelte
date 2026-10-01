@@ -5,7 +5,12 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { navyBodyFat } from '$lib/bodyfat';
-	import { MEASUREMENT_FIELDS, type MeasurementKey } from '$lib/measurements';
+	import {
+		MEASUREMENT_FIELDS,
+		measurementDelta,
+		type MeasurementChange,
+		type MeasurementKey
+	} from '$lib/measurements';
 	import { toastFormError } from '$lib/toast.svelte';
 	import { cmToDisplay, displayToCm, kgToDisplay } from '$lib/units';
 
@@ -20,6 +25,7 @@
 	let weightOpen = $state(false);
 	let caloriesOpen = $state(false);
 	let measureOpen = $state(false);
+	let compareOpen = $state(false);
 	let editing = $state<Entry | null>(null);
 	let vals = $state<Record<string, string>>({});
 	let placeholders = $state<Entry | null>(null);
@@ -261,9 +267,73 @@
 	const closeSheet = () => {
 		editing = null;
 	};
+
+	type CompareRow = {
+		label: string;
+		current: string;
+		currentWhen: string;
+		prior: {
+			when: string;
+			value: string;
+			change: MeasurementChange;
+			amount: string;
+		} | null;
+	};
+
+	let compareRows = $state<CompareRow[]>([]);
+
+	function sessionWhen(iso: string, sessions: { measuredOn: string }[]) {
+		const monthDay = iso.slice(5);
+		const years = new Set(sessions.map((s) => s.measuredOn.slice(0, 4)));
+		const clash = sessions.filter((s) => s.measuredOn.slice(5) === monthDay).length > 1;
+		return new Date(iso + 'T00:00').toLocaleDateString(undefined, {
+			day: 'numeric',
+			month: 'short',
+			year: clash || years.size > 1 ? 'numeric' : undefined
+		});
+	}
+
+	function latestPrior(entries: Entry[], excludeId: string | null, measuredOn: string, key: MeasurementKey) {
+		return (
+			entries
+				.filter((e) => {
+					if (excludeId && e.id === excludeId) return false;
+					if (e.measuredOn > measuredOn) return false;
+					return e[key] != null;
+				})
+				.at(-1) ?? null
+		);
+	}
+
+	function buildComparison(
+		entries: Entry[],
+		excludeId: string | null,
+		measuredOn: string,
+		current: Record<MeasurementKey, number>
+	) {
+		const format = (n: number) => cmToDisplay(n, lu);
+		const currentWhen = sessionWhen(measuredOn, [{ measuredOn }]);
+		compareRows = MEASUREMENT_FIELDS.map((f) => {
+			const prior = latestPrior(entries, excludeId, measuredOn, f.key);
+			const delta = prior ? measurementDelta(current[f.key], prior[f.key], format) : null;
+			return {
+				label: f.label,
+				current: format(current[f.key]),
+				currentWhen,
+				prior:
+					prior && delta
+						? {
+								when: sessionWhen(prior.measuredOn, [prior, { measuredOn }]),
+								value: format(prior[f.key] as number),
+								...delta
+							}
+						: null
+			};
+		});
+	}
 </script>
 
-<svelte:head><title>Measurements · Ironlog</title></svelte:head>
+<svelte:head><title>Measurements · Strongr</title></svelte:head>
 
 <div class="page">
 	<div class="page-head">
@@ -518,12 +588,26 @@
 		method="POST"
 		action="?/saveMeasurements"
 		class="stack"
-		use:enhance={() =>
-			async ({ result, update }) => {
+		use:enhance={() => {
+			const entries = data.entries;
+			const excludeId = editing?.id ?? null;
+			const measuredOn = vals.measuredOn;
+			const current = Object.fromEntries(
+				MEASUREMENT_FIELDS.map((f) => [f.key, displayToCm(vals[f.key], lu)])
+			) as Record<MeasurementKey, number | null>;
+			const complete = MEASUREMENT_FIELDS.every((f) => current[f.key] != null);
+			return async ({ result, update }) => {
 				await update({ reset: false });
 				if (result.type === 'failure') toastFormError(result.data);
-				if (result.type === 'success') measureOpen = false;
-			}}
+				if (result.type === 'success') {
+					measureOpen = false;
+					if (complete) {
+						buildComparison(entries, excludeId, measuredOn, current as Record<MeasurementKey, number>);
+						compareOpen = true;
+					}
+				}
+			};
+		}}
 	>
 		{#if editing}<input type="hidden" name="id" value={editing.id} />{/if}
 
@@ -581,6 +665,50 @@
 			>
 		</form>
 	{/if}
+</Sheet>
+
+<Sheet bind:open={compareOpen} title="Since your last measurements">
+	{#if compareRows.every((row) => row.prior == null)}
+		<p class="compare-empty">This is the first full set, so there’s nothing earlier to compare.</p>
+	{/if}
+	<ul class="compare">
+		{#each compareRows as row (row.label)}
+			<li>
+				<span class="name">{row.label}</span>
+				{#if row.prior}
+					<div class="span">
+						<div class="reading">
+							<span>{row.prior.when}</span>
+							<strong class="num">{row.prior.value} {lu}</strong>
+						</div>
+						{#if row.prior.change === 'up'}
+							<span class="delta" aria-label="up {row.prior.amount} {lu}">
+								<Icon name="up" size={16} />{row.prior.amount} {lu}
+							</span>
+						{:else if row.prior.change === 'down'}
+							<span class="delta" aria-label="down {row.prior.amount} {lu}">
+								<Icon name="down" size={16} />{row.prior.amount} {lu}
+							</span>
+						{:else}
+							<span class="delta same" aria-label="unchanged">-</span>
+						{/if}
+						<div class="reading now">
+							<span>{row.currentWhen}</span>
+							<strong class="num">{row.current} {lu}</strong>
+						</div>
+					</div>
+				{:else}
+					<div class="reading">
+						<span>{row.currentWhen}</span>
+						<strong class="num">{row.current} {lu}</strong>
+					</div>
+				{/if}
+			</li>
+		{/each}
+	</ul>
+	{#snippet footer()}
+		<button type="button" class="btn primary block" onclick={() => (compareOpen = false)}>Done</button>
+	{/snippet}
 </Sheet>
 
 <style>
@@ -791,6 +919,63 @@
 	}
 	.del {
 		margin-top: 0.75rem;
+	}
+	.compare-empty {
+		margin: 0 0 0.85rem;
+		color: var(--steel);
+		font-size: 0.85rem;
+	}
+	.compare {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.85rem;
+	}
+	.compare > li {
+		display: grid;
+		gap: 0.35rem;
+		padding-bottom: 0.85rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.compare > li:last-child {
+		border-bottom: 0;
+		padding-bottom: 0;
+	}
+	.name {
+		font-weight: 750;
+	}
+	.span {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		gap: 0.65rem;
+	}
+	.reading {
+		display: grid;
+		gap: 0.1rem;
+	}
+	.reading span {
+		color: var(--steel);
+		font-size: 0.75rem;
+	}
+	.reading strong {
+		font-size: 1.05rem;
+	}
+	.now {
+		text-align: right;
+	}
+	.delta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.1rem;
+		font-weight: 750;
+		font-variant-numeric: tabular-nums;
+	}
+	.delta.same {
+		color: var(--steel);
+		font-weight: 650;
 	}
 	@media (max-width: 480px) {
 		.summary {

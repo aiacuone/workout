@@ -6,12 +6,12 @@
 	let busy = $state(false);
 </script>
 
-<svelte:head><title>{data.setup ? 'Set up' : 'Sign in'} · Ironlog</title></svelte:head>
+<svelte:head><title>{data.setup ? 'Set up' : 'Sign in'} · Strongr</title></svelte:head>
 
 <div class="screen">
 	<div class="plate" aria-hidden="true"></div>
 	<section class="panel">
-		<h1 class="wordmark">IRONLOG</h1>
+		<h1 class="wordmark">STRONGR</h1>
 		<p class="lede">
 			{data.setup
 				? 'Create the one account for this log. Signup closes after this.'

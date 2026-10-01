@@ -53,7 +53,7 @@
 	}
 </script>
 
-<svelte:head><title>{w.name} · Ironlog</title></svelte:head>
+<svelte:head><title>{w.name} · Strongr</title></svelte:head>
 
 <div class="page">
 	<a class="back" href="/history"><Icon name="back" size={18} />History</a>

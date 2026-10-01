@@ -15,7 +15,7 @@
 	});
 </script>
 
-<svelte:head><title>Ironlog</title></svelte:head>
+<svelte:head><title>Strongr</title></svelte:head>
 
 <div class="page">
 	<section class="hero">

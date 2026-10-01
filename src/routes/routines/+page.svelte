@@ -9,7 +9,7 @@
 	let creating = $state(false);
 </script>
 
-<svelte:head><title>Routines · Ironlog</title></svelte:head>
+<svelte:head><title>Routines · Strongr</title></svelte:head>
 
 <div class="page">
 	<div class="page-head">
