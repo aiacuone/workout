@@ -2,13 +2,47 @@ export const MEASUREMENT_FIELDS = [
 	{ key: 'neckCm', label: 'Neck', bf: true },
 	{ key: 'waistCm', label: 'Waist', bf: true, hint: 'at the navel' },
 	{ key: 'hipsCm', label: 'Hips', bf: true, hint: 'widest point' },
-	{ key: 'shouldersCm', label: 'Shoulders' },
+	{ key: 'shouldersCm', label: 'Shoulders', optional: true },
 	{ key: 'chestCm', label: 'Chest' },
 	{ key: 'bicepLCm', label: 'Bicep L' },
 	{ key: 'bicepRCm', label: 'Bicep R' }
 ] as const;
 
 export type MeasurementKey = (typeof MEASUREMENT_FIELDS)[number]['key'];
+
+export function measurementFieldOptional(field: (typeof MEASUREMENT_FIELDS)[number]) {
+	return 'optional' in field && field.optional;
+}
+
+/** Circumferences that add into a session total. Height is not included. */
+export const GIRTH_KEYS = [
+	'neckCm',
+	'shouldersCm',
+	'chestCm',
+	'bicepLCm',
+	'bicepRCm',
+	'waistCm',
+	'hipsCm',
+	'thighLCm',
+	'thighRCm',
+	'calfLCm',
+	'calfRCm'
+] as const;
+
+export function totalGirthCm(
+	entry: Partial<Record<(typeof GIRTH_KEYS)[number], number | null>>
+): number | null {
+	let sum = 0;
+	let count = 0;
+	for (const key of GIRTH_KEYS) {
+		const value = entry[key];
+		if (value != null && Number.isFinite(value)) {
+			sum += value;
+			count++;
+		}
+	}
+	return count ? sum : null;
+}
 
 export type MeasurementChange = 'up' | 'down' | 'same' | 'missing';
 

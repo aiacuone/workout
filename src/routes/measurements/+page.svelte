@@ -8,6 +8,8 @@
 	import {
 		MEASUREMENT_FIELDS,
 		measurementDelta,
+		measurementFieldOptional,
+		totalGirthCm,
 		type MeasurementChange,
 		type MeasurementKey
 	} from '$lib/measurements';
@@ -38,6 +40,7 @@
 	const latestMeasure = $derived(
 		newest.find((e) => MEASUREMENT_FIELDS.some((f) => e[f.key] != null) || e.bodyFatPct != null) ?? null
 	);
+	const latestSummary = $derived(newest.find((e) => isCompleteSet(e)) ?? null);
 
 	const preview = $derived(
 		navyBodyFat({
@@ -52,6 +55,10 @@
 	function today() {
 		const d = new Date();
 		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+	}
+
+	function isCompleteSet(e: Entry) {
+		return MEASUREMENT_FIELDS.every((f) => measurementFieldOptional(f) || e[f.key] != null);
 	}
 
 	function hasMeasure(e: Entry) {
@@ -127,6 +134,7 @@
 		{ id: 'weightKg', label: 'Weight', axis: 'w', color: '#e8eee9', fill: false },
 		{ id: 'calories', label: 'Calories', axis: 'kcal', color: '#ffb84d', fill: false },
 		{ id: 'bodyFatPct', label: 'Body fat', axis: 'bf', color: '#2f7bff', fill: true },
+		{ id: 'totalCm', label: 'Total', axis: 'cm', color: '#facc15', fill: false },
 		{ id: 'neckCm', label: 'Neck', axis: 'cm', color: '#6ba3ff', fill: false },
 		{ id: 'shouldersCm', label: 'Shoulders', axis: 'cm', color: '#c084fc', fill: false },
 		{ id: 'chestCm', label: 'Chest', axis: 'cm', color: '#f76b15', fill: false },
@@ -142,19 +150,24 @@
 
 	type SeriesId = (typeof CHART_SERIES)[number]['id'];
 
-	const available = $derived(
-		CHART_SERIES.filter((s) => data.entries.some((e) => e[s.id] != null))
-	);
+	function seriesNumber(e: Entry, id: SeriesId): number | null {
+		if (id === 'totalCm') return totalGirthCm(e);
+		const value = e[id];
+		return value == null ? null : value;
+	}
+
+	const available = $derived(CHART_SERIES.filter((s) => data.entries.some((e) => seriesNumber(e, s.id) != null)));
 
 	let picked = $state<SeriesId[] | null>(null);
 
 	const active = $derived.by(() => {
 		const ids = new Set(available.map((s) => s.id));
-		const fallback: SeriesId[] = ids.has('bodyFatPct')
+		let fallback: SeriesId[] = ids.has('bodyFatPct')
 			? ['bodyFatPct']
 			: ids.has('weightKg')
 				? ['weightKg']
 				: available.map((s) => s.id);
+		if (ids.has('totalCm') && !fallback.includes('totalCm')) fallback = [...fallback, 'totalCm'];
 		const chosen = (picked ?? fallback).filter((id) => ids.has(id));
 		return chosen.length ? chosen : fallback;
 	});
@@ -168,7 +181,7 @@
 		}
 	}
 
-	const chartEntries = $derived(data.entries.filter((e) => active.some((id) => e[id] != null)));
+	const chartEntries = $derived(data.entries.filter((e) => active.some((id) => seriesNumber(e, id) != null)));
 
 	const config = $derived.by((): ChartConfiguration => {
 		const on = new Set(active);
@@ -236,7 +249,7 @@
 									? `${s.label} (${lu})`
 									: 'Body fat %',
 					data: chartEntries.map((e) => {
-						const v = e[s.id];
+						const v = seriesNumber(e, s.id);
 						if (v == null) return null;
 						if (s.axis === 'w') return Number(kgToDisplay(v, wu));
 						if (s.axis === 'cm') return Number(cmToDisplay(v, lu));
@@ -309,27 +322,43 @@
 		entries: Entry[],
 		excludeId: string | null,
 		measuredOn: string,
-		current: Record<MeasurementKey, number>
+		current: Partial<Record<MeasurementKey, number | null>>
 	) {
 		const format = (n: number) => cmToDisplay(n, lu);
 		const currentWhen = sessionWhen(measuredOn, [{ measuredOn }]);
-		compareRows = MEASUREMENT_FIELDS.map((f) => {
+		compareRows = MEASUREMENT_FIELDS.flatMap((f) => {
+			const value = current[f.key];
+			if (value == null) return [];
 			const prior = latestPrior(entries, excludeId, measuredOn, f.key);
-			const delta = prior ? measurementDelta(current[f.key], prior[f.key], format) : null;
-			return {
-				label: f.label,
-				current: format(current[f.key]),
-				currentWhen,
-				prior:
-					prior && delta
-						? {
-								when: sessionWhen(prior.measuredOn, [prior, { measuredOn }]),
-								value: format(prior[f.key] as number),
-								...delta
-							}
-						: null
-			};
+			const delta = prior ? measurementDelta(value, prior[f.key], format) : null;
+			return [
+				{
+					label: f.label,
+					current: format(value),
+					currentWhen,
+					prior:
+						prior && delta
+							? {
+									when: sessionWhen(prior.measuredOn, [prior, { measuredOn }]),
+									value: format(prior[f.key] as number),
+									...delta
+								}
+							: null
+				}
+			];
 		});
+	}
+
+	function openLastSummary() {
+		const entry = latestSummary;
+		if (!entry) return;
+		buildComparison(
+			data.entries,
+			entry.id,
+			entry.measuredOn,
+			Object.fromEntries(MEASUREMENT_FIELDS.map((f) => [f.key, entry[f.key]]))
+		);
+		compareOpen = true;
 	}
 </script>
 
@@ -342,6 +371,11 @@
 			<h1>Measurements</h1>
 		</div>
 		<div class="actions">
+			{#if latestSummary}
+				<button class="btn" type="button" onclick={openLastSummary}>
+					<Icon name="list" size={18} />Last summary
+				</button>
+			{/if}
 			<button class="btn" onclick={() => openWeight()}><Icon name="plus" size={18} />Weight</button>
 			<button class="btn" onclick={() => openCalories()}><Icon name="plus" size={18} />Calories</button>
 			<button class="btn primary" onclick={() => openMeasure()}><Icon name="plus" size={18} />Measure</button>
@@ -390,7 +424,7 @@
 			<div class="picks" role="group" aria-label="Measurements on the chart">
 				{#each available as s (s.id)}
 					<button type="button" aria-pressed={active.includes(s.id)} onclick={() => toggleSeries(s.id)}>
-						<i style:background={s.color}></i>{s.label}
+						<i style:background={s.color}></i>{s.id === 'totalCm' ? `Total ${lu}` : s.label}
 					</button>
 				{/each}
 			</div>
@@ -595,14 +629,14 @@
 			const current = Object.fromEntries(
 				MEASUREMENT_FIELDS.map((f) => [f.key, displayToCm(vals[f.key], lu)])
 			) as Record<MeasurementKey, number | null>;
-			const complete = MEASUREMENT_FIELDS.every((f) => current[f.key] != null);
+			const complete = MEASUREMENT_FIELDS.every((f) => measurementFieldOptional(f) || current[f.key] != null);
 			return async ({ result, update }) => {
 				await update({ reset: false });
 				if (result.type === 'failure') toastFormError(result.data);
 				if (result.type === 'success') {
 					measureOpen = false;
 					if (complete) {
-						buildComparison(entries, excludeId, measuredOn, current as Record<MeasurementKey, number>);
+						buildComparison(entries, excludeId, measuredOn, current);
 						compareOpen = true;
 					}
 				}
@@ -632,7 +666,7 @@
 			>
 			{#each MEASUREMENT_FIELDS as f (f.key)}
 				<label class="field" class:bf-field={'bf' in f && (f.key !== 'hipsCm' || sex === 'female')}>
-					{f.label} ({lu})
+					{f.label} ({lu}{measurementFieldOptional(f) ? ', optional' : ''})
 					<input
 						name={f.key}
 						inputmode="decimal"
