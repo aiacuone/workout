@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { setSummary } from '$lib/format';
+	import type { Trend } from '$lib/records';
 	import { formatDate, formatDuration, kgToDisplay, type WeightUnit } from '$lib/units';
 	import HitBadge from './HitBadge.svelte';
+	import TrendMarks from './Trend.svelte';
 
 	type Summary = {
 		id: string;
@@ -16,6 +18,7 @@
 			sets: number;
 			best: { weightKg: number | null; reps: number | null } | null;
 			hits: string[];
+			trend: Trend;
 		}[];
 	};
 
@@ -36,7 +39,10 @@
 	<ul>
 		{#each workout.exercises as e (e.exerciseId)}
 			<li>
-				<span class="ex"><span class="num sets">{e.sets}×</span> {e.name}</span>
+				<span class="name">
+					<span class="ex"><span class="num sets">{e.sets}×</span> {e.name}</span>
+					<TrendMarks volume={e.trend.volume} weight={e.trend.weight} />
+				</span>
 				<span class="right">
 					{#each e.hits as h (h)}<HitBadge method={h} />{/each}
 					{#if e.best}
@@ -101,6 +107,12 @@
 		gap: 0.5rem;
 		min-width: 0;
 		font-size: 0.88rem;
+	}
+	.name {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		min-width: 0;
 	}
 	.ex {
 		min-width: 0;

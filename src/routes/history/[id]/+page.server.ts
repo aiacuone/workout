@@ -2,6 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import { db, schema } from '$lib/server/db';
 import { summarize } from '$lib/server/history';
+import { previousSessionStats, trendsForExercises, workoutRecords } from '$lib/server/prs';
 import { optNum, optStr, requireUser, str } from '$lib/server/util';
 import { getOwnedWorkout, getWorkoutState } from '$lib/server/workouts';
 import type { Actions, PageServerLoad } from './$types';
@@ -11,8 +12,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const workout = await getWorkoutState(user.id, params.id, { withPrevious: false });
 	if (!workout) error(404, 'Workout not found');
 	if (workout.status === 'in_progress') redirect(303, '/workout/active');
+	const startedAt = new Date(workout.startedAt);
+	const exerciseIds = [...new Set(workout.exercises.map((e) => e.exerciseId))];
+	const [records, prior] = await Promise.all([
+		workoutRecords(user.id, startedAt, workout.exercises),
+		previousSessionStats(user.id, exerciseIds, startedAt)
+	]);
 	return {
 		workout,
+		records,
+		trends: trendsForExercises(workout.exercises, prior),
 		totals: workout.exercises.reduce(
 			(t, e) => {
 				const s = summarize(e.sets);

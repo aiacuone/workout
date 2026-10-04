@@ -9,6 +9,8 @@
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { hitLogSummary, setSummary } from '$lib/format';
 	import { hitMethod } from '$lib/hit';
+	import TrendMarks from '$lib/components/Trend.svelte';
+	import { RECORD_LABEL, recordDetail, recordsHeadline } from '$lib/records';
 	import type { Session } from '$lib/types';
 	import { formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
@@ -20,6 +22,16 @@
 	const duration = $derived(
 		w.finishedAt ? (new Date(w.finishedAt).getTime() - new Date(w.startedAt).getTime()) / 1000 : null
 	);
+	const recordGroups = $derived.by(() => {
+		const groups: { id: string; name: string; bits: string[] }[] = [];
+		for (const record of data.records) {
+			const bit = `${RECORD_LABEL[record.kind]} ${recordDetail(record, unit)}`.trim();
+			const group = groups.find((g) => g.id === record.exerciseId);
+			if (group) group.bits.push(bit);
+			else groups.push({ id: record.exerciseId, name: record.exerciseName, bits: [bit] });
+		}
+		return groups;
+	});
 
 	let historyFor = $state<{ id: string; name: string } | null>(null);
 	let history = $state<Session[] | null>(null);
@@ -60,8 +72,15 @@
 
 	{#if finished}
 		<div class="saved">
-			<strong>Workout saved.</strong>
-			<span>Tap any exercise to see its progress.</span>
+			<strong>Workout complete</strong>
+			<span>{recordsHeadline(data.records.length)}</span>
+			{#if recordGroups.length}
+				<ul>
+					{#each recordGroups as group (group.id)}
+						<li><b>{group.name}</b> · {group.bits.join(' · ')}</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	{/if}
 
@@ -77,7 +96,16 @@
 		<div><span class="eyebrow">Volume</span><strong class="num">{Number(kgToDisplay(data.totals.volumeKg, unit)).toLocaleString()}<small>{unit}</small></strong></div>
 		<div><span class="eyebrow">Sets</span><strong class="num">{data.totals.sets}</strong></div>
 		<div><span class="eyebrow">Reps</span><strong class="num">{data.totals.reps}</strong></div>
+		<div><span class="eyebrow">Records</span><strong class="num">{data.records.length}</strong></div>
 	</div>
+
+	{#if !finished && recordGroups.length}
+		<ul class="prs">
+			{#each recordGroups as group (group.id)}
+				<li><b>{group.name}</b> · {group.bits.join(' · ')}</li>
+			{/each}
+		</ul>
+	{/if}
 
 	{#if w.notes}<p class="notes">{w.notes}</p>{/if}
 
@@ -85,7 +113,10 @@
 		{#each w.exercises as e (e.id)}
 			<li>
 				<button type="button" class="ex-title" onclick={() => openHistory(e.exerciseId, e.name)}>
-					<span>{e.name}</span>
+					<span class="ex-name">
+						{e.name}
+						<TrendMarks volume={data.trends[e.id]?.volume ?? null} weight={data.trends[e.id]?.weight ?? null} />
+					</span>
 					<Icon name="chart" size={18} />
 				</button>
 				{#if e.repRange || e.cableHeight || e.seatHeight}
@@ -178,11 +209,31 @@
 		animation: pop 0.5s var(--ease);
 	}
 	.saved span {
-		font-size: 0.9rem;
+		font-size: 0.95rem;
+		font-weight: 700;
+	}
+	.saved ul,
+	.prs {
+		margin: 0.45rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 0.2rem;
+		font-size: 0.86rem;
+		font-weight: 650;
+	}
+	.prs {
+		margin: -0.35rem 0 1rem;
+		color: var(--ink-2);
+	}
+	.prs b,
+	.saved b {
+		font-weight: 800;
+		color: inherit;
 	}
 	.totals {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(5, 1fr);
 		gap: 1px;
 		margin-bottom: 1rem;
 		border: 1.5px solid var(--ink);
@@ -226,6 +277,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 0.5rem;
 		width: 100%;
 		padding: 0;
 		border: 0;
@@ -237,6 +289,12 @@
 		color: var(--link);
 		text-align: left;
 		cursor: pointer;
+	}
+	.ex-name {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		min-width: 0;
 	}
 	.extras {
 		display: flex;
@@ -317,7 +375,7 @@
 	}
 	@media (max-width: 480px) {
 		.totals {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(3, 1fr);
 		}
 		.actions {
 			grid-template-columns: 1fr;

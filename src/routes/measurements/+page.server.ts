@@ -114,17 +114,20 @@ export const actions: Actions = {
 		if (heightCm && heightCm !== prefs.heightCm)
 			await db.update(schema.userPrefs).set({ heightCm }).where(eq(schema.userPrefs.userId, user.id));
 
+		const calcBf = form.get('calcBf') === '1';
 		const values = {
 			measuredOn,
 			...lengths,
 			heightCm: heightCm ?? null,
-			bodyFatPct: navyBodyFat({
-				sex: prefs.sex,
-				heightCm,
-				neckCm: lengths.neckCm,
-				waistCm: lengths.waistCm,
-				hipsCm: lengths.hipsCm
-			}),
+			bodyFatPct: calcBf
+				? navyBodyFat({
+						sex: prefs.sex,
+						heightCm,
+						neckCm: lengths.neckCm,
+						waistCm: lengths.waistCm,
+						hipsCm: lengths.hipsCm
+					})
+				: null,
 			notes: optStr(form, 'notes')
 		};
 

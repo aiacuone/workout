@@ -1,6 +1,8 @@
 import { and, asc, desc, eq, inArray } from 'drizzle-orm';
+import { trendAgainst, type Trend, type TrendStats } from '$lib/records';
 import { db, schema } from './db';
 import { loadSetsAndHits, summarize } from './history';
+import { previousSessionStats } from './prs';
 
 export async function listCompletedWorkouts(userId: string, limit = 100) {
 	const workouts = await db
@@ -31,11 +33,12 @@ export async function listCompletedWorkouts(userId: string, limit = 100) {
 
 	const { sets, hits } = await loadSetsAndHits(wes.map((w) => w.id));
 
-	return workouts.map((w) => {
+	const summaries = workouts.map((w) => {
 		const items = wes
 			.filter((x) => x.workoutId === w.id)
 			.map((x) => {
 				const s = sets.get(x.id) ?? [];
+				const summary = summarize(s);
 				const best = s
 					.filter((v) => v.completed && v.type !== 'warmup')
 					.sort((a, b) => (b.weightKg ?? 0) - (a.weightKg ?? 0) || (b.reps ?? 0) - (a.reps ?? 0))[0];
@@ -46,7 +49,9 @@ export async function listCompletedWorkouts(userId: string, limit = 100) {
 					sets: s.filter((v) => v.type !== 'warmup').length,
 					best: best ? { weightKg: best.weightKg, reps: best.reps } : null,
 					hits: (hits.get(x.id) ?? []).map((h) => h.methodKey),
-					volumeKg: summarize(s).volumeKg
+					volumeKg: summary.volumeKg,
+					topWeightKg: summary.topWeightKg,
+					trend: { volume: null, weight: null } as Trend
 				};
 			});
 		return {
@@ -59,6 +64,33 @@ export async function listCompletedWorkouts(userId: string, limit = 100) {
 			exercises: items
 		};
 	});
+
+	await attachTrends(userId, summaries);
+	return summaries;
+}
+
+async function attachTrends(
+	userId: string,
+	workouts: {
+		startedAt: string;
+		exercises: { exerciseId: string; volumeKg: number; topWeightKg: number | null; trend: Trend }[];
+	}[]
+) {
+	const chronological = [...workouts].sort((a, b) => +new Date(a.startedAt) - +new Date(b.startedAt));
+	const oldest = chronological[0];
+	if (!oldest) return;
+
+	const exerciseIds = [...new Set(chronological.flatMap((w) => w.exercises.map((e) => e.exerciseId)))];
+	const prior = await previousSessionStats(userId, exerciseIds, new Date(oldest.startedAt));
+	const last = new Map<string, TrendStats>(prior);
+
+	for (const workout of chronological) {
+		for (const exercise of workout.exercises) {
+			const current = { volumeKg: exercise.volumeKg, topWeightKg: exercise.topWeightKg };
+			exercise.trend = trendAgainst(current, last.get(exercise.exerciseId) ?? null);
+			last.set(exercise.exerciseId, current);
+		}
+	}
 }
 
 export type WorkoutSummary = Awaited<ReturnType<typeof listCompletedWorkouts>>[number];

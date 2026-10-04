@@ -31,6 +31,7 @@
 	let caloriesOpen = $state(false);
 	let measureOpen = $state(false);
 	let compareOpen = $state(false);
+	let calcBf = $state(false);
 	let editing = $state<Entry | null>(null);
 	let vals = $state<Record<string, string>>({});
 	let placeholders = $state<Entry | null>(null);
@@ -46,13 +47,15 @@
 	const latestSummary = $derived(newest.find((e) => isCompleteSet(e)) ?? null);
 
 	const preview = $derived(
-		navyBodyFat({
-			sex,
-			heightCm: displayToCm(vals.height, lu),
-			neckCm: displayToCm(vals.neckCm, lu),
-			waistCm: displayToCm(vals.waistCm, lu),
-			hipsCm: displayToCm(vals.hipsCm, lu)
-		})
+		calcBf
+			? navyBodyFat({
+					sex,
+					heightCm: displayToCm(vals.height, lu),
+					neckCm: displayToCm(vals.neckCm, lu),
+					waistCm: displayToCm(vals.waistCm, lu),
+					hipsCm: displayToCm(vals.hipsCm, lu)
+				})
+			: null
 	);
 
 	function today() {
@@ -109,6 +112,7 @@
 		for (const f of MEASUREMENT_FIELDS) v[f.key] = entry ? cmToDisplay(entry[f.key], lu) : '';
 		vals = v;
 		placeholders = base;
+		calcBf = entry?.bodyFatPct != null;
 		measureOpen = true;
 	}
 
@@ -666,14 +670,20 @@
 	>
 		{#if editing}<input type="hidden" name="id" value={editing.id} />{/if}
 
-		<div class="bf-preview" class:ready={preview != null}>
-			<span class="eyebrow">Body fat estimate</span>
-			<strong class="num">{preview != null ? `${preview}%` : '—'}</strong>
-			<span class="muted">
-				US Navy method · {sex}{sex === 'female' ? ' (neck, waist, hips, height)' : ' (neck, waist, height)'} ·
-				<a href="/settings">change</a>
-			</span>
-		</div>
+		<label class="bf-toggle">
+			<input type="checkbox" name="calcBf" value="1" bind:checked={calcBf} />
+			<span>Calculate body fat %</span>
+		</label>
+		{#if calcBf}
+			<div class="bf-preview" class:ready={preview != null}>
+				<span class="eyebrow">Body fat estimate</span>
+				<strong class="num">{preview != null ? `${preview}%` : '—'}</strong>
+				<span class="muted">
+					US Navy method · {sex}{sex === 'female' ? ' (neck, waist, hips, height)' : ' (neck, waist, height)'} ·
+					<a href="/settings">change</a>
+				</span>
+			</div>
+		{/if}
 
 		<div class="grid">
 			<label class="field">Date<input type="date" name="measuredOn" required bind:value={vals.measuredOn} /></label>
@@ -682,11 +692,11 @@
 					name="height"
 					inputmode="decimal"
 					bind:value={vals.height}
-					placeholder="needed for BF%"
+					placeholder={calcBf ? 'needed for BF%' : ''}
 				/></label
 			>
 			{#each MEASUREMENT_FIELDS as f (f.key)}
-				<label class="field" class:bf-field={'bf' in f && (f.key !== 'hipsCm' || sex === 'female')}>
+				<label class="field" class:bf-field={calcBf && 'bf' in f && (f.key !== 'hipsCm' || sex === 'female')}>
 					{f.label} ({lu}{measurementFieldOptional(f) ? ', optional' : ''})
 					<input
 						name={f.key}
@@ -932,6 +942,21 @@
 	.note {
 		margin-top: 0.4rem;
 		font-size: 0.85rem;
+	}
+	.bf-toggle {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		font-size: 0.9rem;
+		font-weight: 650;
+		color: var(--ink);
+		cursor: pointer;
+	}
+	.bf-toggle input {
+		width: 1.15rem;
+		height: 1.15rem;
+		margin: 0;
+		accent-color: var(--lime);
 	}
 	.bf-preview {
 		display: grid;
