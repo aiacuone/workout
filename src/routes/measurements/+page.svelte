@@ -13,7 +13,9 @@
 		type MeasurementChange,
 		type MeasurementKey
 	} from '$lib/measurements';
-	import { toastFormError } from '$lib/toast.svelte';
+	import { copyText } from '$lib/clipboard';
+	import { measurementsTsv } from '$lib/export-text';
+	import { toast, toastFormError } from '$lib/toast.svelte';
 	import { cmToDisplay, displayToCm, kgToDisplay } from '$lib/units';
 
 	let { data } = $props();
@@ -24,6 +26,7 @@
 	const lu = $derived(data.prefs?.lengthUnit ?? 'cm');
 	const sex = $derived(data.prefs?.sex ?? 'male');
 
+	let copying = $state(false);
 	let weightOpen = $state(false);
 	let caloriesOpen = $state(false);
 	let measureOpen = $state(false);
@@ -349,6 +352,19 @@
 		});
 	}
 
+	async function copyMeasurements() {
+		if (!data.entries.length || copying) return;
+		copying = true;
+		try {
+			await copyText(measurementsTsv(data.entries, wu, lu));
+			toast('Measurements copied.');
+		} catch {
+			toast('Couldn’t copy measurements.', 'error');
+		} finally {
+			copying = false;
+		}
+	}
+
 	function openLastSummary() {
 		const entry = latestSummary;
 		if (!entry) return;
@@ -371,6 +387,11 @@
 			<h1>Measurements</h1>
 		</div>
 		<div class="actions">
+			{#if data.entries.length}
+				<button class="btn" type="button" disabled={copying} onclick={copyMeasurements}>
+					<Icon name="copy" size={18} />{copying ? 'Copying…' : 'Copy'}
+				</button>
+			{/if}
 			{#if latestSummary}
 				<button class="btn" type="button" onclick={openLastSummary}>
 					<Icon name="list" size={18} />Last summary

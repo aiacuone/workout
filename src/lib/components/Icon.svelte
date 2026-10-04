@@ -18,7 +18,8 @@
 		| 'bolt'
 		| 'search'
 		| 'play'
-		| 'list';
+		| 'list'
+		| 'copy';
 
 	let { name, size = 22 }: { name: Name; size?: number } = $props();
 
@@ -42,7 +43,8 @@
 		bolt: 'M13 2 4 14h7l-1 8 9-12h-7z',
 		search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4',
 		play: 'M7 4v16l13-8z',
-		list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01'
+		list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+		copy: 'M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M16 8h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2'
 	};
 </script>
 

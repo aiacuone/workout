@@ -1,8 +1,29 @@
 <script lang="ts">
 	import WorkoutCard from '$lib/components/WorkoutCard.svelte';
+	import Icon from '$lib/components/Icon.svelte';
+	import { copyText } from '$lib/clipboard';
+	import { workoutsTsv, type HistoryExportWorkout } from '$lib/export-text';
+	import { toast } from '$lib/toast.svelte';
 
 	let { data } = $props();
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
+	let copying = $state(false);
+
+	async function copyHistory() {
+		if (!data.workouts.length || copying) return;
+		copying = true;
+		try {
+			const res = await fetch('/api/history/export');
+			if (!res.ok) throw new Error('Export failed');
+			const body = (await res.json()) as { workouts: HistoryExportWorkout[] };
+			await copyText(workoutsTsv(body.workouts, unit));
+			toast('Workout history copied.');
+		} catch {
+			toast('Couldn’t copy workout history.', 'error');
+		} finally {
+			copying = false;
+		}
+	}
 
 	const months = $derived.by(() => {
 		const groups: { key: string; label: string; items: typeof data.workouts }[] = [];
@@ -28,6 +49,11 @@
 			<p class="eyebrow">{data.workouts.length} workouts logged</p>
 			<h1>History</h1>
 		</div>
+		{#if data.workouts.length}
+			<button class="btn" type="button" disabled={copying} onclick={copyHistory}>
+				<Icon name="copy" size={18} />{copying ? 'Copying…' : 'Copy'}
+			</button>
+		{/if}
 	</div>
 
 	{#each months as m (m.key)}
