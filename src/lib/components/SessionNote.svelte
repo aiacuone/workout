@@ -15,17 +15,22 @@
 
 	let draft = $state('');
 	let area: HTMLTextAreaElement | undefined = $state();
+	// Focus once per open. Saving updates `value` while the field stays open, and refocusing then pulls the cursor back.
+	let focused = false;
 
 	const showing = $derived(open || !!value);
 
 	$effect(() => {
-		if (!open) draft = value ?? '';
-	});
-
-	$effect(() => {
-		if (open) {
+		if (!open) {
 			draft = value ?? '';
-			queueMicrotask(() => area?.focus());
+			focused = false;
+			return;
+		}
+		if (!focused) draft = value ?? '';
+		const el = area;
+		if (!focused && el) {
+			focused = true;
+			queueMicrotask(() => el.focus());
 		}
 	});
 
