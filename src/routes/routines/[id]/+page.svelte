@@ -3,6 +3,7 @@
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
+	import { parseRepRange } from '$lib/rep-range';
 	import { toastFormError } from '$lib/toast.svelte';
 	import { kgToDisplay } from '$lib/units';
 
@@ -22,8 +23,22 @@
 		queueMicrotask(() => addForm?.requestSubmit());
 	}
 
-	const autosave = () => async ({ update }: { update: (o?: { reset?: boolean }) => Promise<void> }) =>
-		update({ reset: false });
+	const autosave =
+		() =>
+		async ({
+			update
+		}: {
+			update: (o?: { reset?: boolean; invalidateAll?: boolean }) => Promise<void>;
+		}) =>
+			update({ reset: false, invalidateAll: false });
+
+	function saveTargets(e: FocusEvent) {
+		const form = e.currentTarget;
+		if (!(form instanceof HTMLFormElement)) return;
+		const next = e.relatedTarget;
+		if (next instanceof Node && form.contains(next)) return;
+		form.requestSubmit();
+	}
 </script>
 
 <svelte:head><title>{data.routine.name} · Strongr</title></svelte:head>
@@ -50,6 +65,7 @@
 
 	<ol class="items">
 		{#each data.items as item, i (item.id)}
+			{@const reps = parseRepRange(item.repRange)}
 			<li>
 				<div class="item-head">
 					<a href="/exercises/{item.exerciseId}?from=/routines/{data.routine.id}" class="name">{item.name}</a>
@@ -72,7 +88,13 @@
 						</form>
 					</div>
 				</div>
-				<form method="POST" action="?/updateItem" use:enhance={autosave} class="targets">
+				<form
+					method="POST"
+					action="?/updateItem"
+					use:enhance={autosave}
+					class="targets"
+					onfocusout={saveTargets}
+				>
 					<input type="hidden" name="itemId" value={item.id} />
 					<label class="field">
 						Sets
@@ -83,17 +105,31 @@
 							min="1"
 							max="20"
 							value={item.targetSets}
-							onchange={(e) => e.currentTarget.form?.requestSubmit()}
 						/>
 					</label>
 					<label class="field">
 						Rep range
-						<input
-							name="repRange"
-							placeholder="8–12"
-							value={item.repRange ?? ''}
-							onchange={(e) => e.currentTarget.form?.requestSubmit()}
-						/>
+						<span class="rep-pair">
+							<input
+								name="repMin"
+								type="text"
+								inputmode="numeric"
+								autocomplete="off"
+								aria-label="Minimum reps"
+								placeholder="8"
+								value={reps.min}
+							/>
+							<span class="rep-dash" aria-hidden="true">–</span>
+							<input
+								name="repMax"
+								type="text"
+								inputmode="numeric"
+								autocomplete="off"
+								aria-label="Maximum reps"
+								placeholder="12"
+								value={reps.max}
+							/>
+						</span>
 					</label>
 					<label class="field">
 						Weight ({unit})
@@ -104,7 +140,6 @@
 							step="any"
 							placeholder="prev"
 							value={kgToDisplay(item.targetWeightKg, unit)}
-							onchange={(e) => e.currentTarget.form?.requestSubmit()}
 						/>
 					</label>
 				</form>
@@ -208,6 +243,25 @@
 		grid-template-columns: 0.7fr 1fr 1fr;
 		gap: 0.5rem;
 		margin-top: 0.5rem;
+	}
+	.rep-pair {
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+	.targets .rep-pair input {
+		flex: 1 1 0;
+		width: 0;
+		min-width: 0;
+		padding-right: 0.3rem;
+		padding-left: 0.3rem;
+		text-align: center;
+	}
+	.rep-dash {
+		flex: none;
+		color: var(--steel);
+		font-weight: 700;
 	}
 	.danger-zone {
 		margin-top: 2.5rem;

@@ -15,6 +15,8 @@ export class WorkoutSession {
 	#lastEdit = 0;
 	#onEnded: Ended;
 	#ended = false;
+	/** Set when a snapshot arrived while a field was focused, so the next idle poll still applies it. */
+	#forceNext = false;
 
 	constructor(initial: WorkoutState, onEnded: Ended) {
 		this.#onEnded = onEnded;
@@ -35,6 +37,13 @@ export class WorkoutSession {
 		if (this.#ended) return;
 		this.#ended = true;
 		this.#onEnded(status, this.state.id);
+	}
+
+	/** True while the user is in a field; applying a snapshot would drop that focus. */
+	#editingField() {
+		if (typeof document === 'undefined') return false;
+		const el = document.activeElement;
+		return el instanceof Element && el.matches('input, textarea, select');
 	}
 
 	/** Queue an operation; operations run strictly in order. */
@@ -64,7 +73,8 @@ export class WorkoutSession {
 					return;
 				}
 				// Later queued edits would be clobbered by this snapshot; the last one applies.
-				if (this.pending === 1) this.apply(body);
+				// Skip while a field is focused — the poll applies once the user is not typing.
+				if (this.pending === 1 && !this.#editingField()) this.apply(body);
 			} catch {
 				const message = 'Connection lost — change not saved. Retrying on next sync.';
 				this.error = message;
@@ -80,7 +90,8 @@ export class WorkoutSession {
 
 	async refresh(force = false) {
 		if (this.#ended) return;
-		const q = force ? '' : `?since=${this.state.version}`;
+		const hard = force || this.#forceNext;
+		const q = hard ? '' : `?since=${this.state.version}`;
 		try {
 			const res = await fetch(`/api/workouts/${this.state.id}${q}`, { cache: 'no-store' });
 			if (res.status === 404) return this.#end('discarded');
@@ -91,7 +102,14 @@ export class WorkoutSession {
 				return;
 			}
 			if (body.status !== 'in_progress') return this.#end(body.status);
-			if (force || this.pending === 0) this.apply(body);
+			if (!(hard || this.pending === 0)) return;
+			// A failed save still fetches; don't replace state under a focused field.
+			if (this.#editingField()) {
+				this.#forceNext = true;
+				return;
+			}
+			this.#forceNext = false;
+			this.apply(body);
 		} catch {
 			/* offline; next poll retries */
 		}

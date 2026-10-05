@@ -2,7 +2,8 @@ import { error, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import { db, schema } from '$lib/server/db';
 import { summarize } from '$lib/server/history';
-import { previousSessionStats, trendsForExercises, workoutRecords } from '$lib/server/prs';
+import { compareNumber, type TrendSide } from '$lib/records';
+import { previousSessionStats, previousWorkoutVolume, trendsForExercises, workoutRecords } from '$lib/server/prs';
 import { optNum, optStr, requireUser, str } from '$lib/server/util';
 import { getOwnedWorkout, getWorkoutState } from '$lib/server/workouts';
 import type { Actions, PageServerLoad } from './$types';
@@ -14,25 +15,33 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (workout.status === 'in_progress') redirect(303, '/workout/active');
 	const startedAt = new Date(workout.startedAt);
 	const exerciseIds = [...new Set(workout.exercises.map((e) => e.exerciseId))];
-	const [records, prior] = await Promise.all([
+	const [records, prior, previousVolumeKg] = await Promise.all([
 		workoutRecords(user.id, startedAt, workout.exercises),
-		previousSessionStats(user.id, exerciseIds, startedAt)
+		previousSessionStats(user.id, exerciseIds, startedAt),
+		previousWorkoutVolume(user.id, startedAt)
 	]);
+	const totals = workout.exercises.reduce(
+		(t, e) => {
+			const s = summarize(e.sets);
+			return {
+				volumeKg: t.volumeKg + s.volumeKg,
+				reps: t.reps + s.totalReps,
+				sets: t.sets + e.sets.filter((set) => set.type !== 'warmup').length
+			};
+		},
+		{ volumeKg: 0, reps: 0, sets: 0 }
+	);
+	let volumeTrend: TrendSide | null = null;
+	if (previousVolumeKg != null) {
+		const direction = compareNumber(totals.volumeKg, previousVolumeKg);
+		if (direction) volumeTrend = { direction, deltaKg: totals.volumeKg - previousVolumeKg };
+	}
 	return {
 		workout,
 		records,
 		trends: trendsForExercises(workout.exercises, prior),
-		totals: workout.exercises.reduce(
-			(t, e) => {
-				const s = summarize(e.sets);
-				return {
-					volumeKg: t.volumeKg + s.volumeKg,
-					reps: t.reps + s.totalReps,
-					sets: t.sets + e.sets.filter((set) => set.type !== 'warmup').length
-				};
-			},
-			{ volumeKg: 0, reps: 0, sets: 0 }
-		)
+		totals,
+		volumeTrend
 	};
 };
 

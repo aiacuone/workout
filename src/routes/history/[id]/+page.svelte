@@ -10,7 +10,7 @@
 	import { hitLogSummary, setSummary } from '$lib/format';
 	import { hitMethod } from '$lib/hit';
 	import TrendMarks from '$lib/components/Trend.svelte';
-	import { RECORD_LABEL, recordDetail, recordsHeadline } from '$lib/records';
+	import { RECORD_LABEL, recordDetail, recordsHeadline, type Trend } from '$lib/records';
 	import type { Session } from '$lib/types';
 	import { formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
@@ -22,13 +22,26 @@
 	const duration = $derived(
 		w.finishedAt ? (new Date(w.finishedAt).getTime() - new Date(w.startedAt).getTime()) / 1000 : null
 	);
+	function trendFor(exerciseId: string): Trend {
+		let volume: Trend['volume'] = null;
+		let weight: Trend['weight'] = null;
+		for (const exercise of w.exercises) {
+			if (exercise.exerciseId !== exerciseId) continue;
+			const trend = data.trends[exercise.id];
+			if (!trend) continue;
+			if (trend.volume) volume = trend.volume;
+			if (trend.weight) weight = trend.weight;
+		}
+		return { volume, weight };
+	}
+
 	const recordGroups = $derived.by(() => {
-		const groups: { id: string; name: string; bits: string[] }[] = [];
+		const groups: { id: string; name: string; bits: string[]; trend: Trend }[] = [];
 		for (const record of data.records) {
 			const bit = `${RECORD_LABEL[record.kind]} ${recordDetail(record, unit)}`.trim();
 			const group = groups.find((g) => g.id === record.exerciseId);
 			if (group) group.bits.push(bit);
-			else groups.push({ id: record.exerciseId, name: record.exerciseName, bits: [bit] });
+			else groups.push({ id: record.exerciseId, name: record.exerciseName, bits: [bit], trend: trendFor(record.exerciseId) });
 		}
 		return groups;
 	});
@@ -77,7 +90,11 @@
 			{#if recordGroups.length}
 				<ul>
 					{#each recordGroups as group (group.id)}
-						<li><b>{group.name}</b> · {group.bits.join(' · ')}</li>
+						<li>
+							<b>{group.name}</b>
+							<TrendMarks volume={group.trend.volume} weight={group.trend.weight} {unit} />
+							<span class="bits">· {group.bits.join(' · ')}</span>
+						</li>
 					{/each}
 				</ul>
 			{/if}
@@ -93,7 +110,15 @@
 
 	<div class="totals">
 		<div><span class="eyebrow">Time</span><strong class="num">{duration ? formatDuration(duration) : '—'}</strong></div>
-		<div><span class="eyebrow">Volume</span><strong class="num">{Number(kgToDisplay(data.totals.volumeKg, unit)).toLocaleString()}<small>{unit}</small></strong></div>
+		<div>
+			<span class="eyebrow">Volume</span>
+			<strong class="num vol">
+				<span>{Number(kgToDisplay(data.totals.volumeKg, unit)).toLocaleString()}<small>{unit}</small></span>
+				{#if data.volumeTrend}
+					<TrendMarks volume={data.volumeTrend} weight={null} {unit} />
+				{/if}
+			</strong>
+		</div>
 		<div><span class="eyebrow">Sets</span><strong class="num">{data.totals.sets}</strong></div>
 		<div><span class="eyebrow">Reps</span><strong class="num">{data.totals.reps}</strong></div>
 		<div><span class="eyebrow">Records</span><strong class="num">{data.records.length}</strong></div>
@@ -102,7 +127,11 @@
 	{#if !finished && recordGroups.length}
 		<ul class="prs">
 			{#each recordGroups as group (group.id)}
-				<li><b>{group.name}</b> · {group.bits.join(' · ')}</li>
+				<li>
+					<b>{group.name}</b>
+					<TrendMarks volume={group.trend.volume} weight={group.trend.weight} {unit} />
+					<span class="bits">· {group.bits.join(' · ')}</span>
+				</li>
 			{/each}
 		</ul>
 	{/if}
@@ -115,7 +144,11 @@
 				<button type="button" class="ex-title" onclick={() => openHistory(e.exerciseId, e.name)}>
 					<span class="ex-name">
 						{e.name}
-						<TrendMarks volume={data.trends[e.id]?.volume ?? null} weight={data.trends[e.id]?.weight ?? null} />
+						<TrendMarks
+							volume={data.trends[e.id]?.volume ?? null}
+							weight={data.trends[e.id]?.weight ?? null}
+							{unit}
+						/>
 					</span>
 					<Icon name="chart" size={18} />
 				</button>
@@ -226,6 +259,18 @@
 		margin: -0.35rem 0 1rem;
 		color: var(--ink-2);
 	}
+	.saved li,
+	.prs li {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.35rem;
+	}
+	.saved .bits,
+	.prs .bits {
+		font-size: 0.86rem;
+		font-weight: 650;
+	}
 	.prs b,
 	.saved b {
 		font-weight: 800;
@@ -250,6 +295,12 @@
 		font-size: 1.2rem;
 		font-weight: 800;
 		font-stretch: 115%;
+	}
+	.totals strong.vol {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.15rem 0.35rem;
 	}
 	.totals small {
 		margin-left: 2px;

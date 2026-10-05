@@ -4,9 +4,15 @@ import { e1rm, kgToDisplay, type WeightUnit } from './units';
 
 export type Delta = 'up' | 'down';
 
+export type TrendSide = {
+	direction: Delta;
+	/** Signed kg change (current − previous). Null when the direction has no numeric delta. */
+	deltaKg: number | null;
+};
+
 export type Trend = {
-	volume: Delta | null;
-	weight: Delta | null;
+	volume: TrendSide | null;
+	weight: TrendSide | null;
 };
 
 export type RecordKind = 'weight' | 'e1rm' | 'reps' | 'set';
@@ -146,10 +152,22 @@ export function recordsHeadline(count: number) {
 
 export type TrendStats = { volumeKg: number; topWeightKg: number | null };
 
+function trendSide(direction: Delta | null, deltaKg: number | null): TrendSide | null {
+	if (!direction) return null;
+	return { direction, deltaKg };
+}
+
 export function trendAgainst(current: TrendStats, previous: TrendStats | null): Trend {
 	if (!previous) return { volume: null, weight: null };
+	const volume = compareNumber(current.volumeKg, previous.volumeKg);
+	const weight = compareWeight(current.topWeightKg, previous.topWeightKg);
 	return {
-		volume: compareNumber(current.volumeKg, previous.volumeKg),
-		weight: compareWeight(current.topWeightKg, previous.topWeightKg)
+		volume: trendSide(volume, volume ? current.volumeKg - previous.volumeKg : null),
+		weight: trendSide(
+			weight,
+			current.topWeightKg != null && previous.topWeightKg != null
+				? current.topWeightKg - previous.topWeightKg
+				: null
+		)
 	};
 }

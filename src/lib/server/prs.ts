@@ -10,7 +10,7 @@ import {
 } from '$lib/records';
 import type { SetView } from '$lib/types';
 import { db, schema } from './db';
-import { loadSetsAndHits } from './history';
+import { loadSetsAndHits, summarize } from './history';
 
 function num(value: unknown): number | null {
 	if (value == null) return null;
@@ -63,6 +63,32 @@ export async function priorBests(
 		});
 	}
 	return map;
+}
+
+/** Total work volume of the completed workout immediately before `before`, or null if there isn't one. */
+export async function previousWorkoutVolume(userId: string, before: Date): Promise<number | null> {
+	const [prev] = await db
+		.select({ id: schema.workout.id })
+		.from(schema.workout)
+		.where(
+			and(
+				eq(schema.workout.userId, userId),
+				eq(schema.workout.status, 'completed'),
+				lt(schema.workout.startedAt, before)
+			)
+		)
+		.orderBy(desc(schema.workout.startedAt))
+		.limit(1);
+	if (!prev) return null;
+
+	const rows = await db
+		.select({ id: schema.workoutExercise.id })
+		.from(schema.workoutExercise)
+		.where(eq(schema.workoutExercise.workoutId, prev.id));
+	if (!rows.length) return 0;
+
+	const { sets } = await loadSetsAndHits(rows.map((row) => row.id));
+	return rows.reduce((total, row) => total + summarize(sets.get(row.id) ?? []).volumeKg, 0);
 }
 
 /** Volume and top weight from the latest completed session of each exercise before `before`. */

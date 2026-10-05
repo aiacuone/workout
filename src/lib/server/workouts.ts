@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { HIT_BY_KEY } from '$lib/hit';
 import type { WorkoutExerciseState, WorkoutState } from '$lib/types';
 import { db, schema } from './db';
@@ -110,6 +110,30 @@ async function lastSetup(tx: Tx, userId: string, exerciseId: string) {
 	return row ?? { cableHeight: null, seatHeight: null, repRange: null };
 }
 
+/** Non-warmup sets from the most recent completed session, in position order. */
+async function lastWorkSets(tx: Tx, userId: string, exerciseId: string) {
+	const [prev] = await tx
+		.select({ id: schema.workoutExercise.id })
+		.from(schema.workoutExercise)
+		.innerJoin(schema.workout, eq(schema.workout.id, schema.workoutExercise.workoutId))
+		.where(
+			and(
+				eq(schema.workoutExercise.exerciseId, exerciseId),
+				eq(schema.workout.userId, userId),
+				eq(schema.workout.status, 'completed')
+			)
+		)
+		.orderBy(desc(schema.workout.startedAt), asc(schema.workoutExercise.position))
+		.limit(1);
+	if (!prev) return [];
+
+	return tx
+		.select({ weightKg: schema.setLog.weightKg, reps: schema.setLog.reps })
+		.from(schema.setLog)
+		.where(and(eq(schema.setLog.workoutExerciseId, prev.id), ne(schema.setLog.type, 'warmup')))
+		.orderBy(asc(schema.setLog.position));
+}
+
 async function addExerciseTx(
 	tx: Tx,
 	userId: string,
@@ -129,6 +153,7 @@ async function addExerciseTx(
 		.where(eq(schema.workoutExercise.workoutId, workoutId));
 
 	const setup = await lastSetup(tx, userId, exerciseId);
+	const previous = await lastWorkSets(tx, userId, exerciseId);
 	const [we] = await tx
 		.insert(schema.workoutExercise)
 		.values({
@@ -143,11 +168,15 @@ async function addExerciseTx(
 
 	const n = Math.max(1, opts.sets ?? 3);
 	await tx.insert(schema.setLog).values(
-		Array.from({ length: n }, (_, i) => ({
-			workoutExerciseId: we.id,
-			position: i,
-			weightKg: opts.weightKg ?? null
-		}))
+		Array.from({ length: n }, (_, i) => {
+			const prev = previous[i];
+			return {
+				workoutExerciseId: we.id,
+				position: i,
+				weightKg: opts.weightKg ?? prev?.weightKg ?? null,
+				reps: prev?.reps ?? null
+			};
+		})
 	);
 	return we.id;
 }

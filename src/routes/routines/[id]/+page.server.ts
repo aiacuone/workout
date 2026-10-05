@@ -4,6 +4,7 @@ import { db, schema } from '$lib/server/db';
 import { getOwnedExercise, listExercises } from '$lib/server/exercises';
 import { getOwnedRoutine, routineItems } from '$lib/server/routines';
 import { getPrefs, optNum, optStr, requireUser, str } from '$lib/server/util';
+import { composeRepRange } from '$lib/rep-range';
 import { displayToKg } from '$lib/units';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -70,11 +71,16 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const prefs = await getPrefs(user.id);
 		const sets = optNum(form, 'targetSets');
+		const repRange =
+			(form.has('repMin') || form.has('repMax')
+				? composeRepRange(str(form, 'repMin'), str(form, 'repMax'))
+				: optStr(form, 'repRange')
+			)?.slice(0, 20) ?? null;
 		await db
 			.update(schema.routineExercise)
 			.set({
 				targetSets: Math.max(1, Math.min(20, Math.round(sets ?? 3))),
-				repRange: optStr(form, 'repRange')?.slice(0, 20) ?? null,
+				repRange,
 				targetWeightKg: displayToKg(str(form, 'targetWeight'), prefs.weightUnit)
 			})
 			.where(

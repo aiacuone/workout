@@ -1,22 +1,43 @@
 <script lang="ts">
-	import type { Delta } from '$lib/records';
+	import type { TrendSide } from '$lib/records';
+	import { kgToDisplay, type WeightUnit } from '$lib/units';
 	import Icon from './Icon.svelte';
 
-	let { volume, weight }: { volume: Delta | null; weight: Delta | null } = $props();
+	let {
+		volume,
+		weight,
+		unit
+	}: { volume: TrendSide | null; weight: TrendSide | null; unit: WeightUnit } = $props();
+
+	function amount(side: TrendSide) {
+		if (side.deltaKg == null) return '';
+		return kgToDisplay(Math.abs(side.deltaKg), unit);
+	}
+
+	function title(kind: string, side: TrendSide) {
+		const dir = side.direction === 'up' ? 'up' : 'down';
+		const shown = amount(side);
+		if (!shown) return `${kind} ${dir} from last time`;
+		return `${kind} ${dir} ${shown} ${unit} from last time`;
+	}
 </script>
 
 {#if volume || weight}
 	<span class="trends">
 		{#if volume}
-			<span class="mark {volume}" title={volume === 'up' ? 'Volume up from last time' : 'Volume down from last time'}>
+			{@const shown = amount(volume)}
+			<span class="mark {volume.direction}" title={title('Volume', volume)}>
 				<Icon name="volume" size={13} />
-				<Icon name={volume} size={14} />
+				<Icon name={volume.direction} size={14} />
+				{#if shown}<span class="amt">{shown}</span>{/if}
 			</span>
 		{/if}
 		{#if weight}
-			<span class="mark {weight}" title={weight === 'up' ? 'Weight up from last time' : 'Weight down from last time'}>
+			{@const shown = amount(weight)}
+			<span class="mark {weight.direction}" title={title('Weight', weight)}>
 				<Icon name="dumbbell" size={13} />
-				<Icon name={weight} size={14} />
+				<Icon name={weight.direction} size={14} />
+				{#if shown}<span class="amt">{shown}</span>{/if}
 			</span>
 		{/if}
 	</span>
@@ -33,6 +54,14 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0;
+	}
+	.amt {
+		margin-left: 0.08rem;
+		font-size: 0.72rem;
+		font-weight: 750;
+		font-stretch: 100%;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
 	}
 	.up {
 		color: var(--ok);

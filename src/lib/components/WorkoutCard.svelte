@@ -41,7 +41,7 @@
 			<li>
 				<span class="name">
 					<span class="ex"><span class="num sets">{e.sets}×</span> {e.name}</span>
-					<TrendMarks volume={e.trend.volume} weight={e.trend.weight} />
+					<TrendMarks volume={e.trend.volume} weight={e.trend.weight} {unit} />
 				</span>
 				<span class="right">
 					{#each e.hits as h (h)}<HitBadge method={h} />{/each}

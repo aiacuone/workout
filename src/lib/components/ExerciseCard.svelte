@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { setSummary } from '$lib/format';
+	import { composeRepRange, parseRepRange } from '$lib/rep-range';
 	import type { SetType, SetView, WorkoutExerciseState } from '$lib/types';
 	import { displayToKg, kgToDisplay, type WeightUnit } from '$lib/units';
 	import type { WorkoutSession } from '$lib/workout/session.svelte';
@@ -49,6 +50,8 @@
 	let addMenu: HTMLElement | undefined = $state();
 	let cableInput: HTMLInputElement | undefined = $state();
 	let seatInput: HTMLInputElement | undefined = $state();
+	let repMinInput: HTMLInputElement | undefined = $state();
+	let repMaxInput: HTMLInputElement | undefined = $state();
 	let permanentOpen = $state(false);
 	let sessionOpen = $state(false);
 	let cableOpen = $state(false);
@@ -67,6 +70,7 @@
 	const showPermanent = $derived(permanentOpen || !!we.exerciseNotes);
 	const showSession = $derived(sessionOpen || !!we.notes);
 	const canAdd = $derived(!showHeight || !showSeat || !showPermanent || !showSession);
+	const repParts = $derived(parseRepRange(we.repRange));
 
 	$effect(() => {
 		if (!addOpen) return;
@@ -87,6 +91,12 @@
 	function updateSet(set: SetView, patch: Partial<SetView>) {
 		Object.assign(set, patch);
 		session.send({ op: 'updateSet', setId: set.id, patch });
+	}
+
+	function commitRepRange() {
+		const repRange = composeRepRange(repMinInput?.value ?? '', repMaxInput?.value ?? '');
+		if (repRange === we.repRange) return;
+		updateExercise({ repRange });
 	}
 
 	function updateExercise(patch: Partial<WorkoutExerciseState>) {
@@ -256,12 +266,30 @@
 
 	<footer>
 		<div class="tools">
-			<label class="chip">
+			<label class="chip range">
 				<span>Range</span>
 				<input
-					placeholder="8–12"
-					value={we.repRange ?? ''}
-					onchange={(e) => updateExercise({ repRange: e.currentTarget.value.trim() || null })}
+					bind:this={repMinInput}
+					type="text"
+					inputmode="numeric"
+					autocomplete="off"
+					aria-label="Minimum reps"
+					placeholder="8"
+					value={repParts.min}
+					onchange={commitRepRange}
+					onblur={commitRepRange}
+				/>
+				<span class="dash" aria-hidden="true">–</span>
+				<input
+					bind:this={repMaxInput}
+					type="text"
+					inputmode="numeric"
+					autocomplete="off"
+					aria-label="Maximum reps"
+					placeholder="12"
+					value={repParts.max}
+					onchange={commitRepRange}
+					onblur={commitRepRange}
 				/>
 			</label>
 			{#if showHeight}
@@ -535,6 +563,17 @@
 		font: inherit;
 		font-size: 0.88rem;
 		font-weight: 700;
+	}
+	.chip.range input {
+		width: 2.2rem;
+		text-align: center;
+	}
+	.chip .dash {
+		font-size: 0.88rem;
+		font-weight: 700;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--ink-2);
 	}
 	.chip input:focus {
 		outline: none;
