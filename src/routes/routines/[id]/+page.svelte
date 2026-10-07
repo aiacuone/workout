@@ -15,12 +15,15 @@
 	let picking = $state(false);
 	let confirmingDelete = $state(false);
 	let hitFor = $state<string | null>(null);
+	let hitReplace = $state<string | null>(null);
+	let openHit = $state<string | null>(null);
 	let hitOverrides = $state<Record<string, string[]>>({});
 	let addForm: HTMLFormElement | undefined = $state();
 	let addId = $state('');
 	let hitForm: HTMLFormElement | undefined = $state();
 	let hitItemId = $state('');
 	let hitMethodKey = $state('');
+	let hitFromKey = $state('');
 	let removeHitForm: HTMLFormElement | undefined = $state();
 	let removeHitItemId = $state('');
 	let removeHitKey = $state('');
@@ -43,15 +46,51 @@
 		return hitOverrides[item.id] ?? item.hitMethods;
 	}
 
+	function hitMenuId(itemId: string, methodKey: string) {
+		return `${itemId}:${methodKey}`;
+	}
+
+	$effect(() => {
+		if (!openHit) return;
+		const close = (e: PointerEvent) => {
+			const target = e.target;
+			if (target instanceof Element && target.closest('[data-hit-menu]')) return;
+			openHit = null;
+		};
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') openHit = null;
+		};
+		document.addEventListener('pointerdown', close);
+		document.addEventListener('keydown', onKey);
+		return () => {
+			document.removeEventListener('pointerdown', close);
+			document.removeEventListener('keydown', onKey);
+		};
+	});
+
+	function closeHitSheet() {
+		hitFor = null;
+		hitReplace = null;
+	}
+
 	function addHit(methodKey: string) {
 		const item = data.items.find((it) => it.id === hitFor);
 		if (!item) return;
 		const current = methodsOf(item);
-		if (current.includes(methodKey)) return;
-		hitOverrides[item.id] = [...current, methodKey];
+		const from = hitReplace;
+		if (from) {
+			if (from === methodKey || !current.includes(from)) return;
+			hitOverrides[item.id] = current.includes(methodKey)
+				? current.filter((key) => key !== from)
+				: current.map((key) => (key === from ? methodKey : key));
+		} else {
+			if (current.includes(methodKey)) return;
+			hitOverrides[item.id] = [...current, methodKey];
+		}
 		hitItemId = item.id;
 		hitMethodKey = methodKey;
-		hitFor = null;
+		hitFromKey = from ?? '';
+		closeHitSheet();
 		queueMicrotask(() => hitForm?.requestSubmit());
 	}
 
@@ -145,7 +184,9 @@
 	<ol class="items">
 		{#each data.items as item, i (item.id)}
 			{@const reps = parseRepRange(item.repRange)}
-			<li>
+			{@const methods = methodsOf(item)}
+			{@const hitColor = methods[0] ? hitMethod(methods[0]).color : null}
+			<li class:hit={hitColor != null} style:--c={hitColor}>
 				<div class="item-head">
 					<a href="/exercises/{item.exerciseId}?from=/routines/{data.routine.id}" class="name">{item.name}</a>
 					<div class="row">
@@ -228,22 +269,59 @@
 					onchange={(patch) => saveSetup(item.id, patch)}
 				/>
 				<div class="hits">
-					{#each methodsOf(item) as key (key)}
-						<span class="hit-chip">
-							<HitBadge method={key} full />
+					{#each methods as key (key)}
+						{@const menuId = hitMenuId(item.id, key)}
+						{@const menuOpen = openHit === menuId}
+						<div class="hit-chip" data-hit-menu>
 							<button
 								type="button"
-								class="icon-btn"
-								aria-label="Remove {hitMethod(key).name}"
-								onclick={() => removeHit(item.id, key)}
+								class="hit-badge"
+								aria-label="{hitMethod(key).name} options"
+								aria-expanded={menuOpen}
+								aria-haspopup="menu"
+								onclick={() => (openHit = menuOpen ? null : menuId)}
 							>
-								<Icon name="x" size={16} />
+								<HitBadge method={key} full />
 							</button>
-						</span>
+							{#if menuOpen}
+								<div class="hit-menu" role="menu">
+									<button
+										type="button"
+										role="menuitem"
+										onclick={() => {
+											openHit = null;
+											hitReplace = key;
+											hitFor = item.id;
+										}}
+									>
+										Change
+									</button>
+									<button
+										type="button"
+										role="menuitem"
+										class="remove"
+										onclick={() => {
+											openHit = null;
+											removeHit(item.id, key);
+										}}
+									>
+										Remove
+									</button>
+								</div>
+							{/if}
+						</div>
+					{:else}
+						<button
+							type="button"
+							class="btn sm"
+							onclick={() => {
+								hitReplace = null;
+								hitFor = item.id;
+							}}
+						>
+							<Icon name="bolt" size={16} />HIT
+						</button>
 					{/each}
-					<button type="button" class="btn sm" onclick={() => (hitFor = item.id)}>
-						<Icon name="bolt" size={16} />HIT
-					</button>
 				</div>
 			</li>
 		{:else}
@@ -265,6 +343,7 @@
 <form method="POST" action="?/addHit" use:enhance={saveHit} bind:this={hitForm} hidden>
 	<input type="hidden" name="itemId" value={hitItemId} />
 	<input type="hidden" name="methodKey" value={hitMethodKey} />
+	<input type="hidden" name="fromKey" value={hitFromKey} />
 </form>
 
 <form method="POST" action="?/removeHit" use:enhance={saveHit} bind:this={removeHitForm} hidden>
@@ -288,17 +367,25 @@
 	<ExercisePicker exercises={data.exercises} onpick={pick} />
 </Sheet>
 
-<Sheet open={!!hitFor} title="Add HIT method" onclose={() => (hitFor = null)}>
+<Sheet open={!!hitFor} title={hitReplace ? 'Change HIT method' : 'Add HIT method'} onclose={closeHitSheet}>
 	{#if hitItem}
 		{@const used = methodsOf(hitItem)}
-		<p class="muted hint">Applied to <strong>{hitItem.name}</strong> when this routine starts.</p>
+		<p class="muted hint">
+			{#if hitReplace}
+				Replace <strong>{hitMethod(hitReplace).name}</strong> on <strong>{hitItem.name}</strong>.
+			{:else}
+				Applied to <strong>{hitItem.name}</strong> when this routine starts.
+			{/if}
+		</p>
 		<ul class="methods">
 			{#each HIT_METHODS as m (m.key)}
 				<li>
 					<button type="button" style:--c={m.color} disabled={used.includes(m.key)} onclick={() => addHit(m.key)}>
 						<span class="swatch"></span>
 						<span class="m-text">
-							<strong>{m.name}{used.includes(m.key) ? ' · added' : ''}</strong>
+							<strong
+								>{m.name}{m.key === hitReplace ? ' · current' : used.includes(m.key) ? ' · added' : ''}</strong
+							>
 							<span>{m.description}</span>
 						</span>
 					</button>
@@ -366,13 +453,49 @@
 		margin-top: 0.65rem;
 	}
 	.hit-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.1rem;
+		position: relative;
 	}
-	.hit-chip .icon-btn {
-		width: 28px;
-		height: 28px;
+	.hit-badge {
+		padding: 0;
+		border: 0;
+		border-radius: 4px;
+		background: none;
+		cursor: pointer;
+	}
+	.hit-badge:focus-visible {
+		outline: 2px solid var(--ink);
+		outline-offset: 2px;
+	}
+	.hit-menu {
+		position: absolute;
+		left: 0;
+		bottom: calc(100% + 0.25rem);
+		z-index: 5;
+		display: grid;
+		min-width: 10.5rem;
+		padding: 0.25rem;
+		border: 1.5px solid var(--line-strong);
+		border-radius: var(--radius-sm);
+		background: var(--surface);
+		box-shadow: var(--shadow);
+	}
+	.hit-menu button {
+		padding: 0.45rem 0.6rem;
+		border: 0;
+		border-radius: calc(var(--radius-sm) - 2px);
+		background: transparent;
+		color: var(--ink);
+		font: inherit;
+		font-size: 0.88rem;
+		font-weight: 650;
+		text-align: left;
+		cursor: pointer;
+	}
+	.hit-menu button:hover {
+		background: var(--paper-2);
+	}
+	.hit-menu button.remove {
+		color: var(--danger);
 	}
 	.hint {
 		margin-bottom: 0.75rem;
@@ -434,6 +557,10 @@
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
 		background: var(--surface);
+	}
+	.items > li.hit {
+		border-color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, var(--surface));
 	}
 	.item-head {
 		display: flex;

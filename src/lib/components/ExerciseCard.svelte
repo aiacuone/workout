@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { setSummary } from '$lib/format';
+	import { hitMethod } from '$lib/hit';
 	import { composeRepRange, parseRepRange } from '$lib/rep-range';
 	import type { SetType, SetView, WorkoutExerciseState } from '$lib/types';
 	import { displayToKg, kgToDisplay, type WeightUnit } from '$lib/units';
@@ -71,6 +72,7 @@
 	const showSession = $derived(sessionOpen || !!we.notes);
 	const canAdd = $derived(!showHeight || !showSeat || !showPermanent || !showSession);
 	const repParts = $derived(parseRepRange(we.repRange));
+	const hitColor = $derived(we.hits[0] ? hitMethod(we.hits[0].methodKey).color : null);
 
 	$effect(() => {
 		if (!addOpen) return;
@@ -147,7 +149,7 @@
 	}
 </script>
 
-<article class="card">
+<article class="card" class:hit={hitColor != null} style:--c={hitColor}>
 	<header>
 		<button type="button" class="title" onclick={onhistory}>
 			<span class="name">{we.name}</span>
@@ -363,6 +365,10 @@
 		border-radius: var(--radius);
 		background: var(--surface);
 		box-shadow: var(--shadow);
+	}
+	.card.hit {
+		border-color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, var(--surface));
 	}
 	header {
 		display: flex;

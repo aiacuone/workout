@@ -170,7 +170,8 @@
 
 	<ol class="exercises">
 		{#each w.exercises as e (e.id)}
-			<li>
+			{@const hitColor = e.hits[0] ? hitMethod(e.hits[0].methodKey).color : null}
+			<li class:hit={hitColor != null} style:--c={hitColor}>
 				<button type="button" class="ex-title" onclick={() => openHistory(e.exerciseId, e.name)}>
 					<span class="ex-name">
 						{e.name}
@@ -356,6 +357,10 @@
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
 		background: var(--surface);
+	}
+	.exercises > li.hit {
+		border-color: var(--c);
+		background: color-mix(in srgb, var(--c) 14%, var(--surface));
 	}
 	.ex-title {
 		display: flex;

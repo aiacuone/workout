@@ -74,10 +74,20 @@ export const actions: Actions = {
 		const methodKey = str(form, 'methodKey');
 		if (!HIT_BY_KEY[methodKey]) return fail(400, { error: 'Unknown HIT method.' });
 		const item = await ownedItem(routine.id, str(form, 'itemId'));
-		if (item.hitMethods.includes(methodKey)) return;
+		const fromKey = str(form, 'fromKey');
+		let hitMethods = item.hitMethods;
+		if (fromKey) {
+			if (!hitMethods.includes(fromKey) || fromKey === methodKey) return;
+			hitMethods = hitMethods.includes(methodKey)
+				? hitMethods.filter((key) => key !== fromKey)
+				: hitMethods.map((key) => (key === fromKey ? methodKey : key));
+		} else {
+			if (hitMethods.includes(methodKey)) return;
+			hitMethods = [...hitMethods, methodKey];
+		}
 		await db
 			.update(schema.routineExercise)
-			.set({ hitMethods: [...item.hitMethods, methodKey] })
+			.set({ hitMethods })
 			.where(eq(schema.routineExercise.id, item.id));
 		await touch(routine.id);
 	},
