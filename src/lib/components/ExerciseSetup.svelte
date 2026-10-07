@@ -18,15 +18,11 @@
 	let seatOpen = $state(false);
 	let cableInput: HTMLInputElement | undefined = $state();
 	let seatInput: HTMLInputElement | undefined = $state();
-	let height = $state(cableHeight);
-	let seat = $state(seatHeight);
-
-	$effect(() => {
-		height = cableHeight;
-	});
-	$effect(() => {
-		seat = seatHeight;
-	});
+	// Drafts track edits before the parent prop updates. Absent means "use the prop".
+	let heightDraft = $state<string | null | undefined>(undefined);
+	let seatDraft = $state<string | null | undefined>(undefined);
+	const height = $derived(heightDraft !== undefined ? heightDraft : cableHeight);
+	const seat = $derived(seatDraft !== undefined ? seatDraft : seatHeight);
 
 	const showHeight = $derived(cableOpen || !!height);
 	const showSeat = $derived(seatOpen || !!seat);
@@ -69,7 +65,7 @@
 				value={height ?? ''}
 				onchange={(e) => {
 					const next = e.currentTarget.value.trim() || null;
-					height = next;
+					heightDraft = next;
 					if (!next) cableOpen = false;
 					onchange({ cableHeight: next });
 				}}
@@ -86,7 +82,7 @@
 				value={seat ?? ''}
 				onchange={(e) => {
 					const next = e.currentTarget.value.trim() || null;
-					seat = next;
+					seatDraft = next;
 					if (!next) seatOpen = false;
 					onchange({ seatHeight: next });
 				}}

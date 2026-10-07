@@ -3,7 +3,7 @@ import { and, eq, sql } from 'drizzle-orm';
 import { HIT_BY_KEY } from '$lib/hit';
 import { db, schema } from '$lib/server/db';
 import { getOwnedExercise, listExercises } from '$lib/server/exercises';
-import { getOwnedRoutine, routineItems } from '$lib/server/routines';
+import { getOwnedRoutine, latestExerciseSetup, routineItems, withKnownSetup } from '$lib/server/routines';
 import { getPrefs, optNum, optStr, requireUser, str } from '$lib/server/util';
 import { composeRepRange } from '$lib/rep-range';
 import { displayToKg } from '$lib/units';
@@ -14,7 +14,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const routine = await getOwnedRoutine(user.id, params.id);
 	if (!routine) error(404, 'Routine not found');
 	const [items, exercises] = await Promise.all([routineItems([routine.id]), listExercises(user.id)]);
-	return { routine, items, exercises };
+	const setups = await latestExerciseSetup(
+		user.id,
+		items.map((it) => it.exerciseId)
+	);
+	return { routine, items: withKnownSetup(items, setups), exercises };
 };
 
 async function owned(locals: App.Locals, id: string) {
