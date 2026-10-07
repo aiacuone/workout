@@ -26,6 +26,7 @@ export async function routineItems(routineIds: string[], exec: Executor = db) {
 			targetWeightKg: schema.routineExercise.targetWeightKg,
 			cableHeight: schema.routineExercise.cableHeight,
 			seatHeight: schema.routineExercise.seatHeight,
+			hitMethods: schema.routineExercise.hitMethods,
 			name: schema.exercise.name,
 			muscleGroup: schema.exercise.muscleGroup,
 			equipment: schema.exercise.equipment

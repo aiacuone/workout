@@ -3,19 +3,27 @@
 	import { tick } from 'svelte';
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
+	import HitBadge from '$lib/components/HitBadge.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
+	import { HIT_METHODS, hitMethod } from '$lib/hit';
 	import { parseRepRange } from '$lib/rep-range';
-	import { toastFormError } from '$lib/toast.svelte';
 	import { kgToDisplay } from '$lib/units';
 
 	let { data } = $props();
 
 	let picking = $state(false);
-	let renaming = $state(false);
 	let confirmingDelete = $state(false);
+	let hitFor = $state<string | null>(null);
+	let hitOverrides = $state<Record<string, string[]>>({});
 	let addForm: HTMLFormElement | undefined = $state();
 	let addId = $state('');
+	let hitForm: HTMLFormElement | undefined = $state();
+	let hitItemId = $state('');
+	let hitMethodKey = $state('');
+	let removeHitForm: HTMLFormElement | undefined = $state();
+	let removeHitItemId = $state('');
+	let removeHitKey = $state('');
 	let setupForm: HTMLFormElement | undefined = $state();
 	let setupItem = $state('');
 	let setupHeight = $state('');
@@ -23,10 +31,37 @@
 
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
+	const hitItem = $derived(data.items.find((it) => it.id === hitFor) ?? null);
+
 	function pick(ex: { id: string }) {
 		addId = ex.id;
 		picking = false;
 		queueMicrotask(() => addForm?.requestSubmit());
+	}
+
+	function methodsOf(item: { id: string; hitMethods: string[] }) {
+		return hitOverrides[item.id] ?? item.hitMethods;
+	}
+
+	function addHit(methodKey: string) {
+		const item = data.items.find((it) => it.id === hitFor);
+		if (!item) return;
+		const current = methodsOf(item);
+		if (current.includes(methodKey)) return;
+		hitOverrides[item.id] = [...current, methodKey];
+		hitItemId = item.id;
+		hitMethodKey = methodKey;
+		hitFor = null;
+		queueMicrotask(() => hitForm?.requestSubmit());
+	}
+
+	function removeHit(itemId: string, methodKey: string) {
+		const item = data.items.find((it) => it.id === itemId);
+		if (!item) return;
+		hitOverrides[itemId] = methodsOf(item).filter((key) => key !== methodKey);
+		removeHitItemId = itemId;
+		removeHitKey = methodKey;
+		queueMicrotask(() => removeHitForm?.requestSubmit());
 	}
 
 	const autosave =
@@ -37,6 +72,17 @@
 			update: (o?: { reset?: boolean; invalidateAll?: boolean }) => Promise<void>;
 		}) =>
 			update({ reset: false, invalidateAll: false });
+
+	const saveHit =
+		() =>
+		async ({
+			update
+		}: {
+			update: (o?: { reset?: boolean; invalidateAll?: boolean }) => Promise<void>;
+		}) => {
+			await update({ reset: false, invalidateAll: true });
+			hitOverrides = {};
+		};
 
 	async function saveSetup(itemId: string, patch: { cableHeight?: string | null; seatHeight?: string | null }) {
 		const item = data.items.find((it) => it.id === itemId);
@@ -63,13 +109,29 @@
 <div class="page">
 	<a class="back" href="/routines"><Icon name="back" size={18} />Routines</a>
 	<div class="page-head">
-		<div>
+		<div class="title-block">
 			<p class="eyebrow">Routine · {data.items.length} exercises</p>
-			<h1>{data.routine.name}</h1>
+			<form method="POST" action="?/rename" use:enhance={autosave}>
+				<input
+					class="title-input"
+					name="name"
+					aria-label="Routine name"
+					required
+					maxlength="80"
+					value={data.routine.name}
+					onchange={(e) => e.currentTarget.form?.requestSubmit()}
+				/>
+			</form>
 		</div>
-		<button class="btn sm" onclick={() => (renaming = true)}>Edit</button>
 	</div>
-	{#if data.routine.notes}<p class="notes">{data.routine.notes}</p>{/if}
+	<form method="POST" action="?/notes" class="notes" use:enhance={autosave}>
+		<label class="field">
+			Routine note
+			<textarea name="notes" rows="3" onchange={(e) => e.currentTarget.form?.requestSubmit()}
+				>{data.routine.notes ?? ''}</textarea
+			>
+		</label>
+	</form>
 
 	{#if data.items.length && !data.active}
 		<form method="POST" action="/workout/start" class="start">
@@ -165,6 +227,24 @@
 					seatHeight={item.seatHeight}
 					onchange={(patch) => saveSetup(item.id, patch)}
 				/>
+				<div class="hits">
+					{#each methodsOf(item) as key (key)}
+						<span class="hit-chip">
+							<HitBadge method={key} full />
+							<button
+								type="button"
+								class="icon-btn"
+								aria-label="Remove {hitMethod(key).name}"
+								onclick={() => removeHit(item.id, key)}
+							>
+								<Icon name="x" size={16} />
+							</button>
+						</span>
+					{/each}
+					<button type="button" class="btn sm" onclick={() => (hitFor = item.id)}>
+						<Icon name="bolt" size={16} />HIT
+					</button>
+				</div>
 			</li>
 		{:else}
 			<li class="empty">Add the exercises for this routine.</li>
@@ -180,6 +260,16 @@
 
 <form method="POST" action="?/addExercise" use:enhance bind:this={addForm} hidden>
 	<input type="hidden" name="exerciseId" value={addId} />
+</form>
+
+<form method="POST" action="?/addHit" use:enhance={saveHit} bind:this={hitForm} hidden>
+	<input type="hidden" name="itemId" value={hitItemId} />
+	<input type="hidden" name="methodKey" value={hitMethodKey} />
+</form>
+
+<form method="POST" action="?/removeHit" use:enhance={saveHit} bind:this={removeHitForm} hidden>
+	<input type="hidden" name="itemId" value={removeHitItemId} />
+	<input type="hidden" name="methodKey" value={removeHitKey} />
 </form>
 
 <form
@@ -198,22 +288,24 @@
 	<ExercisePicker exercises={data.exercises} onpick={pick} />
 </Sheet>
 
-<Sheet bind:open={renaming} title="Edit routine">
-	<form
-		method="POST"
-		action="?/rename"
-		class="stack"
-		use:enhance={() =>
-			async ({ result, update }) => {
-				await update({ reset: false });
-				if (result.type === 'failure') toastFormError(result.data);
-				if (result.type === 'success') renaming = false;
-			}}
-	>
-		<label class="field">Name<input name="name" required maxlength="80" value={data.routine.name} /></label>
-		<label class="field">Notes<textarea name="notes" rows="3">{data.routine.notes ?? ''}</textarea></label>
-		<button class="btn primary block">Save</button>
-	</form>
+<Sheet open={!!hitFor} title="Add HIT method" onclose={() => (hitFor = null)}>
+	{#if hitItem}
+		{@const used = methodsOf(hitItem)}
+		<p class="muted hint">Applied to <strong>{hitItem.name}</strong> when this routine starts.</p>
+		<ul class="methods">
+			{#each HIT_METHODS as m (m.key)}
+				<li>
+					<button type="button" style:--c={m.color} disabled={used.includes(m.key)} onclick={() => addHit(m.key)}>
+						<span class="swatch"></span>
+						<span class="m-text">
+							<strong>{m.name}{used.includes(m.key) ? ' · added' : ''}</strong>
+							<span>{m.description}</span>
+						</span>
+					</button>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </Sheet>
 
 <Sheet bind:open={confirmingDelete} title="Delete routine?">
@@ -238,8 +330,93 @@
 		color: var(--steel);
 		text-decoration: none;
 	}
+	.title-block {
+		flex: 1;
+		min-width: 0;
+	}
+	.title-input {
+		width: 100%;
+		margin: 0;
+		padding: 0.1rem 0;
+		border: 0;
+		border-bottom: 1.5px solid transparent;
+		border-radius: 0;
+		background: transparent;
+		font: inherit;
+		font-size: clamp(1.9rem, 6vw, 2.6rem);
+		font-stretch: 118%;
+		font-weight: 800;
+		letter-spacing: -0.01em;
+		line-height: 1.05;
+		color: var(--ink);
+	}
+	.title-input:hover,
+	.title-input:focus {
+		border-bottom-color: var(--line-strong);
+		outline: none;
+	}
 	.notes {
 		margin-bottom: 1rem;
+	}
+	.hits {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin-top: 0.65rem;
+	}
+	.hit-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.1rem;
+	}
+	.hit-chip .icon-btn {
+		width: 28px;
+		height: 28px;
+	}
+	.hint {
+		margin-bottom: 0.75rem;
+		font-size: 0.88rem;
+	}
+	.methods {
+		display: grid;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.methods button {
+		display: flex;
+		align-items: stretch;
+		gap: 0.75rem;
+		width: 100%;
+		padding: 0.6rem;
+		border: 1.5px solid var(--line);
+		border-radius: var(--radius-sm);
+		background: color-mix(in srgb, var(--c) 6%, var(--surface));
+		text-align: left;
+		font: inherit;
+		cursor: pointer;
+	}
+	.methods button:hover:not(:disabled) {
+		border-color: var(--c);
+	}
+	.methods button:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+	.swatch {
+		flex: none;
+		width: 8px;
+		border-radius: 4px;
+		background: var(--c);
+	}
+	.m-text {
+		display: grid;
+		gap: 0.15rem;
+	}
+	.m-text span {
+		font-size: 0.82rem;
 		color: var(--ink-2);
 	}
 	.start {

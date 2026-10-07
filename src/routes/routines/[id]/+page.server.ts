@@ -1,5 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
+import { HIT_BY_KEY } from '$lib/hit';
 import { db, schema } from '$lib/server/db';
 import { getOwnedExercise, listExercises } from '$lib/server/exercises';
 import { getOwnedRoutine, routineItems } from '$lib/server/routines';
@@ -27,6 +28,15 @@ async function touch(id: string) {
 	await db.update(schema.routine).set({ updatedAt: new Date() }).where(eq(schema.routine.id, id));
 }
 
+async function ownedItem(routineId: string, itemId: string) {
+	const [item] = await db
+		.select()
+		.from(schema.routineExercise)
+		.where(and(eq(schema.routineExercise.id, itemId), eq(schema.routineExercise.routineId, routineId)));
+	if (!item) error(404, 'Exercise not found');
+	return item;
+}
+
 async function renumber(routineId: string) {
 	const items = await routineItems([routineId]);
 	await Promise.all(
@@ -39,14 +49,49 @@ async function renumber(routineId: string) {
 export const actions: Actions = {
 	rename: async ({ locals, params, request }) => {
 		const { routine } = await owned(locals, params.id);
-		const form = await request.formData();
-		const name = str(form, 'name');
+		const name = str(await request.formData(), 'name');
 		if (!name) return fail(400, { error: 'Name is required.' });
 		await db
 			.update(schema.routine)
-			.set({ name: name.slice(0, 80), notes: optStr(form, 'notes'), updatedAt: new Date() })
+			.set({ name: name.slice(0, 80), updatedAt: new Date() })
 			.where(eq(schema.routine.id, routine.id));
 		return { saved: true };
+	},
+
+	notes: async ({ locals, params, request }) => {
+		const { routine } = await owned(locals, params.id);
+		const notes = optStr(await request.formData(), 'notes');
+		await db
+			.update(schema.routine)
+			.set({ notes, updatedAt: new Date() })
+			.where(eq(schema.routine.id, routine.id));
+		return { saved: true };
+	},
+
+	addHit: async ({ locals, params, request }) => {
+		const { routine } = await owned(locals, params.id);
+		const form = await request.formData();
+		const methodKey = str(form, 'methodKey');
+		if (!HIT_BY_KEY[methodKey]) return fail(400, { error: 'Unknown HIT method.' });
+		const item = await ownedItem(routine.id, str(form, 'itemId'));
+		if (item.hitMethods.includes(methodKey)) return;
+		await db
+			.update(schema.routineExercise)
+			.set({ hitMethods: [...item.hitMethods, methodKey] })
+			.where(eq(schema.routineExercise.id, item.id));
+		await touch(routine.id);
+	},
+
+	removeHit: async ({ locals, params, request }) => {
+		const { routine } = await owned(locals, params.id);
+		const form = await request.formData();
+		const methodKey = str(form, 'methodKey');
+		const item = await ownedItem(routine.id, str(form, 'itemId'));
+		await db
+			.update(schema.routineExercise)
+			.set({ hitMethods: item.hitMethods.filter((key) => key !== methodKey) })
+			.where(eq(schema.routineExercise.id, item.id));
+		await touch(routine.id);
 	},
 
 	addExercise: async ({ locals, params, request }) => {

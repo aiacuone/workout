@@ -213,13 +213,22 @@ export async function startWorkout(userId: string, routineId: string | null) {
 			.returning({ id: schema.workout.id });
 
 		for (const it of items) {
-			await addExerciseTx(tx, userId, w.id, it.exerciseId, {
+			const weId = await addExerciseTx(tx, userId, w.id, it.exerciseId, {
 				sets: it.targetSets,
 				repRange: it.repRange,
 				weightKg: it.targetWeightKg,
 				cableHeight: it.cableHeight,
 				seatHeight: it.seatHeight
 			});
+			let position = 0;
+			for (const methodKey of it.hitMethods) {
+				if (!HIT_BY_KEY[methodKey]) continue;
+				const [hit] = await tx
+					.insert(schema.hitApplication)
+					.values({ workoutExerciseId: weId, methodKey, position: position++ })
+					.returning({ id: schema.hitApplication.id });
+				await tx.insert(schema.hitLog).values(defaultLog(methodKey, hit.id, 0, it.targetWeightKg));
+			}
 		}
 		return w.id;
 	});
