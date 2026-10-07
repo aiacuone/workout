@@ -40,7 +40,6 @@
 			{@const shown = amount(volume)}
 			<span class="mark {volume.direction}" title={title('Volume', volume)}>
 				<Icon name="volume" size={13} />
-				<Icon name={volume.direction} size={14} />
 				{#if shown}<span class="amt">{shown}</span>{/if}
 			</span>
 		{/if}
@@ -48,14 +47,12 @@
 			{@const shown = amount(weight)}
 			<span class="mark {weight.direction}" title={title('Weight', weight)}>
 				<Icon name="dumbbell" size={13} />
-				<Icon name={weight.direction} size={14} />
 				{#if shown}<span class="amt">{shown}</span>{/if}
 			</span>
 		{/if}
 		{#if reps}
 			<span class="mark {reps.direction}" title={repTitle(reps)}>
 				<Icon name="reps" size={13} />
-				<Icon name={reps.direction} size={14} />
 				<span class="amt">{Math.abs(reps.delta)}</span>
 			</span>
 		{/if}
