@@ -72,6 +72,19 @@ export const actions: Actions = {
 			.where(and(eq(schema.workoutExercise.id, str(form, 'weId')), eq(schema.workoutExercise.workoutId, w.id)));
 	},
 
+	setup: async ({ locals, params, request }) => {
+		const { w } = await owned(locals, params.id);
+		const form = await request.formData();
+		const set: { cableHeight?: string | null; seatHeight?: string | null } = {};
+		if (form.has('cableHeight')) set.cableHeight = optStr(form, 'cableHeight')?.slice(0, 20) ?? null;
+		if (form.has('seatHeight')) set.seatHeight = optStr(form, 'seatHeight')?.slice(0, 20) ?? null;
+		if (!Object.keys(set).length) return;
+		await db
+			.update(schema.workoutExercise)
+			.set(set)
+			.where(and(eq(schema.workoutExercise.id, str(form, 'weId')), eq(schema.workoutExercise.workoutId, w.id)));
+	},
+
 	saveRoutine: async ({ locals, params }) => {
 		const { user, w } = await owned(locals, params.id);
 		const state = await getWorkoutState(user.id, w.id, { withPrevious: false });
@@ -90,7 +103,9 @@ export const actions: Actions = {
 						position: i,
 						targetSets: Math.max(1, work.length || e.sets.length),
 						repRange: e.repRange,
-						targetWeightKg: work.at(0)?.weightKg ?? null
+						targetWeightKg: work.at(0)?.weightKg ?? null,
+						cableHeight: e.cableHeight,
+						seatHeight: e.seatHeight
 					};
 				})
 			);

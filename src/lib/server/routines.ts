@@ -24,6 +24,8 @@ export async function routineItems(routineIds: string[], exec: Executor = db) {
 			targetSets: schema.routineExercise.targetSets,
 			repRange: schema.routineExercise.repRange,
 			targetWeightKg: schema.routineExercise.targetWeightKg,
+			cableHeight: schema.routineExercise.cableHeight,
+			seatHeight: schema.routineExercise.seatHeight,
 			name: schema.exercise.name,
 			muscleGroup: schema.exercise.muscleGroup,
 			equipment: schema.exercise.equipment
@@ -90,7 +92,9 @@ export async function createRoutinesFromLatestWorkouts(userId: string) {
 				weId: schema.workoutExercise.id,
 				exerciseId: schema.workoutExercise.exerciseId,
 				position: schema.workoutExercise.position,
-				repRange: schema.workoutExercise.repRange
+				repRange: schema.workoutExercise.repRange,
+				cableHeight: schema.workoutExercise.cableHeight,
+				seatHeight: schema.workoutExercise.seatHeight
 			})
 			.from(schema.workoutExercise)
 			.where(eq(schema.workoutExercise.workoutId, workoutId))
@@ -119,7 +123,9 @@ export async function createRoutinesFromLatestWorkouts(userId: string) {
 					position: i,
 					targetSets: Math.max(1, working.length),
 					repRange: row.repRange,
-					targetWeightKg: working.at(-1)?.weightKg ?? working.at(0)?.weightKg ?? null
+					targetWeightKg: working.at(-1)?.weightKg ?? working.at(0)?.weightKg ?? null,
+					cableHeight: row.cableHeight,
+					seatHeight: row.seatHeight
 				};
 			})
 		);

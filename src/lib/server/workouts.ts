@@ -139,7 +139,13 @@ async function addExerciseTx(
 	userId: string,
 	workoutId: string,
 	exerciseId: string,
-	opts: { sets?: number; repRange?: string | null; weightKg?: number | null } = {}
+	opts: {
+		sets?: number;
+		repRange?: string | null;
+		weightKg?: number | null;
+		cableHeight?: string | null;
+		seatHeight?: string | null;
+	} = {}
 ) {
 	const [ex] = await tx
 		.select({ id: schema.exercise.id })
@@ -160,8 +166,8 @@ async function addExerciseTx(
 			workoutId,
 			exerciseId,
 			position: Number(max) + 1,
-			cableHeight: setup.cableHeight,
-			seatHeight: setup.seatHeight,
+			cableHeight: opts.cableHeight ?? setup.cableHeight,
+			seatHeight: opts.seatHeight ?? setup.seatHeight,
 			repRange: opts.repRange ?? setup.repRange
 		})
 		.returning({ id: schema.workoutExercise.id });
@@ -173,7 +179,7 @@ async function addExerciseTx(
 			return {
 				workoutExerciseId: we.id,
 				position: i,
-				weightKg: opts.weightKg ?? prev?.weightKg ?? null,
+				weightKg: prev?.weightKg ?? opts.weightKg ?? null,
 				reps: prev?.reps ?? null
 			};
 		})
@@ -210,7 +216,9 @@ export async function startWorkout(userId: string, routineId: string | null) {
 			await addExerciseTx(tx, userId, w.id, it.exerciseId, {
 				sets: it.targetSets,
 				repRange: it.repRange,
-				weightKg: it.targetWeightKg
+				weightKg: it.targetWeightKg,
+				cableHeight: it.cableHeight,
+				seatHeight: it.seatHeight
 			});
 		}
 		return w.id;

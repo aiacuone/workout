@@ -10,9 +10,16 @@ export type TrendSide = {
 	deltaKg: number | null;
 };
 
+export type RepTrend = {
+	direction: Delta;
+	/** Signed change in total reps (current − previous). */
+	delta: number;
+};
+
 export type Trend = {
 	volume: TrendSide | null;
 	weight: TrendSide | null;
+	reps: RepTrend | null;
 };
 
 export type RecordKind = 'weight' | 'e1rm' | 'reps' | 'set';
@@ -36,6 +43,7 @@ type Bests = PriorBests & {
 	bestSetKg: number | null;
 	bestSetReps: number | null;
 	volumeKg: number;
+	totalReps: number;
 };
 
 const EPS = 0.05;
@@ -74,10 +82,12 @@ export function bestsFromSets(sets: SetView[]): Bests {
 	let bestSetKg: number | null = null;
 	let bestSetReps: number | null = null;
 	let volumeKg = 0;
+	let totalReps = 0;
 
 	for (const s of work) {
 		const w = s.weightKg;
 		const r = s.reps;
+		if (r != null) totalReps += r;
 		if (w != null && r != null) volumeKg += w * r;
 		if (w != null && (topWeightKg == null || w > topWeightKg)) topWeightKg = w;
 		if (r != null && r > 0 && (maxReps == null || r > maxReps)) maxReps = r;
@@ -93,7 +103,7 @@ export function bestsFromSets(sets: SetView[]): Bests {
 		}
 	}
 
-	return { topWeightKg, bestE1rmKg, maxReps, bestSetVolumeKg, bestSetKg, bestSetReps, volumeKg };
+	return { topWeightKg, bestE1rmKg, maxReps, bestSetVolumeKg, bestSetKg, bestSetReps, volumeKg, totalReps };
 }
 
 export function recordsAgainst(
@@ -144,13 +154,7 @@ export function recordDetail(record: PersonalRecord, unit: WeightUnit) {
 	return '';
 }
 
-export function recordsHeadline(count: number) {
-	if (count === 0) return 'No personal records';
-	if (count === 1) return '1 personal record';
-	return `${count} personal records`;
-}
-
-export type TrendStats = { volumeKg: number; topWeightKg: number | null };
+export type TrendStats = { volumeKg: number; topWeightKg: number | null; totalReps: number };
 
 function trendSide(direction: Delta | null, deltaKg: number | null): TrendSide | null {
 	if (!direction) return null;
@@ -158,9 +162,10 @@ function trendSide(direction: Delta | null, deltaKg: number | null): TrendSide |
 }
 
 export function trendAgainst(current: TrendStats, previous: TrendStats | null): Trend {
-	if (!previous) return { volume: null, weight: null };
+	if (!previous) return { volume: null, weight: null, reps: null };
 	const volume = compareNumber(current.volumeKg, previous.volumeKg);
 	const weight = compareWeight(current.topWeightKg, previous.topWeightKg);
+	const reps = compareNumber(current.totalReps, previous.totalReps);
 	return {
 		volume: trendSide(volume, volume ? current.volumeKg - previous.volumeKg : null),
 		weight: trendSide(
@@ -168,6 +173,7 @@ export function trendAgainst(current: TrendStats, previous: TrendStats | null): 
 			current.topWeightKg != null && previous.topWeightKg != null
 				? current.topWeightKg - previous.topWeightKg
 				: null
-		)
+		),
+		reps: reps ? { direction: reps, delta: current.totalReps - previous.totalReps } : null
 	};
 }

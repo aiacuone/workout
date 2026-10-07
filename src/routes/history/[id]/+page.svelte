@@ -1,16 +1,18 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { tick } from 'svelte';
 	import { page } from '$app/state';
 	import ExerciseHistory from '$lib/components/ExerciseHistory.svelte';
 	import HitBadge from '$lib/components/HitBadge.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Rating from '$lib/components/Rating.svelte';
+	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
 	import HistorySessionNote from '$lib/components/HistorySessionNote.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { hitLogSummary, setSummary } from '$lib/format';
 	import { hitMethod } from '$lib/hit';
 	import TrendMarks from '$lib/components/Trend.svelte';
-	import { RECORD_LABEL, recordDetail, recordsHeadline, type Trend } from '$lib/records';
+	import { RECORD_LABEL, recordDetail, type Trend } from '$lib/records';
 	import type { Session } from '$lib/types';
 	import { formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
@@ -25,15 +27,30 @@
 	function trendFor(exerciseId: string): Trend {
 		let volume: Trend['volume'] = null;
 		let weight: Trend['weight'] = null;
+		let reps: Trend['reps'] = null;
 		for (const exercise of w.exercises) {
 			if (exercise.exerciseId !== exerciseId) continue;
 			const trend = data.trends[exercise.id];
 			if (!trend) continue;
 			if (trend.volume) volume = trend.volume;
 			if (trend.weight) weight = trend.weight;
+			if (trend.reps) reps = trend.reps;
 		}
-		return { volume, weight };
+		return { volume, weight, reps };
 	}
+
+	const changes = $derived.by(() => {
+		const seen = new Set<string>();
+		const rows: { id: string; name: string; trend: Trend }[] = [];
+		for (const exercise of w.exercises) {
+			if (seen.has(exercise.exerciseId)) continue;
+			seen.add(exercise.exerciseId);
+			const trend = trendFor(exercise.exerciseId);
+			if (!trend.volume && !trend.weight && !trend.reps) continue;
+			rows.push({ id: exercise.exerciseId, name: exercise.name, trend });
+		}
+		return rows;
+	});
 
 	const recordGroups = $derived.by(() => {
 		const groups: { id: string; name: string; bits: string[]; trend: Trend }[] = [];
@@ -54,6 +71,10 @@
 	let noteForm: HTMLFormElement | undefined = $state();
 	let noteWe = $state('');
 	let noteVal = $state('');
+	let setupForm: HTMLFormElement | undefined = $state();
+	let setupWe = $state('');
+	let setupHeight = $state('');
+	let setupSeat = $state('');
 
 	async function openHistory(exerciseId: string, name: string) {
 		historyFor = { id: exerciseId, name };
@@ -76,6 +97,17 @@
 		noteVal = notes ?? '';
 		queueMicrotask(() => noteForm?.requestSubmit());
 	}
+
+	async function saveSetup(weId: string, patch: { cableHeight?: string | null; seatHeight?: string | null }) {
+		const ex = w.exercises.find((e) => e.id === weId);
+		if (ex) Object.assign(ex, patch);
+		if (!ex) return;
+		setupWe = weId;
+		setupHeight = ex.cableHeight ?? '';
+		setupSeat = ex.seatHeight ?? '';
+		await tick();
+		setupForm?.requestSubmit();
+	}
 </script>
 
 <svelte:head><title>{w.name} · Strongr</title></svelte:head>
@@ -86,14 +118,12 @@
 	{#if finished}
 		<div class="saved">
 			<strong>Workout complete</strong>
-			<span>{recordsHeadline(data.records.length)}</span>
-			{#if recordGroups.length}
+			{#if changes.length}
 				<ul>
-					{#each recordGroups as group (group.id)}
+					{#each changes as group (group.id)}
 						<li>
 							<b>{group.name}</b>
-							<TrendMarks volume={group.trend.volume} weight={group.trend.weight} {unit} />
-							<span class="bits">· {group.bits.join(' · ')}</span>
+							<TrendMarks volume={group.trend.volume} weight={group.trend.weight} reps={group.trend.reps} {unit} />
 						</li>
 					{/each}
 				</ul>
@@ -129,7 +159,7 @@
 			{#each recordGroups as group (group.id)}
 				<li>
 					<b>{group.name}</b>
-					<TrendMarks volume={group.trend.volume} weight={group.trend.weight} {unit} />
+					<TrendMarks volume={group.trend.volume} weight={group.trend.weight} reps={group.trend.reps} {unit} />
 					<span class="bits">· {group.bits.join(' · ')}</span>
 				</li>
 			{/each}
@@ -147,18 +177,20 @@
 						<TrendMarks
 							volume={data.trends[e.id]?.volume ?? null}
 							weight={data.trends[e.id]?.weight ?? null}
+							reps={data.trends[e.id]?.reps ?? null}
 							{unit}
 						/>
 					</span>
 					<Icon name="chart" size={18} />
 				</button>
-				{#if e.repRange || e.cableHeight || e.seatHeight}
-					<p class="extras">
-						{#if e.repRange}<span>Reps {e.repRange}</span>{/if}
-						{#if e.cableHeight}<span>Weight height {e.cableHeight}</span>{/if}
-						{#if e.seatHeight}<span>Seat {e.seatHeight}</span>{/if}
-					</p>
+				{#if e.repRange}
+					<p class="extras"><span>Reps {e.repRange}</span></p>
 				{/if}
+				<ExerciseSetup
+					cableHeight={e.cableHeight}
+					seatHeight={e.seatHeight}
+					onchange={(patch) => saveSetup(e.id, patch)}
+				/>
 				<ul class="sets">
 					{#each e.sets as s, i (s.id)}
 						<li>
@@ -210,6 +242,12 @@
 	<input type="hidden" name="notes" value={noteVal} />
 </form>
 
+<form method="POST" action="?/setup" bind:this={setupForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>
+	<input type="hidden" name="weId" value={setupWe} />
+	<input type="hidden" name="cableHeight" value={setupHeight} />
+	<input type="hidden" name="seatHeight" value={setupSeat} />
+</form>
+
 <Sheet open={!!historyFor} title={historyFor?.name ?? ''} onclose={() => (historyFor = null)}>
 	{#if history === null}
 		<p class="empty">Loading history…</p>
@@ -241,10 +279,6 @@
 		color: var(--on-lime);
 		animation: pop 0.5s var(--ease);
 	}
-	.saved span {
-		font-size: 0.95rem;
-		font-weight: 700;
-	}
 	.saved ul,
 	.prs {
 		margin: 0.45rem 0 0;
@@ -266,7 +300,6 @@
 		align-items: center;
 		gap: 0.35rem;
 	}
-	.saved .bits,
 	.prs .bits {
 		font-size: 0.86rem;
 		font-weight: 650;

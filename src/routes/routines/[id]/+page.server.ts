@@ -92,6 +92,22 @@ export const actions: Actions = {
 		await touch(routine.id);
 	},
 
+	setup: async ({ locals, params, request }) => {
+		const { routine } = await owned(locals, params.id);
+		const form = await request.formData();
+		const set: { cableHeight?: string | null; seatHeight?: string | null } = {};
+		if (form.has('cableHeight')) set.cableHeight = optStr(form, 'cableHeight')?.slice(0, 20) ?? null;
+		if (form.has('seatHeight')) set.seatHeight = optStr(form, 'seatHeight')?.slice(0, 20) ?? null;
+		if (!Object.keys(set).length) return;
+		await db
+			.update(schema.routineExercise)
+			.set(set)
+			.where(
+				and(eq(schema.routineExercise.id, str(form, 'itemId')), eq(schema.routineExercise.routineId, routine.id))
+			);
+		await touch(routine.id);
+	},
+
 	move: async ({ locals, params, request }) => {
 		const { routine } = await owned(locals, params.id);
 		const form = await request.formData();

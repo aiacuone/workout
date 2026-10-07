@@ -20,7 +20,8 @@
 		| 'play'
 		| 'list'
 		| 'copy'
-		| 'volume';
+		| 'volume'
+		| 'reps';
 
 	let { name, size = 22 }: { name: Name; size?: number } = $props();
 
@@ -46,7 +47,8 @@
 		play: 'M7 4v16l13-8z',
 		list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
 		copy: 'M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2M16 8h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-2',
-		volume: 'M5 19V10M12 19V5M19 19v-7'
+		volume: 'M5 19V10M12 19V5M19 19v-7',
+		reps: 'M17 2l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3'
 	};
 </script>
 

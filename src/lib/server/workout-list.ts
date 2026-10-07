@@ -51,7 +51,8 @@ export async function listCompletedWorkouts(userId: string, limit = 100) {
 					hits: (hits.get(x.id) ?? []).map((h) => h.methodKey),
 					volumeKg: summary.volumeKg,
 					topWeightKg: summary.topWeightKg,
-					trend: { volume: null, weight: null } as Trend
+					totalReps: summary.totalReps,
+					trend: { volume: null, weight: null, reps: null } as Trend
 				};
 			});
 		return {
@@ -73,7 +74,13 @@ async function attachTrends(
 	userId: string,
 	workouts: {
 		startedAt: string;
-		exercises: { exerciseId: string; volumeKg: number; topWeightKg: number | null; trend: Trend }[];
+		exercises: {
+			exerciseId: string;
+			volumeKg: number;
+			topWeightKg: number | null;
+			totalReps: number;
+			trend: Trend;
+		}[];
 	}[]
 ) {
 	const chronological = [...workouts].sort((a, b) => +new Date(a.startedAt) - +new Date(b.startedAt));
@@ -86,7 +93,11 @@ async function attachTrends(
 
 	for (const workout of chronological) {
 		for (const exercise of workout.exercises) {
-			const current = { volumeKg: exercise.volumeKg, topWeightKg: exercise.topWeightKg };
+			const current = {
+				volumeKg: exercise.volumeKg,
+				topWeightKg: exercise.topWeightKg,
+				totalReps: exercise.totalReps
+			};
 			exercise.trend = trendAgainst(current, last.get(exercise.exerciseId) ?? null);
 			last.set(exercise.exerciseId, current);
 		}

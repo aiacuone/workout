@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { tick } from 'svelte';
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
+	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { parseRepRange } from '$lib/rep-range';
@@ -14,6 +16,10 @@
 	let confirmingDelete = $state(false);
 	let addForm: HTMLFormElement | undefined = $state();
 	let addId = $state('');
+	let setupForm: HTMLFormElement | undefined = $state();
+	let setupItem = $state('');
+	let setupHeight = $state('');
+	let setupSeat = $state('');
 
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
@@ -31,6 +37,17 @@
 			update: (o?: { reset?: boolean; invalidateAll?: boolean }) => Promise<void>;
 		}) =>
 			update({ reset: false, invalidateAll: false });
+
+	async function saveSetup(itemId: string, patch: { cableHeight?: string | null; seatHeight?: string | null }) {
+		const item = data.items.find((it) => it.id === itemId);
+		if (!item) return;
+		Object.assign(item, patch);
+		setupItem = itemId;
+		setupHeight = item.cableHeight ?? '';
+		setupSeat = item.seatHeight ?? '';
+		await tick();
+		setupForm?.requestSubmit();
+	}
 
 	function saveTargets(e: FocusEvent) {
 		const form = e.currentTarget;
@@ -143,6 +160,11 @@
 						/>
 					</label>
 				</form>
+				<ExerciseSetup
+					cableHeight={item.cableHeight}
+					seatHeight={item.seatHeight}
+					onchange={(patch) => saveSetup(item.id, patch)}
+				/>
 			</li>
 		{:else}
 			<li class="empty">Add the exercises for this routine.</li>
@@ -158,6 +180,18 @@
 
 <form method="POST" action="?/addExercise" use:enhance bind:this={addForm} hidden>
 	<input type="hidden" name="exerciseId" value={addId} />
+</form>
+
+<form
+	method="POST"
+	action="?/setup"
+	bind:this={setupForm}
+	use:enhance={() => async ({ update }) => update({ reset: false, invalidateAll: false })}
+	hidden
+>
+	<input type="hidden" name="itemId" value={setupItem} />
+	<input type="hidden" name="cableHeight" value={setupHeight} />
+	<input type="hidden" name="seatHeight" value={setupSeat} />
 </form>
 
 <Sheet bind:open={picking} title="Add exercise">

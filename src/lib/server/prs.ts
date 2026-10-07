@@ -124,7 +124,11 @@ export async function previousSessionStats(
 	const { sets } = await loadSetsAndHits(rows.map((row) => row.weId));
 	for (const row of rows) {
 		const best = bestsFromSets(sets.get(row.weId) ?? []);
-		map.set(row.exerciseId, { volumeKg: best.volumeKg, topWeightKg: best.topWeightKg });
+		map.set(row.exerciseId, {
+			volumeKg: best.volumeKg,
+			topWeightKg: best.topWeightKg,
+			totalReps: best.totalReps
+		});
 	}
 	return map;
 }
@@ -164,7 +168,7 @@ export function trendsForExercises(
 	const trends: Record<string, Trend> = {};
 	for (const exercise of exercises) {
 		const best = bestsFromSets(exercise.sets);
-		const current = { volumeKg: best.volumeKg, topWeightKg: best.topWeightKg };
+		const current = { volumeKg: best.volumeKg, topWeightKg: best.topWeightKg, totalReps: best.totalReps };
 		trends[exercise.id] = trendAgainst(current, last.get(exercise.exerciseId) ?? null);
 		last.set(exercise.exerciseId, current);
 	}

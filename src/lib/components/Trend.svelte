@@ -1,13 +1,19 @@
 <script lang="ts">
-	import type { TrendSide } from '$lib/records';
+	import type { RepTrend, TrendSide } from '$lib/records';
 	import { kgToDisplay, type WeightUnit } from '$lib/units';
 	import Icon from './Icon.svelte';
 
 	let {
 		volume,
 		weight,
+		reps = null,
 		unit
-	}: { volume: TrendSide | null; weight: TrendSide | null; unit: WeightUnit } = $props();
+	}: {
+		volume: TrendSide | null;
+		weight: TrendSide | null;
+		reps?: RepTrend | null;
+		unit: WeightUnit;
+	} = $props();
 
 	function amount(side: TrendSide) {
 		if (side.deltaKg == null) return '';
@@ -20,9 +26,15 @@
 		if (!shown) return `${kind} ${dir} from last time`;
 		return `${kind} ${dir} ${shown} ${unit} from last time`;
 	}
+
+	function repTitle(side: RepTrend) {
+		const dir = side.direction === 'up' ? 'up' : 'down';
+		const n = Math.abs(side.delta);
+		return `Reps ${dir} ${n} from last time`;
+	}
 </script>
 
-{#if volume || weight}
+{#if volume || weight || reps}
 	<span class="trends">
 		{#if volume}
 			{@const shown = amount(volume)}
@@ -38,6 +50,13 @@
 				<Icon name="dumbbell" size={13} />
 				<Icon name={weight.direction} size={14} />
 				{#if shown}<span class="amt">{shown}</span>{/if}
+			</span>
+		{/if}
+		{#if reps}
+			<span class="mark {reps.direction}" title={repTitle(reps)}>
+				<Icon name="reps" size={13} />
+				<Icon name={reps.direction} size={14} />
+				<span class="amt">{Math.abs(reps.delta)}</span>
 			</span>
 		{/if}
 	</span>
