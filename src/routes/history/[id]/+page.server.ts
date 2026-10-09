@@ -4,8 +4,9 @@ import { db, schema } from '$lib/server/db';
 import { summarize } from '$lib/server/history';
 import { compareNumber, type TrendSide } from '$lib/records';
 import { previousSessionStats, previousWorkoutVolume, trendsForExercises, workoutRecords } from '$lib/server/prs';
-import { optNum, optStr, requireUser, str } from '$lib/server/util';
+import { getPrefs, optNum, optStr, requireUser, str } from '$lib/server/util';
 import { getOwnedWorkout, getWorkoutState } from '$lib/server/workouts';
+import { displayToKg } from '$lib/units';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
@@ -72,12 +73,35 @@ export const actions: Actions = {
 			.where(and(eq(schema.workoutExercise.id, str(form, 'weId')), eq(schema.workoutExercise.workoutId, w.id)));
 	},
 
+	set: async ({ locals, params, request }) => {
+		const { user, w } = await owned(locals, params.id);
+		const form = await request.formData();
+		const setId = str(form, 'setId');
+		const [row] = await db
+			.select({ id: schema.setLog.id })
+			.from(schema.setLog)
+			.innerJoin(schema.workoutExercise, eq(schema.workoutExercise.id, schema.setLog.workoutExerciseId))
+			.where(and(eq(schema.setLog.id, setId), eq(schema.workoutExercise.workoutId, w.id)));
+		if (!row) error(404, 'Set not found');
+		const prefs = await getPrefs(user.id);
+		const weightKg = displayToKg(str(form, 'weight'), prefs.weightUnit);
+		const reps = optNum(form, 'reps');
+		await db
+			.update(schema.setLog)
+			.set({
+				weightKg: weightKg == null ? null : Math.min(2000, Math.max(0, weightKg)),
+				reps: reps == null ? null : Math.min(1000, Math.max(0, Math.round(reps)))
+			})
+			.where(eq(schema.setLog.id, setId));
+	},
+
 	setup: async ({ locals, params, request }) => {
 		const { w } = await owned(locals, params.id);
 		const form = await request.formData();
-		const set: { cableHeight?: string | null; seatHeight?: string | null } = {};
+		const set: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null } = {};
 		if (form.has('cableHeight')) set.cableHeight = optStr(form, 'cableHeight')?.slice(0, 20) ?? null;
 		if (form.has('seatHeight')) set.seatHeight = optStr(form, 'seatHeight')?.slice(0, 20) ?? null;
+		if (form.has('support')) set.support = optStr(form, 'support')?.slice(0, 20) ?? null;
 		if (!Object.keys(set).length) return;
 		await db
 			.update(schema.workoutExercise)
@@ -105,7 +129,8 @@ export const actions: Actions = {
 						repRange: e.repRange,
 						targetWeightKg: work.at(0)?.weightKg ?? null,
 						cableHeight: e.cableHeight,
-						seatHeight: e.seatHeight
+						seatHeight: e.seatHeight,
+						support: e.support
 					};
 				})
 			);

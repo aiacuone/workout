@@ -98,6 +98,7 @@ export const routineExercise = pgTable(
 		targetWeightKg: doublePrecision('target_weight_kg'),
 		cableHeight: text('cable_height'),
 		seatHeight: text('seat_height'),
+		support: text('support'),
 		hitMethods: text('hit_methods').array().notNull().default([])
 	},
 	(t) => [index('routine_exercise_routine_idx').on(t.routineId)]
@@ -140,6 +141,7 @@ export const workoutExercise = pgTable(
 		position: integer('position').notNull(),
 		cableHeight: text('cable_height'),
 		seatHeight: text('seat_height'),
+		support: text('support'),
 		repRange: text('rep_range'),
 		rating: integer('rating'),
 		notes: text('notes')

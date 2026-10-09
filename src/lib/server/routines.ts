@@ -26,6 +26,7 @@ export async function routineItems(routineIds: string[], exec: Executor = db) {
 			targetWeightKg: schema.routineExercise.targetWeightKg,
 			cableHeight: schema.routineExercise.cableHeight,
 			seatHeight: schema.routineExercise.seatHeight,
+			support: schema.routineExercise.support,
 			hitMethods: schema.routineExercise.hitMethods,
 			name: schema.exercise.name,
 			muscleGroup: schema.exercise.muscleGroup,
@@ -37,15 +38,17 @@ export async function routineItems(routineIds: string[], exec: Executor = db) {
 		.orderBy(asc(schema.routineExercise.position));
 }
 
-/** Most recent cable/seat values for each exercise, from completed or in-progress workouts. */
+/** Most recent cable/seat/support values for each exercise, from completed or in-progress workouts. */
 export async function latestExerciseSetup(userId: string, exerciseIds: string[]) {
 	const ids = [...new Set(exerciseIds)];
-	if (!ids.length) return new Map<string, { cableHeight: string | null; seatHeight: string | null }>();
+	if (!ids.length)
+		return new Map<string, { cableHeight: string | null; seatHeight: string | null; support: string | null }>();
 	const rows = await db
 		.selectDistinctOn([schema.workoutExercise.exerciseId], {
 			exerciseId: schema.workoutExercise.exerciseId,
 			cableHeight: schema.workoutExercise.cableHeight,
-			seatHeight: schema.workoutExercise.seatHeight
+			seatHeight: schema.workoutExercise.seatHeight,
+			support: schema.workoutExercise.support
 		})
 		.from(schema.workoutExercise)
 		.innerJoin(schema.workout, eq(schema.workout.id, schema.workoutExercise.workoutId))
@@ -60,16 +63,19 @@ export async function latestExerciseSetup(userId: string, exerciseIds: string[])
 	return new Map(rows.map((row) => [row.exerciseId, row]));
 }
 
-export function withKnownSetup<T extends { exerciseId: string; cableHeight: string | null; seatHeight: string | null }>(
+export function withKnownSetup<
+	T extends { exerciseId: string; cableHeight: string | null; seatHeight: string | null; support: string | null }
+>(
 	items: T[],
-	setups: Map<string, { cableHeight: string | null; seatHeight: string | null }>
+	setups: Map<string, { cableHeight: string | null; seatHeight: string | null; support: string | null }>
 ) {
 	return items.map((it) => {
 		const last = setups.get(it.exerciseId);
 		return {
 			...it,
 			cableHeight: it.cableHeight ?? last?.cableHeight ?? null,
-			seatHeight: it.seatHeight ?? last?.seatHeight ?? null
+			seatHeight: it.seatHeight ?? last?.seatHeight ?? null,
+			support: it.support ?? last?.support ?? null
 		};
 	});
 }
@@ -132,7 +138,8 @@ export async function createRoutinesFromLatestWorkouts(userId: string) {
 				position: schema.workoutExercise.position,
 				repRange: schema.workoutExercise.repRange,
 				cableHeight: schema.workoutExercise.cableHeight,
-				seatHeight: schema.workoutExercise.seatHeight
+				seatHeight: schema.workoutExercise.seatHeight,
+				support: schema.workoutExercise.support
 			})
 			.from(schema.workoutExercise)
 			.where(eq(schema.workoutExercise.workoutId, workoutId))
@@ -163,7 +170,8 @@ export async function createRoutinesFromLatestWorkouts(userId: string) {
 					repRange: row.repRange,
 					targetWeightKg: working.at(-1)?.weightKg ?? working.at(0)?.weightKg ?? null,
 					cableHeight: row.cableHeight,
-					seatHeight: row.seatHeight
+					seatHeight: row.seatHeight,
+					support: row.support
 				};
 			})
 		);

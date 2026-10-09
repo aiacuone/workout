@@ -124,6 +124,7 @@ export async function exerciseHistory(
 			rating: we.rating,
 			cableHeight: we.cableHeight,
 			seatHeight: we.seatHeight,
+			support: we.support,
 			repRange: we.repRange,
 			notes: we.notes,
 			sets: s,

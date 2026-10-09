@@ -76,6 +76,7 @@ export async function getWorkoutState(
 			position: we.position,
 			cableHeight: we.cableHeight,
 			seatHeight: we.seatHeight,
+			support: we.support,
 			repRange: we.repRange,
 			rating: we.rating,
 			notes: we.notes,
@@ -88,12 +89,13 @@ export async function getWorkoutState(
 	};
 }
 
-/** Setup values (cable/seat height, rep range) carried over from the last time this exercise was done. */
+/** Setup values (cable/seat height, support, rep range) carried over from the last time this exercise was done. */
 async function lastSetup(tx: Tx, userId: string, exerciseId: string) {
 	const [row] = await tx
 		.select({
 			cableHeight: schema.workoutExercise.cableHeight,
 			seatHeight: schema.workoutExercise.seatHeight,
+			support: schema.workoutExercise.support,
 			repRange: schema.workoutExercise.repRange
 		})
 		.from(schema.workoutExercise)
@@ -107,7 +109,7 @@ async function lastSetup(tx: Tx, userId: string, exerciseId: string) {
 		)
 		.orderBy(sql`${schema.workout.startedAt} desc`)
 		.limit(1);
-	return row ?? { cableHeight: null, seatHeight: null, repRange: null };
+	return row ?? { cableHeight: null, seatHeight: null, support: null, repRange: null };
 }
 
 /** Non-warmup sets from the most recent completed session, in position order. */
@@ -145,6 +147,7 @@ async function addExerciseTx(
 		weightKg?: number | null;
 		cableHeight?: string | null;
 		seatHeight?: string | null;
+		support?: string | null;
 	} = {}
 ) {
 	const [ex] = await tx
@@ -168,6 +171,7 @@ async function addExerciseTx(
 			position: Number(max) + 1,
 			cableHeight: opts.cableHeight ?? setup.cableHeight,
 			seatHeight: opts.seatHeight ?? setup.seatHeight,
+			support: opts.support ?? setup.support,
 			repRange: opts.repRange ?? setup.repRange
 		})
 		.returning({ id: schema.workoutExercise.id });
@@ -218,7 +222,8 @@ export async function startWorkout(userId: string, routineId: string | null) {
 				repRange: it.repRange,
 				weightKg: it.targetWeightKg,
 				cableHeight: it.cableHeight,
-				seatHeight: it.seatHeight
+				seatHeight: it.seatHeight,
+				support: it.support
 			});
 			let position = 0;
 			for (const methodKey of it.hitMethods) {
@@ -246,6 +251,7 @@ type SetPatch = Partial<{
 type ExercisePatch = Partial<{
 	cableHeight: string | null;
 	seatHeight: string | null;
+	support: string | null;
 	repRange: string | null;
 	rating: number | null;
 	notes: string | null;
@@ -430,6 +436,7 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 				const set: Partial<typeof schema.workoutExercise.$inferInsert> = {};
 				if ('cableHeight' in p) set.cableHeight = text(p.cableHeight, 20);
 				if ('seatHeight' in p) set.seatHeight = text(p.seatHeight, 20);
+				if ('support' in p) set.support = text(p.support, 20);
 				if ('repRange' in p) set.repRange = text(p.repRange, 20);
 				if ('rating' in p) set.rating = num(p.rating, 1, 3, true);
 				if ('notes' in p) set.notes = text(p.notes, 2000);

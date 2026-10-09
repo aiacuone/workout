@@ -31,6 +31,7 @@
 	let setupItem = $state('');
 	let setupHeight = $state('');
 	let setupSeat = $state('');
+	let setupSupport = $state('');
 
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
@@ -123,13 +124,17 @@
 			hitOverrides = {};
 		};
 
-	async function saveSetup(itemId: string, patch: { cableHeight?: string | null; seatHeight?: string | null }) {
+	async function saveSetup(
+		itemId: string,
+		patch: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null }
+	) {
 		const item = data.items.find((it) => it.id === itemId);
 		if (!item) return;
 		Object.assign(item, patch);
 		setupItem = itemId;
 		setupHeight = item.cableHeight ?? '';
 		setupSeat = item.seatHeight ?? '';
+		setupSupport = item.support ?? '';
 		await tick();
 		setupForm?.requestSubmit();
 	}
@@ -266,6 +271,7 @@
 				<ExerciseSetup
 					cableHeight={item.cableHeight}
 					seatHeight={item.seatHeight}
+					support={item.support}
 					onchange={(patch) => saveSetup(item.id, patch)}
 				/>
 				<div class="hits">
@@ -361,6 +367,7 @@
 	<input type="hidden" name="itemId" value={setupItem} />
 	<input type="hidden" name="cableHeight" value={setupHeight} />
 	<input type="hidden" name="seatHeight" value={setupSeat} />
+	<input type="hidden" name="support" value={setupSupport} />
 </form>
 
 <Sheet bind:open={picking} title="Add exercise">

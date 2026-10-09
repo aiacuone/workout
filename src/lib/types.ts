@@ -32,6 +32,7 @@ export type Session = {
 	rating: number | null;
 	cableHeight: string | null;
 	seatHeight: string | null;
+	support: string | null;
 	repRange: string | null;
 	notes: string | null;
 	sets: SetView[];
@@ -51,6 +52,7 @@ export type WorkoutExerciseState = {
 	position: number;
 	cableHeight: string | null;
 	seatHeight: string | null;
+	support: string | null;
 	repRange: string | null;
 	rating: number | null;
 	notes: string | null;

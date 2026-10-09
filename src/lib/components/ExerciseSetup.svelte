@@ -5,28 +5,35 @@
 	let {
 		cableHeight,
 		seatHeight,
+		support,
 		onchange
 	}: {
 		cableHeight: string | null;
 		seatHeight: string | null;
-		onchange: (patch: { cableHeight?: string | null; seatHeight?: string | null }) => void;
+		support: string | null;
+		onchange: (patch: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null }) => void;
 	} = $props();
 
 	let addOpen = $state(false);
 	let addMenu: HTMLElement | undefined = $state();
 	let cableOpen = $state(false);
 	let seatOpen = $state(false);
+	let supportOpen = $state(false);
 	let cableInput: HTMLInputElement | undefined = $state();
 	let seatInput: HTMLInputElement | undefined = $state();
+	let supportInput: HTMLInputElement | undefined = $state();
 	// Drafts track edits before the parent prop updates. Absent means "use the prop".
 	let heightDraft = $state<string | null | undefined>(undefined);
 	let seatDraft = $state<string | null | undefined>(undefined);
+	let supportDraft = $state<string | null | undefined>(undefined);
 	const height = $derived(heightDraft !== undefined ? heightDraft : cableHeight);
 	const seat = $derived(seatDraft !== undefined ? seatDraft : seatHeight);
+	const supportValue = $derived(supportDraft !== undefined ? supportDraft : support);
 
 	const showHeight = $derived(cableOpen || !!height);
 	const showSeat = $derived(seatOpen || !!seat);
-	const canAdd = $derived(!showHeight || !showSeat);
+	const showSupport = $derived(supportOpen || !!supportValue);
+	const canAdd = $derived(!showHeight || !showSeat || !showSupport);
 
 	$effect(() => {
 		if (!addOpen) return;
@@ -44,13 +51,15 @@
 		};
 	});
 
-	async function addDetail(kind: 'height' | 'seat') {
+	async function addDetail(kind: 'height' | 'seat' | 'support') {
 		addOpen = false;
 		if (kind === 'height') cableOpen = true;
-		else seatOpen = true;
+		else if (kind === 'seat') seatOpen = true;
+		else supportOpen = true;
 		await tick();
 		if (kind === 'height') cableInput?.focus();
-		else seatInput?.focus();
+		else if (kind === 'seat') seatInput?.focus();
+		else supportInput?.focus();
 	}
 </script>
 
@@ -89,6 +98,23 @@
 			/>
 		</label>
 	{/if}
+	{#if showSupport}
+		<label class="chip">
+			<span>Support</span>
+			<input
+				bind:this={supportInput}
+				maxlength="20"
+				placeholder="–"
+				value={supportValue ?? ''}
+				onchange={(e) => {
+					const next = e.currentTarget.value.trim() || null;
+					supportDraft = next;
+					if (!next) supportOpen = false;
+					onchange({ support: next });
+				}}
+			/>
+		</label>
+	{/if}
 	{#if canAdd}
 		<div class="note-actions" bind:this={addMenu}>
 			<button
@@ -107,6 +133,9 @@
 					{/if}
 					{#if !showSeat}
 						<button type="button" role="menuitem" onclick={() => addDetail('seat')}>Seat</button>
+					{/if}
+					{#if !showSupport}
+						<button type="button" role="menuitem" onclick={() => addDetail('support')}>Support</button>
 					{/if}
 				</div>
 			{/if}

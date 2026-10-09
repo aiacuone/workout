@@ -45,6 +45,7 @@ export async function loadHistoryExport(userId: string): Promise<HistoryExportWo
 				repRange: row.we.repRange,
 				cableHeight: row.we.cableHeight,
 				seatHeight: row.we.seatHeight,
+				support: row.we.support,
 				notes: row.we.notes,
 				sets: (sets.get(row.we.id) ?? []).map((set) => ({
 					type: set.type,

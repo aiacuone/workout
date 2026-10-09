@@ -154,9 +154,10 @@ export const actions: Actions = {
 	setup: async ({ locals, params, request }) => {
 		const { routine } = await owned(locals, params.id);
 		const form = await request.formData();
-		const set: { cableHeight?: string | null; seatHeight?: string | null } = {};
+		const set: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null } = {};
 		if (form.has('cableHeight')) set.cableHeight = optStr(form, 'cableHeight')?.slice(0, 20) ?? null;
 		if (form.has('seatHeight')) set.seatHeight = optStr(form, 'seatHeight')?.slice(0, 20) ?? null;
+		if (form.has('support')) set.support = optStr(form, 'support')?.slice(0, 20) ?? null;
 		if (!Object.keys(set).length) return;
 		await db
 			.update(schema.routineExercise)

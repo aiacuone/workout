@@ -150,11 +150,12 @@
 					<Rating value={s.rating} />
 				</header>
 
-				{#if s.cableHeight || s.seatHeight || s.repRange}
+				{#if s.cableHeight || s.seatHeight || s.support || s.repRange}
 					<p class="extras">
 						{#if s.repRange}<span>Reps {s.repRange}</span>{/if}
 						{#if s.cableHeight}<span>Weight height {s.cableHeight}</span>{/if}
 						{#if s.seatHeight}<span>Seat {s.seatHeight}</span>{/if}
+						{#if s.support}<span>Support {s.support}</span>{/if}
 					</p>
 				{/if}
 

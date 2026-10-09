@@ -51,12 +51,14 @@
 	let addMenu: HTMLElement | undefined = $state();
 	let cableInput: HTMLInputElement | undefined = $state();
 	let seatInput: HTMLInputElement | undefined = $state();
+	let supportInput: HTMLInputElement | undefined = $state();
 	let repMinInput: HTMLInputElement | undefined = $state();
 	let repMaxInput: HTMLInputElement | undefined = $state();
 	let permanentOpen = $state(false);
 	let sessionOpen = $state(false);
 	let cableOpen = $state(false);
 	let seatOpen = $state(false);
+	let supportOpen = $state(false);
 
 	const NEXT_TYPE: Record<SetType, SetType> = { normal: 'warmup', warmup: 'failure', failure: 'normal' };
 
@@ -68,9 +70,10 @@
 	const notesVisible = $derived(permanentOpen || sessionOpen || !!we.exerciseNotes || !!we.notes);
 	const showHeight = $derived(cableOpen || !!we.cableHeight);
 	const showSeat = $derived(seatOpen || !!we.seatHeight);
+	const showSupport = $derived(supportOpen || !!we.support);
 	const showPermanent = $derived(permanentOpen || !!we.exerciseNotes);
 	const showSession = $derived(sessionOpen || !!we.notes);
-	const canAdd = $derived(!showHeight || !showSeat || !showPermanent || !showSession);
+	const canAdd = $derived(!showHeight || !showSeat || !showSupport || !showPermanent || !showSession);
 	const repParts = $derived(parseRepRange(we.repRange));
 	const hitColor = $derived(we.hits[0] ? hitMethod(we.hits[0].methodKey).color : null);
 
@@ -132,15 +135,17 @@
 		updateSet(set, patch);
 	}
 
-	async function addDetail(kind: 'height' | 'seat' | 'permanent' | 'session') {
+	async function addDetail(kind: 'height' | 'seat' | 'support' | 'permanent' | 'session') {
 		addOpen = false;
 		if (kind === 'height') cableOpen = true;
 		else if (kind === 'seat') seatOpen = true;
+		else if (kind === 'support') supportOpen = true;
 		else if (kind === 'permanent') permanentOpen = true;
 		else sessionOpen = true;
 		await tick();
 		if (kind === 'height') cableInput?.focus();
 		else if (kind === 'seat') seatInput?.focus();
+		else if (kind === 'support') supportInput?.focus();
 	}
 
 	function removeLastSet() {
@@ -324,6 +329,21 @@
 					/>
 				</label>
 			{/if}
+			{#if showSupport}
+				<label class="chip">
+					<span>Support</span>
+					<input
+						bind:this={supportInput}
+						placeholder="–"
+						value={we.support ?? ''}
+						onchange={(e) => {
+							const support = e.currentTarget.value.trim() || null;
+							if (!support) supportOpen = false;
+							updateExercise({ support });
+						}}
+					/>
+				</label>
+			{/if}
 			{#if canAdd}
 				<div class="note-actions" bind:this={addMenu}>
 					<button
@@ -342,6 +362,9 @@
 							{/if}
 							{#if !showSeat}
 								<button type="button" role="menuitem" onclick={() => addDetail('seat')}>Seat</button>
+							{/if}
+							{#if !showSupport}
+								<button type="button" role="menuitem" onclick={() => addDetail('support')}>Support</button>
 							{/if}
 							{#if !showPermanent}
 								<button type="button" role="menuitem" onclick={() => addDetail('permanent')}>Permanent note</button>

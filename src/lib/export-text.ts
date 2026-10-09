@@ -39,6 +39,7 @@ export type HistoryExportWorkout = {
 		repRange: string | null;
 		cableHeight: string | null;
 		seatHeight: string | null;
+		support: string | null;
 		notes: string | null;
 		sets: { type: string; weightKg: number | null; reps: number | null; completed: boolean }[];
 		hits: {
@@ -128,6 +129,7 @@ export function workoutsTsv(workouts: HistoryExportWorkout[], weight: WeightUnit
 		'Rep range',
 		'Cable height',
 		'Seat height',
+		'Support',
 		'Exercise notes',
 		'Kind',
 		'Entry',
@@ -155,7 +157,7 @@ export function workoutsTsv(workouts: HistoryExportWorkout[], weight: WeightUnit
 		];
 
 		if (!workout.exercises.length) {
-			rows.push([...base, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+			rows.push([...base, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
 			continue;
 		}
 
@@ -169,6 +171,7 @@ export function workoutsTsv(workouts: HistoryExportWorkout[], weight: WeightUnit
 				exercise.repRange ?? '',
 				exercise.cableHeight ?? '',
 				exercise.seatHeight ?? '',
+				exercise.support ?? '',
 				exercise.notes ?? ''
 			];
 			let workNumber = 0;

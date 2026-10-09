@@ -9,12 +9,12 @@
 	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
 	import HistorySessionNote from '$lib/components/HistorySessionNote.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
-	import { hitLogSummary, setSummary } from '$lib/format';
+	import { hitLogSummary } from '$lib/format';
 	import { hitMethod } from '$lib/hit';
 	import TrendMarks from '$lib/components/Trend.svelte';
 	import { RECORD_LABEL, recordDetail, type Trend } from '$lib/records';
-	import type { Session } from '$lib/types';
-	import { formatDate, formatDuration, kgToDisplay } from '$lib/units';
+	import type { Session, SetView } from '$lib/types';
+	import { displayToKg, formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
 	let { data } = $props();
 
@@ -75,6 +75,11 @@
 	let setupWe = $state('');
 	let setupHeight = $state('');
 	let setupSeat = $state('');
+	let setupSupport = $state('');
+	let setForm: HTMLFormElement | undefined = $state();
+	let setId = $state('');
+	let setWeight = $state('');
+	let setReps = $state('');
 
 	async function openHistory(exerciseId: string, name: string) {
 		historyFor = { id: exerciseId, name };
@@ -98,13 +103,47 @@
 		queueMicrotask(() => noteForm?.requestSubmit());
 	}
 
-	async function saveSetup(weId: string, patch: { cableHeight?: string | null; seatHeight?: string | null }) {
+	function repsOrNull(v: string) {
+		if (v.trim() === '') return null;
+		const n = Math.round(Number(v));
+		return Number.isFinite(n) && n >= 0 ? n : null;
+	}
+
+	async function saveSet(set: SetView, weight: string, reps: string) {
+		set.weightKg = displayToKg(weight, unit);
+		set.reps = repsOrNull(reps);
+		setId = set.id;
+		setWeight = kgToDisplay(set.weightKg, unit);
+		setReps = set.reps == null ? '' : String(set.reps);
+		await tick();
+		setForm?.requestSubmit();
+	}
+
+	function caretAtEnd(e: Event) {
+		const el = e.target;
+		if (!(el instanceof HTMLInputElement)) return;
+		if (el.type === 'hidden' || el.type === 'checkbox' || el.type === 'radio' || el.type === 'file') return;
+		requestAnimationFrame(() => {
+			if (document.activeElement !== el) return;
+			try {
+				el.setSelectionRange(el.value.length, el.value.length);
+			} catch {
+				// Some input types do not allow a selection.
+			}
+		});
+	}
+
+	async function saveSetup(
+		weId: string,
+		patch: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null }
+	) {
 		const ex = w.exercises.find((e) => e.id === weId);
 		if (ex) Object.assign(ex, patch);
 		if (!ex) return;
 		setupWe = weId;
 		setupHeight = ex.cableHeight ?? '';
 		setupSeat = ex.seatHeight ?? '';
+		setupSupport = ex.support ?? '';
 		await tick();
 		setupForm?.requestSubmit();
 	}
@@ -112,7 +151,7 @@
 
 <svelte:head><title>{w.name} · Strongr</title></svelte:head>
 
-<div class="page">
+<div class="page" onfocusin={caretAtEnd} onpointerup={caretAtEnd}>
 	<a class="back" href="/history"><Icon name="back" size={18} />History</a>
 
 	{#if finished}
@@ -190,13 +229,32 @@
 				<ExerciseSetup
 					cableHeight={e.cableHeight}
 					seatHeight={e.seatHeight}
+					support={e.support}
 					onchange={(patch) => saveSetup(e.id, patch)}
 				/>
 				<ul class="sets">
 					{#each e.sets as s, i (s.id)}
 						<li>
 							<span class="idx">{s.type === 'warmup' ? 'W' : s.type === 'failure' ? 'F' : i + 1 - e.sets.slice(0, i).filter((x) => x.type === 'warmup').length}</span>
-							<span class="num">{setSummary(s, unit)}</span>
+							<label class="set-edit">
+								<input
+									class="num"
+									inputmode="decimal"
+									aria-label="Weight in {unit}"
+									placeholder="BW"
+									value={kgToDisplay(s.weightKg, unit)}
+									onchange={(ev) => saveSet(s, ev.currentTarget.value, s.reps == null ? '' : String(s.reps))}
+								/>
+								<span>{unit}</span>
+							</label>
+							<span class="times" aria-hidden="true">×</span>
+							<input
+								class="num reps"
+								inputmode="numeric"
+								aria-label="Reps"
+								value={s.reps ?? ''}
+								onchange={(ev) => saveSet(s, kgToDisplay(s.weightKg, unit), ev.currentTarget.value)}
+							/>
 						</li>
 					{/each}
 				</ul>
@@ -243,10 +301,17 @@
 	<input type="hidden" name="notes" value={noteVal} />
 </form>
 
+<form method="POST" action="?/set" bind:this={setForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>
+	<input type="hidden" name="setId" value={setId} />
+	<input type="hidden" name="weight" value={setWeight} />
+	<input type="hidden" name="reps" value={setReps} />
+</form>
+
 <form method="POST" action="?/setup" bind:this={setupForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>
 	<input type="hidden" name="weId" value={setupWe} />
 	<input type="hidden" name="cableHeight" value={setupHeight} />
 	<input type="hidden" name="seatHeight" value={setupSeat} />
+	<input type="hidden" name="support" value={setupSupport} />
 </form>
 
 <Sheet open={!!historyFor} title={historyFor?.name ?? ''} onclose={() => (historyFor = null)}>
@@ -407,7 +472,36 @@
 	}
 	.sets li {
 		display: flex;
-		gap: 0.7rem;
+		align-items: center;
+		gap: 0.45rem;
+	}
+	.set-edit {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+	.sets input {
+		width: 4.2rem;
+		min-height: 32px;
+		padding: 0.15rem 0.35rem;
+		border: 1.5px solid transparent;
+		border-radius: var(--radius-sm);
+		background: var(--paper);
+		font-weight: 750;
+		text-align: right;
+	}
+	.sets input.reps {
+		width: 3rem;
+	}
+	.sets input:focus {
+		outline: none;
+		border-color: var(--lime);
+	}
+	.set-edit span,
+	.times {
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--steel);
 	}
 	.idx {
 		width: 1.2rem;
