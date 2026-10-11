@@ -114,7 +114,7 @@
 				<div class="name-row">
 					<button type="button" class="name" onclick={() => (renaming = true)}>{w.name}</button>
 					<button type="button" class="icon-btn" aria-label="Workout options" onclick={() => (workoutMenu = true)}>
-						<Icon name="more" size={20} />
+						<Icon name="more-vertical" size={20} />
 					</button>
 					{#if arranging}
 						<button type="button" class="btn sm" onclick={() => (arranging = false)}>Done</button>
@@ -163,18 +163,20 @@
 		{/each}
 	</ol>
 
-	<button type="button" class="btn dark block add-ex" onclick={() => (picking = true)}>
-		<Icon name="plus" size={18} />Add exercises
-	</button>
-	<button
-		type="button"
-		class="btn danger block"
-		onclick={() => {
-			if (confirm('Discard this workout? Nothing will be saved.')) session.send({ op: 'discard' });
-		}}
-	>
-		Discard workout
-	</button>
+	<div class="workout-actions">
+		<button type="button" class="btn dark" onclick={() => (picking = true)}>
+			<Icon name="plus" size={18} />Exercise
+		</button>
+		<button
+			type="button"
+			class="btn danger"
+			onclick={() => {
+				if (confirm('Discard this workout? Nothing will be saved.')) session.send({ op: 'discard' });
+			}}
+		>
+			Discard
+		</button>
+	</div>
 </div>
 
 <Sheet bind:open={picking} title="Add exercise">
@@ -431,7 +433,7 @@
 	.cards {
 		display: grid;
 		gap: 0.9rem;
-		margin: 0.75rem 0 1rem;
+		margin: 0.75rem 0 0.6rem;
 		padding: 0;
 		list-style: none;
 	}
@@ -446,9 +448,15 @@
 		text-align: center;
 		color: var(--steel);
 	}
-	.add-ex {
-		margin-bottom: 0.75rem;
-		min-height: 52px;
+	.workout-actions {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.workout-actions .btn {
+		flex: 1;
+		min-width: 0;
+		padding: 0 0.6rem;
+		white-space: nowrap;
 	}
 	.two {
 		display: grid;
@@ -480,7 +488,7 @@
 		cursor: pointer;
 	}
 	.methods button:hover:not(:disabled) {
-		border-color: var(--c);
+		border-color: color-mix(in srgb, var(--c) 45%, var(--line-strong));
 	}
 	.methods button:disabled {
 		opacity: 0.5;
@@ -490,7 +498,7 @@
 		flex: none;
 		width: 8px;
 		border-radius: 4px;
-		background: var(--c);
+		background: color-mix(in srgb, var(--c) 55%, var(--line-strong));
 	}
 	.m-text {
 		display: grid;

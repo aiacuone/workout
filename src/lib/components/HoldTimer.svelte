@@ -46,20 +46,24 @@
 	.hold {
 		display: inline-grid;
 		place-items: center;
-		min-width: 38px;
-		height: 38px;
-		padding: 0 0.5rem;
-		border: 1.5px solid var(--c);
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		border: 1.5px solid color-mix(in srgb, var(--c) 40%, var(--line-strong));
 		border-radius: var(--radius-sm);
 		background: transparent;
-		color: var(--c);
+		color: color-mix(in srgb, var(--c) 65%, var(--ink-2));
 		font: inherit;
 		font-weight: 800;
 		cursor: pointer;
 	}
 	.running {
-		background: var(--c);
-		color: #fff;
+		width: auto;
+		min-width: 32px;
+		padding: 0 0.35rem;
+		background: color-mix(in srgb, var(--c) 55%, var(--line-strong));
+		color: var(--ink);
+		font-size: 0.75rem;
 		animation: breathe 1s ease-in-out infinite;
 	}
 	@keyframes breathe {

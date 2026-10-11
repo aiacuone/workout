@@ -423,8 +423,8 @@
 		box-shadow: var(--shadow);
 	}
 	.card.hit {
-		border-color: var(--c);
-		background: color-mix(in srgb, var(--c) 14%, var(--surface));
+		border-color: color-mix(in srgb, var(--c) 28%, var(--line-strong));
+		background: color-mix(in srgb, var(--c) 6%, var(--surface));
 	}
 	header {
 		display: flex;

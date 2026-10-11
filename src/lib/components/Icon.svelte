@@ -14,6 +14,7 @@
 		| 'chart'
 		| 'timer'
 		| 'more'
+		| 'more-vertical'
 		| 'back'
 		| 'bolt'
 		| 'search'
@@ -41,6 +42,7 @@
 		chart: 'M4 20V4M4 20h16M8 16l4-5 3 3 5-7',
 		timer: 'M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM12 9v4l2 2M9 2h6',
 		more: 'M5 12h.01M12 12h.01M19 12h.01',
+		'more-vertical': 'M12 5h.01M12 12h.01M12 19h.01',
 		back: 'M15 5l-7 7 7 7',
 		bolt: 'M13 2 4 14h7l-1 8 9-12h-7z',
 		search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4',
@@ -58,7 +60,7 @@
 	viewBox="0 0 24 24"
 	fill="none"
 	stroke="currentColor"
-	stroke-width={name === 'more' ? 3.2 : 2}
+	stroke-width={name === 'more' || name === 'more-vertical' ? 3.2 : 2}
 	stroke-linecap="round"
 	stroke-linejoin="round"
 	aria-hidden="true"

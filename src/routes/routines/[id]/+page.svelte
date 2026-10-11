@@ -586,7 +586,7 @@
 		cursor: pointer;
 	}
 	.methods button:hover:not(:disabled) {
-		border-color: var(--c);
+		border-color: color-mix(in srgb, var(--c) 45%, var(--line-strong));
 	}
 	.methods button:disabled {
 		opacity: 0.5;
@@ -596,7 +596,7 @@
 		flex: none;
 		width: 8px;
 		border-radius: 4px;
-		background: var(--c);
+		background: color-mix(in srgb, var(--c) 55%, var(--line-strong));
 	}
 	.m-text {
 		display: grid;
@@ -623,8 +623,8 @@
 		background: var(--surface);
 	}
 	.items > li.hit {
-		border-color: var(--c);
-		background: color-mix(in srgb, var(--c) 14%, var(--surface));
+		border-color: color-mix(in srgb, var(--c) 28%, var(--line-strong));
+		background: color-mix(in srgb, var(--c) 6%, var(--surface));
 	}
 	.item-head {
 		display: flex;

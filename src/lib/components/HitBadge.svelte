@@ -5,7 +5,7 @@
 	const m = $derived(hitMethod(method));
 </script>
 
-<span class="badge" style:--c={m.color} style:--i={m.ink} title={m.name}>
+<span class="badge" style:--c={m.color} title={m.name}>
 	{full ? m.name : m.short}
 </span>
 
@@ -14,9 +14,10 @@
 		display: inline-flex;
 		align-items: center;
 		padding: 0.15rem 0.5rem;
+		border: 1px solid color-mix(in srgb, var(--c) 32%, var(--line));
 		border-radius: 4px;
-		background: var(--c);
-		color: var(--i);
+		background: color-mix(in srgb, var(--c) 16%, var(--paper-2));
+		color: color-mix(in srgb, var(--c) 72%, var(--ink));
 		font-size: 0.7rem;
 		font-weight: 800;
 		font-stretch: 112%;

@@ -479,8 +479,8 @@
 		background: var(--surface);
 	}
 	.exercises > li.hit {
-		border-color: var(--c);
-		background: color-mix(in srgb, var(--c) 14%, var(--surface));
+		border-color: color-mix(in srgb, var(--c) 28%, var(--line-strong));
+		background: color-mix(in srgb, var(--c) 6%, var(--surface));
 	}
 	.ex-title {
 		display: flex;
@@ -564,10 +564,10 @@
 		color: var(--steel);
 	}
 	.hit {
-		margin-top: 0.6rem;
-		padding: 0.45rem 0.6rem;
-		border-left: 4px solid var(--c);
-		background: color-mix(in srgb, var(--c) 7%, transparent);
+		margin-top: 0.4rem;
+		padding: 0.3rem 0.45rem;
+		border-left: 3px solid color-mix(in srgb, var(--c) 50%, var(--line-strong));
+		background: color-mix(in srgb, var(--c) 5%, transparent);
 		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 	}
 	.hit ol {

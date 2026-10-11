@@ -25,6 +25,7 @@
 	let draft = $state<Point[] | null>(null);
 	let root: HTMLDivElement | undefined = $state();
 	let primed = false;
+	let adding = false;
 
 	const points = $derived(draft ?? notePoints(value).map((text, i) => ({ id: i, text })));
 	const showing = $derived(open || !!value);
@@ -60,16 +61,9 @@
 	}
 
 	async function addPoint(after?: number) {
+		adding = true;
 		ensureDraft();
 		const list = draft ?? [];
-		if (after == null) {
-			const last = list.at(-1);
-			if (last && !last.text.trim()) {
-				await tick();
-				focusPoint(last.id);
-				return;
-			}
-		}
 		const next: Point = { id: seq++, text: '' };
 		if (after == null) draft = [...list, next];
 		else {
@@ -79,6 +73,7 @@
 		}
 		await tick();
 		focusPoint(next.id);
+		adding = false;
 	}
 
 	function setText(id: number, text: string) {
@@ -118,7 +113,8 @@
 
 	function onBlur() {
 		queueMicrotask(() => {
-			commit(!root?.contains(document.activeElement));
+			if (adding || root?.contains(document.activeElement)) return;
+			commit(true);
 		});
 	}
 
@@ -181,8 +177,10 @@
 				type="button"
 				class="add-point"
 				aria-label="Add dot point"
-				onmousedown={(e) => e.preventDefault()}
-				onclick={() => addPoint()}
+				onpointerdown={(e) => {
+					e.preventDefault();
+					addPoint();
+				}}
 			>
 				<Icon name="plus" size={14} />
 			</button>
@@ -199,37 +197,38 @@
 	}
 	.box {
 		position: relative;
-		--note-line: color-mix(in srgb, var(--lime) 40%, var(--line-strong));
-		--note-fill: color-mix(in srgb, var(--lime) 7%, var(--paper));
-		min-height: 2.6rem;
-		padding: 0.35rem 0.2rem 0.85rem 0.55rem;
+		--note-line: color-mix(in srgb, var(--lime) 22%, var(--line-strong));
+		--note-fill: color-mix(in srgb, var(--lime) 4%, var(--paper));
+		--note-mark: color-mix(in srgb, var(--lime) 55%, var(--line-strong));
+		min-height: 2.2rem;
+		padding: 0.15rem 0.15rem 0.7rem 0.5rem;
 		border: 1.5px solid var(--note-line);
 		border-left-width: 3px;
-		border-left-color: var(--lime);
+		border-left-color: var(--note-mark);
 		border-radius: var(--radius-sm);
 		background: var(--note-fill);
 	}
 	.box:focus-within {
-		--note-line: var(--lime);
-		border-color: var(--lime);
-		border-left-color: var(--lime);
+		--note-line: color-mix(in srgb, var(--lime) 45%, var(--line-strong));
+		--note-mark: color-mix(in srgb, var(--lime) 70%, var(--line-strong));
+		border-color: var(--note-line);
+		border-left-color: var(--note-mark);
 	}
 	.sticky .box {
-		--note-line: color-mix(in srgb, var(--warn-ink) 55%, var(--line-strong));
-		--note-fill: color-mix(in srgb, var(--warn-ink) 16%, var(--paper));
-		border-left-color: var(--warn-ink);
+		--note-line: color-mix(in srgb, var(--warn-ink) 28%, var(--line-strong));
+		--note-fill: color-mix(in srgb, var(--warn-ink) 7%, var(--paper));
+		--note-mark: color-mix(in srgb, var(--warn-ink) 50%, var(--line-strong));
 	}
 	.sticky .box:focus-within {
-		--note-line: var(--warn-ink);
-		border-color: var(--warn-ink);
-		border-left-color: var(--warn-ink);
+		--note-line: color-mix(in srgb, var(--warn-ink) 42%, var(--line-strong));
+		--note-mark: color-mix(in srgb, var(--warn-ink) 65%, var(--line-strong));
 	}
 	.sticky .dot,
 	.sticky .add-point {
-		color: var(--warn-ink);
+		color: color-mix(in srgb, var(--warn-ink) 70%, var(--ink-2));
 	}
 	.sticky .dot {
-		background: var(--warn-ink);
+		background: color-mix(in srgb, var(--warn-ink) 70%, var(--ink-2));
 	}
 	ul {
 		margin: 0;
@@ -240,9 +239,9 @@
 	li {
 		display: flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.35rem;
 		min-width: 0;
-		min-height: 1.85rem;
+		min-height: 1.35rem;
 	}
 	.dot {
 		width: 0.4rem;
@@ -254,7 +253,7 @@
 	input {
 		flex: 1;
 		min-width: 0;
-		padding: 0.15rem 0;
+		padding: 0;
 		border: 0;
 		border-radius: 0;
 		background: transparent;
@@ -269,8 +268,8 @@
 		display: inline-grid;
 		place-items: center;
 		flex: none;
-		width: 28px;
-		height: 28px;
+		width: 1.25rem;
+		height: 1.25rem;
 		padding: 0;
 		border: 0;
 		border-radius: var(--radius-sm);
@@ -294,7 +293,7 @@
 		border: 1.5px solid var(--note-line);
 		border-radius: var(--radius);
 		background: var(--note-fill);
-		color: var(--lime);
+		color: var(--note-mark);
 		transform: translate(-50%, 50%);
 		cursor: pointer;
 	}

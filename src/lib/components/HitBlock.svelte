@@ -57,7 +57,7 @@
 	}
 </script>
 
-<section class="hit" style:--c={m.color} style:--i={m.ink}>
+<section class="hit" style:--c={m.color}>
 	<header>
 		<HitBadge method={hit.methodKey} />
 		<span class="name">{m.name}</span>
@@ -104,18 +104,13 @@
 									onchange={(e) => update(log, { reps: intOrNull(e.currentTarget.value) })}
 								/>
 							{:else if f === 'duration'}
-								<span class="with-timer">
-									<input
-										class="input"
-										inputmode="numeric"
-										placeholder={p?.durationSec?.toString() ?? '–'}
-										value={log.durationSec ?? ''}
-										onchange={(e) => update(log, { durationSec: intOrNull(e.currentTarget.value) })}
-									/>
-									{#if hit.methodKey === 'isometric' && !log.completed}
-										<HoldTimer color={m.color} onstop={(s) => update(log, { durationSec: s })} />
-									{/if}
-								</span>
+								<input
+									class="input"
+									inputmode="numeric"
+									placeholder={p?.durationSec?.toString() ?? '–'}
+									value={log.durationSec ?? ''}
+									onchange={(e) => update(log, { durationSec: intOrNull(e.currentTarget.value) })}
+								/>
 							{:else if f === 'rest'}
 								<input
 									class="input"
@@ -141,23 +136,28 @@
 						</label>
 					{/each}
 				</div>
-				<button
-					type="button"
-					class="check"
-					aria-label={log.completed ? 'Mark not done' : 'Mark done'}
-					aria-pressed={log.completed}
-					onclick={() => toggle(log, i)}
-				>
-					<Icon name="check" size={18} />
-				</button>
-				<button
-					type="button"
-					class="icon-btn sm del"
-					aria-label="Delete entry"
-					onclick={() => session.send({ op: 'removeHitLog', logId: log.id })}
-				>
-					<Icon name="trash" size={15} />
-				</button>
+				<div class="actions">
+					{#if hit.methodKey === 'isometric' && !log.completed}
+						<HoldTimer color={m.color} onstop={(s) => update(log, { durationSec: s })} />
+					{/if}
+					<button
+						type="button"
+						class="check"
+						aria-label={log.completed ? 'Mark not done' : 'Mark done'}
+						aria-pressed={log.completed}
+						onclick={() => toggle(log, i)}
+					>
+						<Icon name="check" size={16} />
+					</button>
+					<button
+						type="button"
+						class="del"
+						aria-label="Delete entry"
+						onclick={() => session.send({ op: 'removeHitLog', logId: log.id })}
+					>
+						<Icon name="trash" size={15} />
+					</button>
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -169,16 +169,16 @@
 
 <style>
 	.hit {
-		margin-top: 0.75rem;
-		border-left: 4px solid var(--c);
+		margin-top: 0.45rem;
+		border-left: 3px solid color-mix(in srgb, var(--c) 50%, var(--line-strong));
 		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-		background: color-mix(in srgb, var(--c) 7%, var(--surface));
-		padding: 0.5rem 0.5rem 0.4rem 0.65rem;
+		background: color-mix(in srgb, var(--c) 5%, var(--surface));
+		padding: 0.35rem 0.35rem 0.25rem 0.5rem;
 	}
 	header {
 		display: flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.35rem;
 	}
 	.name {
 		flex: 1;
@@ -186,8 +186,8 @@
 		font-size: 0.92rem;
 	}
 	.icon-btn.sm {
-		width: 30px;
-		height: 30px;
+		width: 28px;
+		height: 28px;
 		font-weight: 800;
 	}
 	.info {
@@ -197,31 +197,30 @@
 	}
 	.rows {
 		display: grid;
-		gap: 0.35rem;
-		margin-top: 0.4rem;
+		gap: 0.05rem;
+		margin-top: 0.2rem;
 	}
 	.entry {
 		display: grid;
-		grid-template-columns: 4.6rem 1fr auto auto;
+		grid-template-columns: max-content minmax(0, 1fr) auto;
 		align-items: center;
-		gap: 0.4rem;
-		padding: 0.2rem;
+		gap: 0.3rem;
+		padding: 0.02rem 0;
 		border-radius: var(--radius-sm);
 		transition: background-color 0.2s;
 	}
 	.entry.done {
-		background: color-mix(in srgb, var(--c) 18%, transparent);
+		background: color-mix(in srgb, var(--c) 10%, transparent);
 	}
 	.lbl {
 		font-size: 0.75rem;
 		font-weight: 800;
-		color: var(--c);
-		filter: brightness(0.8);
+		color: color-mix(in srgb, var(--c) 65%, var(--ink-2));
 	}
 	.fields {
 		display: grid;
 		grid-template-columns: repeat(var(--n), minmax(0, 1fr));
-		gap: 0.35rem;
+		gap: 0.25rem;
 	}
 	.f {
 		position: relative;
@@ -231,8 +230,8 @@
 		grid-column: span 1;
 	}
 	.f .input {
-		min-height: 38px;
-		padding: 0.3rem 0.4rem 0.9rem;
+		min-height: 32px;
+		padding: 0.05rem 0.15rem 0.65rem;
 		text-align: center;
 		font-weight: 700;
 		font-variant-numeric: tabular-nums;
@@ -245,7 +244,7 @@
 		box-shadow: none;
 	}
 	.f select.input {
-		padding: 0.3rem 0.3rem 0.9rem;
+		padding: 0.05rem 0.15rem 0.65rem;
 		text-align: left;
 		font-size: 0.8rem;
 	}
@@ -261,37 +260,48 @@
 		color: var(--steel);
 		pointer-events: none;
 	}
-	.with-timer {
+	.actions {
 		display: flex;
-		gap: 0.25rem;
+		align-items: center;
+		gap: 0.2rem;
 	}
-	.with-timer .input {
-		min-width: 0;
-	}
-	.check {
+	.check,
+	.del {
 		display: grid;
 		place-items: center;
-		width: 38px;
-		height: 38px;
-		border: 1.5px solid var(--c);
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+	}
+	.check {
+		border: 1.5px solid color-mix(in srgb, var(--c) 40%, var(--line-strong));
 		border-radius: var(--radius-sm);
 		background: var(--surface);
-		color: var(--c);
+		color: color-mix(in srgb, var(--c) 65%, var(--ink-2));
 		cursor: pointer;
 	}
 	.check[aria-pressed='true'] {
-		background: var(--c);
-		color: var(--i);
+		border-color: color-mix(in srgb, var(--c) 55%, var(--line-strong));
+		background: color-mix(in srgb, var(--c) 55%, var(--line-strong));
+		color: var(--ink);
 	}
 	.del {
+		border: 0;
+		background: transparent;
 		color: var(--steel);
+	}
+	.del:hover {
+		background: var(--paper-2);
+		color: var(--ink);
 	}
 	.add {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.3rem;
-		margin-top: 0.35rem;
-		padding: 0.35rem 0.5rem;
+		gap: 0.25rem;
+		margin-top: 0.15rem;
+		padding: 0.2rem 0.35rem;
 		border: 0;
 		border-radius: var(--radius-sm);
 		background: transparent;
@@ -302,11 +312,11 @@
 		cursor: pointer;
 	}
 	.add:hover {
-		background: color-mix(in srgb, var(--c) 14%, transparent);
+		background: color-mix(in srgb, var(--c) 8%, transparent);
 	}
 	@media (max-width: 420px) {
 		.entry {
-			grid-template-columns: 1fr auto auto;
+			grid-template-columns: minmax(0, 1fr) auto;
 		}
 		.lbl {
 			grid-column: 1 / -1;
