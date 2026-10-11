@@ -915,21 +915,24 @@
 		color: var(--steel);
 	}
 	dl {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-		gap: 0.25rem 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem 1.35rem;
 		margin: 0;
 	}
 	dl div {
 		display: flex;
-		justify-content: space-between;
-		gap: 0.5rem;
+		align-items: baseline;
+		gap: 0.4rem;
 		font-size: 0.88rem;
 	}
 	dt {
 		color: var(--steel);
 	}
 	dd {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.28rem;
 		margin: 0;
 		font-weight: 700;
 	}
