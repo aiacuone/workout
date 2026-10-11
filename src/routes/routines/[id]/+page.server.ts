@@ -72,6 +72,29 @@ export const actions: Actions = {
 		return { saved: true };
 	},
 
+	permanentNote: async ({ locals, params, request }) => {
+		const { user, routine } = await owned(locals, params.id);
+		const form = await request.formData();
+		const exerciseId = str(form, 'exerciseId');
+		const [row] = await db
+			.select({ id: schema.routineExercise.id })
+			.from(schema.routineExercise)
+			.innerJoin(schema.exercise, eq(schema.exercise.id, schema.routineExercise.exerciseId))
+			.where(
+				and(
+					eq(schema.routineExercise.routineId, routine.id),
+					eq(schema.routineExercise.exerciseId, exerciseId),
+					eq(schema.exercise.userId, user.id)
+				)
+			)
+			.limit(1);
+		if (!row) error(404, 'Exercise not found');
+		await db
+			.update(schema.exercise)
+			.set({ notes: optStr(form, 'notes')?.slice(0, 2000) ?? null })
+			.where(and(eq(schema.exercise.id, exerciseId), eq(schema.exercise.userId, user.id)));
+	},
+
 	addHit: async ({ locals, params, request }) => {
 		const { routine } = await owned(locals, params.id);
 		const form = await request.formData();

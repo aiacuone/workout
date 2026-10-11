@@ -30,7 +30,8 @@ export async function routineItems(routineIds: string[], exec: Executor = db) {
 			hitMethods: schema.routineExercise.hitMethods,
 			name: schema.exercise.name,
 			muscleGroup: schema.exercise.muscleGroup,
-			equipment: schema.exercise.equipment
+			equipment: schema.exercise.equipment,
+			exerciseNotes: schema.exercise.notes
 		})
 		.from(schema.routineExercise)
 		.innerJoin(schema.exercise, eq(schema.exercise.id, schema.routineExercise.exerciseId))

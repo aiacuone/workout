@@ -4,10 +4,16 @@
 
 	let {
 		value,
-		onchange
+		onchange,
+		label = 'Session note',
+		placeholder = 'Changes for next time…',
+		addLabel = 'Note'
 	}: {
 		value: string | null;
 		onchange: (notes: string | null) => void;
+		label?: string;
+		placeholder?: string;
+		addLabel?: string;
 	} = $props();
 
 	let open = $state(false);
@@ -17,13 +23,13 @@
 	<SessionNote
 		bind:open
 		{value}
-		label="Session note"
-		placeholder="Changes for next time…"
+		{label}
+		{placeholder}
 		{onchange}
 	/>
 	{#if !open && !value}
 		<button type="button" class="add-note" onclick={() => (open = true)}>
-			<Icon name="plus" size={16} />Note
+			<Icon name="plus" size={16} />{addLabel}
 		</button>
 	{/if}
 </div>

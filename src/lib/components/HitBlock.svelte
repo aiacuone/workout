@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { hitMethod, type HitField } from '$lib/hit';
 	import type { HitLogView, HitView } from '$lib/types';
+	import { selectAll } from '$lib/select-all';
 	import { displayToKg, kgToDisplay, type WeightUnit } from '$lib/units';
 	import type { WorkoutSession } from '$lib/workout/session.svelte';
 	import HitBadge from './HitBadge.svelte';
@@ -88,6 +89,8 @@
 									inputmode="decimal"
 									placeholder={kgToDisplay(p?.weightKg, unit) || '–'}
 									value={kgToDisplay(log.weightKg, unit)}
+									onfocus={selectAll}
+									onpointerup={selectAll}
 									onchange={(e) => update(log, { weightKg: displayToKg(e.currentTarget.value, unit) })}
 								/>
 							{:else if f === 'reps'}
@@ -96,6 +99,8 @@
 									inputmode="numeric"
 									placeholder={p?.reps?.toString() ?? '–'}
 									value={log.reps ?? ''}
+									onfocus={selectAll}
+									onpointerup={selectAll}
 									onchange={(e) => update(log, { reps: intOrNull(e.currentTarget.value) })}
 								/>
 							{:else if f === 'duration'}

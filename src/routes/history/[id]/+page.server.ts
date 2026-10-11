@@ -73,6 +73,29 @@ export const actions: Actions = {
 			.where(and(eq(schema.workoutExercise.id, str(form, 'weId')), eq(schema.workoutExercise.workoutId, w.id)));
 	},
 
+	permanentNote: async ({ locals, params, request }) => {
+		const { user, w } = await owned(locals, params.id);
+		const form = await request.formData();
+		const exerciseId = str(form, 'exerciseId');
+		const [row] = await db
+			.select({ id: schema.workoutExercise.id })
+			.from(schema.workoutExercise)
+			.innerJoin(schema.exercise, eq(schema.exercise.id, schema.workoutExercise.exerciseId))
+			.where(
+				and(
+					eq(schema.workoutExercise.workoutId, w.id),
+					eq(schema.workoutExercise.exerciseId, exerciseId),
+					eq(schema.exercise.userId, user.id)
+				)
+			)
+			.limit(1);
+		if (!row) error(404, 'Exercise not found');
+		await db
+			.update(schema.exercise)
+			.set({ notes: optStr(form, 'notes')?.slice(0, 2000) ?? null })
+			.where(and(eq(schema.exercise.id, exerciseId), eq(schema.exercise.userId, user.id)));
+	},
+
 	set: async ({ locals, params, request }) => {
 		const { user, w } = await owned(locals, params.id);
 		const form = await request.formData();

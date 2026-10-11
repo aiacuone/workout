@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
+	import { selectAll } from '$lib/select-all';
 	import Icon from './Icon.svelte';
 
 	let {
@@ -71,7 +72,10 @@
 				bind:this={cableInput}
 				maxlength="20"
 				placeholder="–"
+				data-select-all
 				value={height ?? ''}
+				onfocus={selectAll}
+				onpointerup={selectAll}
 				onchange={(e) => {
 					const next = e.currentTarget.value.trim() || null;
 					heightDraft = next;
@@ -88,7 +92,10 @@
 				bind:this={seatInput}
 				maxlength="20"
 				placeholder="–"
+				data-select-all
 				value={seat ?? ''}
+				onfocus={selectAll}
+				onpointerup={selectAll}
 				onchange={(e) => {
 					const next = e.currentTarget.value.trim() || null;
 					seatDraft = next;
@@ -105,7 +112,10 @@
 				bind:this={supportInput}
 				maxlength="20"
 				placeholder="–"
+				data-select-all
 				value={supportValue ?? ''}
+				onfocus={selectAll}
+				onpointerup={selectAll}
 				onchange={(e) => {
 					const next = e.currentTarget.value.trim() || null;
 					supportDraft = next;

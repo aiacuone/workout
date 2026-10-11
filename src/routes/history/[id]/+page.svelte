@@ -14,6 +14,7 @@
 	import TrendMarks from '$lib/components/Trend.svelte';
 	import { RECORD_LABEL, recordDetail, type Trend } from '$lib/records';
 	import type { Session, SetView } from '$lib/types';
+	import { selectAll } from '$lib/select-all';
 	import { displayToKg, formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
 	let { data } = $props();
@@ -71,6 +72,10 @@
 	let noteForm: HTMLFormElement | undefined = $state();
 	let noteWe = $state('');
 	let noteVal = $state('');
+	let permanentForm: HTMLFormElement | undefined = $state();
+	let permanentExercise = $state('');
+	let permanentVal = $state('');
+	let savedNotes = $state<Record<string, string | null>>({});
 	let setupForm: HTMLFormElement | undefined = $state();
 	let setupWe = $state('');
 	let setupHeight = $state('');
@@ -103,6 +108,18 @@
 		queueMicrotask(() => noteForm?.requestSubmit());
 	}
 
+	function exerciseNote(exerciseId: string, stored: string | null) {
+		return Object.hasOwn(savedNotes, exerciseId) ? savedNotes[exerciseId] : stored;
+	}
+
+	async function savePermanent(exerciseId: string, notes: string | null) {
+		savedNotes[exerciseId] = notes;
+		permanentExercise = exerciseId;
+		permanentVal = notes ?? '';
+		await tick();
+		permanentForm?.requestSubmit();
+	}
+
 	function repsOrNull(v: string) {
 		if (v.trim() === '') return null;
 		const n = Math.round(Number(v));
@@ -122,6 +139,7 @@
 	function caretAtEnd(e: Event) {
 		const el = e.target;
 		if (!(el instanceof HTMLInputElement)) return;
+		if (el.dataset.selectAll != null) return;
 		if (el.type === 'hidden' || el.type === 'checkbox' || el.type === 'radio' || el.type === 'file') return;
 		requestAnimationFrame(() => {
 			if (document.activeElement !== el) return;
@@ -242,7 +260,10 @@
 									inputmode="decimal"
 									aria-label="Weight in {unit}"
 									placeholder="BW"
+									data-select-all
 									value={kgToDisplay(s.weightKg, unit)}
+									onfocus={selectAll}
+									onpointerup={selectAll}
 									onchange={(ev) => saveSet(s, ev.currentTarget.value, s.reps == null ? '' : String(s.reps))}
 								/>
 								<span>{unit}</span>
@@ -252,7 +273,10 @@
 								class="num reps"
 								inputmode="numeric"
 								aria-label="Reps"
+								data-select-all
 								value={s.reps ?? ''}
+								onfocus={selectAll}
+								onpointerup={selectAll}
 								onchange={(ev) => saveSet(s, kgToDisplay(s.weightKg, unit), ev.currentTarget.value)}
 							/>
 						</li>
@@ -268,6 +292,13 @@
 						</ol>
 					</div>
 				{/each}
+				<HistorySessionNote
+					value={exerciseNote(e.exerciseId, e.exerciseNotes)}
+					label="Permanent note"
+					placeholder="Form cues, setup, keep forever…"
+					addLabel="Permanent note"
+					onchange={(notes) => savePermanent(e.exerciseId, notes)}
+				/>
 				<HistorySessionNote value={e.notes} onchange={(notes) => note(e.id, notes ?? '')} />
 				<div class="rate"><Rating value={e.rating} onchange={(v) => rate(e.id, v)} /></div>
 			</li>
@@ -294,6 +325,17 @@
 <form method="POST" action="?/rate" bind:this={rateForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>
 	<input type="hidden" name="weId" value={rateWe} />
 	<input type="hidden" name="rating" value={rateVal} />
+</form>
+
+<form
+	method="POST"
+	action="?/permanentNote"
+	bind:this={permanentForm}
+	use:enhance={() => async ({ update }) => update({ reset: false })}
+	hidden
+>
+	<input type="hidden" name="exerciseId" value={permanentExercise} />
+	<input type="hidden" name="notes" value={permanentVal} />
 </form>
 
 <form method="POST" action="?/note" bind:this={noteForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>

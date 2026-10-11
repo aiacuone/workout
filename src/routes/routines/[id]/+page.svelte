@@ -3,6 +3,7 @@
 	import { tick } from 'svelte';
 	import ExercisePicker from '$lib/components/ExercisePicker.svelte';
 	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
+	import HistorySessionNote from '$lib/components/HistorySessionNote.svelte';
 	import HitBadge from '$lib/components/HitBadge.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
@@ -32,6 +33,10 @@
 	let setupHeight = $state('');
 	let setupSeat = $state('');
 	let setupSupport = $state('');
+	let noteForm: HTMLFormElement | undefined = $state();
+	let noteExercise = $state('');
+	let noteVal = $state('');
+	let savedNotes = $state<Record<string, string | null>>({});
 
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
@@ -137,6 +142,18 @@
 		setupSupport = item.support ?? '';
 		await tick();
 		setupForm?.requestSubmit();
+	}
+
+	function exerciseNote(exerciseId: string, stored: string | null) {
+		return Object.hasOwn(savedNotes, exerciseId) ? savedNotes[exerciseId] : stored;
+	}
+
+	async function savePermanent(exerciseId: string, notes: string | null) {
+		savedNotes[exerciseId] = notes;
+		noteExercise = exerciseId;
+		noteVal = notes ?? '';
+		await tick();
+		noteForm?.requestSubmit();
 	}
 
 	function saveTargets(e: FocusEvent) {
@@ -329,6 +346,13 @@
 						</button>
 					{/each}
 				</div>
+				<HistorySessionNote
+					value={exerciseNote(item.exerciseId, item.exerciseNotes)}
+					label="Permanent note"
+					placeholder="Form cues, setup, keep forever…"
+					addLabel="Permanent note"
+					onchange={(notes) => savePermanent(item.exerciseId, notes)}
+				/>
 			</li>
 		{:else}
 			<li class="empty">Add the exercises for this routine.</li>
@@ -355,6 +379,17 @@
 <form method="POST" action="?/removeHit" use:enhance={saveHit} bind:this={removeHitForm} hidden>
 	<input type="hidden" name="itemId" value={removeHitItemId} />
 	<input type="hidden" name="methodKey" value={removeHitKey} />
+</form>
+
+<form
+	method="POST"
+	action="?/permanentNote"
+	bind:this={noteForm}
+	use:enhance={() => async ({ update }) => update({ reset: false, invalidateAll: false })}
+	hidden
+>
+	<input type="hidden" name="exerciseId" value={noteExercise} />
+	<input type="hidden" name="notes" value={noteVal} />
 </form>
 
 <form

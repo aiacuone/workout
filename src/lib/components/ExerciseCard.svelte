@@ -4,6 +4,7 @@
 	import { hitMethod } from '$lib/hit';
 	import { composeRepRange, parseRepRange } from '$lib/rep-range';
 	import type { SetType, SetView, WorkoutExerciseState } from '$lib/types';
+	import { selectAll } from '$lib/select-all';
 	import { displayToKg, kgToDisplay, type WeightUnit } from '$lib/units';
 	import type { WorkoutSession } from '$lib/workout/session.svelte';
 	import HitBlock from './HitBlock.svelte';
@@ -212,6 +213,8 @@
 					aria-label="Weight"
 					placeholder={kgToDisplay(p?.weightKg, unit)}
 					value={kgToDisplay(set.weightKg, unit)}
+					onfocus={selectAll}
+					onpointerup={selectAll}
 					onchange={(e) => updateSet(set, { weightKg: displayToKg(e.currentTarget.value, unit) })}
 				/>
 				<input
@@ -220,6 +223,8 @@
 					aria-label="Reps"
 					placeholder={p?.reps?.toString() ?? ''}
 					value={set.reps ?? ''}
+					onfocus={selectAll}
+					onpointerup={selectAll}
 					onchange={(e) => updateSet(set, { reps: repsOrNull(e.currentTarget.value) })}
 				/>
 				<button
@@ -305,7 +310,10 @@
 					<input
 						bind:this={cableInput}
 						placeholder="–"
+						data-select-all
 						value={we.cableHeight ?? ''}
+						onfocus={selectAll}
+						onpointerup={selectAll}
 						onchange={(e) => {
 							const cableHeight = e.currentTarget.value.trim() || null;
 							if (!cableHeight) cableOpen = false;
@@ -320,7 +328,10 @@
 					<input
 						bind:this={seatInput}
 						placeholder="–"
+						data-select-all
 						value={we.seatHeight ?? ''}
+						onfocus={selectAll}
+						onpointerup={selectAll}
 						onchange={(e) => {
 							const seatHeight = e.currentTarget.value.trim() || null;
 							if (!seatHeight) seatOpen = false;
@@ -335,7 +346,10 @@
 					<input
 						bind:this={supportInput}
 						placeholder="–"
+						data-select-all
 						value={we.support ?? ''}
+						onfocus={selectAll}
+						onpointerup={selectAll}
 						onchange={(e) => {
 							const support = e.currentTarget.value.trim() || null;
 							if (!support) supportOpen = false;
