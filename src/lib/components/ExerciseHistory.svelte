@@ -5,6 +5,7 @@
 	import { formatDate, kgToDisplay, type WeightUnit } from '$lib/units';
 	import Chart from './Chart.svelte';
 	import HitBadge from './HitBadge.svelte';
+	import NotePoints from './NotePoints.svelte';
 	import Rating from './Rating.svelte';
 
 	let {
@@ -177,7 +178,7 @@
 					</div>
 				{/each}
 
-				{#if s.notes}<p class="note">{s.notes}</p>{/if}
+				{#if s.notes}<div class="note"><NotePoints notes={s.notes} /></div>{/if}
 			</li>
 		{/each}
 	</ol>

@@ -156,6 +156,7 @@
 					onmove={(dir) => session.send({ op: 'moveExercise', weId: we.id, dir })}
 					onhistory={() => openHistory(we)}
 					onmenu={() => (menuFor = we)}
+					onhit={() => (hitFor = we)}
 					onrest={() => openRest(we)}
 				/>
 			</li>
@@ -201,15 +202,6 @@
 		<div class="stack">
 			<button class="btn" onclick={() => { const target = we; menuFor = null; openHistory(target); }}>
 				<Icon name="chart" size={18} />History & graphs
-			</button>
-			<button
-				class="btn"
-				onclick={() => {
-					hitFor = we;
-					menuFor = null;
-				}}
-			>
-				<Icon name="bolt" size={18} />HIT method
 			</button>
 			<button
 				class="btn danger"

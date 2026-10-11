@@ -9,6 +9,7 @@
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { HIT_METHODS, hitMethod } from '$lib/hit';
 	import { parseRepRange } from '$lib/rep-range';
+	import { selectAll } from '$lib/select-all';
 	import { kgToDisplay } from '$lib/units';
 
 	let { data } = $props();
@@ -37,6 +38,7 @@
 	let noteExercise = $state('');
 	let noteVal = $state('');
 	let savedNotes = $state<Record<string, string | null>>({});
+	let permanentOpen = $state<Record<string, boolean>>({});
 
 	const unit = $derived(data.prefs?.weightUnit ?? 'kg');
 
@@ -148,6 +150,10 @@
 		return Object.hasOwn(savedNotes, exerciseId) ? savedNotes[exerciseId] : stored;
 	}
 
+	function noteOpen(itemId: string) {
+		return !!permanentOpen[itemId];
+	}
+
 	async function savePermanent(exerciseId: string, notes: string | null) {
 		savedNotes[exerciseId] = notes;
 		noteExercise = exerciseId;
@@ -242,11 +248,13 @@
 						Sets
 						<input
 							name="targetSets"
-							type="number"
+							type="text"
 							inputmode="numeric"
-							min="1"
-							max="20"
+							autocomplete="off"
+							data-select-all
 							value={item.targetSets}
+							onfocus={selectAll}
+							onpointerup={selectAll}
 						/>
 					</label>
 					<label class="field">
@@ -259,7 +267,10 @@
 								autocomplete="off"
 								aria-label="Minimum reps"
 								placeholder="8"
+								data-select-all
 								value={reps.min}
+								onfocus={selectAll}
+								onpointerup={selectAll}
 							/>
 							<span class="rep-dash" aria-hidden="true">–</span>
 							<input
@@ -269,7 +280,10 @@
 								autocomplete="off"
 								aria-label="Maximum reps"
 								placeholder="12"
+								data-select-all
 								value={reps.max}
+								onfocus={selectAll}
+								onpointerup={selectAll}
 							/>
 						</span>
 					</label>
@@ -277,11 +291,14 @@
 						Weight ({unit})
 						<input
 							name="targetWeight"
-							type="number"
+							type="text"
 							inputmode="decimal"
-							step="any"
+							autocomplete="off"
 							placeholder="prev"
+							data-select-all
 							value={kgToDisplay(item.targetWeightKg, unit)}
+							onfocus={selectAll}
+							onpointerup={selectAll}
 						/>
 					</label>
 				</form>
@@ -290,7 +307,17 @@
 					seatHeight={item.seatHeight}
 					support={item.support}
 					onchange={(patch) => saveSetup(item.id, patch)}
+					onhit={methods.length < HIT_METHODS.length
+						? () => {
+								hitReplace = null;
+								hitFor = item.id;
+							}
+						: undefined}
+					onnote={!exerciseNote(item.exerciseId, item.exerciseNotes) && !noteOpen(item.id)
+						? () => (permanentOpen[item.id] = true)
+						: undefined}
 				/>
+				{#if methods.length}
 				<div class="hits">
 					{#each methods as key (key)}
 						{@const menuId = hitMenuId(item.id, key)}
@@ -333,25 +360,20 @@
 								</div>
 							{/if}
 						</div>
-					{:else}
-						<button
-							type="button"
-							class="btn sm"
-							onclick={() => {
-								hitReplace = null;
-								hitFor = item.id;
-							}}
-						>
-							<Icon name="bolt" size={16} />HIT
-						</button>
 					{/each}
 				</div>
+				{/if}
 				<HistorySessionNote
+					hideButton
+					open={noteOpen(item.id)}
 					value={exerciseNote(item.exerciseId, item.exerciseNotes)}
-					label="Permanent note"
+					sticky
+					label="Sticky note"
 					placeholder="Form cues, setup, keep forever…"
-					addLabel="Permanent note"
-					onchange={(notes) => savePermanent(item.exerciseId, notes)}
+					onchange={(notes) => {
+						if (!notes) permanentOpen[item.id] = false;
+						savePermanent(item.exerciseId, notes);
+					}}
 				/>
 			</li>
 		{:else}
@@ -629,6 +651,15 @@
 		align-items: center;
 		gap: 0.2rem;
 		min-width: 0;
+	}
+	.targets label.field input {
+		background: transparent;
+		border-color: transparent;
+		box-shadow: none;
+	}
+	.targets label.field input:focus {
+		border-color: var(--lime);
+		box-shadow: none;
 	}
 	.targets .rep-pair input {
 		flex: 1 1 0;

@@ -79,8 +79,8 @@
 		gap: 0.65rem;
 		width: 100%;
 		overflow: hidden;
-		margin: 0.55rem 0 0.45rem;
-		padding: 0.45rem 0.7rem;
+		margin: 0.35rem 0 0.25rem;
+		padding: 0.3rem 0.55rem;
 		border: 0;
 		border-radius: var(--radius-sm);
 		background: var(--chrome);

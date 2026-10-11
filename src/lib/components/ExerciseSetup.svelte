@@ -7,12 +7,24 @@
 		cableHeight,
 		seatHeight,
 		support,
-		onchange
+		onchange,
+		onhit,
+		onnote,
+		hideMenu = false,
+		request = null,
+		onrequest,
+		onshown
 	}: {
 		cableHeight: string | null;
 		seatHeight: string | null;
 		support: string | null;
 		onchange: (patch: { cableHeight?: string | null; seatHeight?: string | null; support?: string | null }) => void;
+		onhit?: () => void;
+		onnote?: () => void;
+		hideMenu?: boolean;
+		request?: 'height' | 'seat' | 'support' | null;
+		onrequest?: () => void;
+		onshown?: (shown: { height: boolean; seat: boolean; support: boolean }) => void;
 	} = $props();
 
 	let addOpen = $state(false);
@@ -34,7 +46,19 @@
 	const showHeight = $derived(cableOpen || !!height);
 	const showSeat = $derived(seatOpen || !!seat);
 	const showSupport = $derived(supportOpen || !!supportValue);
-	const canAdd = $derived(!showHeight || !showSeat || !showSupport);
+	const showAdd = $derived(!hideMenu && (!showHeight || !showSeat || !showSupport || !!onhit || !!onnote));
+	const visible = $derived(showHeight || showSeat || showSupport || showAdd);
+
+	$effect(() => {
+		onshown?.({ height: showHeight, seat: showSeat, support: showSupport });
+	});
+
+	$effect(() => {
+		const kind = request;
+		if (!kind) return;
+		onrequest?.();
+		addDetail(kind);
+	});
 
 	$effect(() => {
 		if (!addOpen) return;
@@ -64,6 +88,7 @@
 	}
 </script>
 
+{#if visible}
 <div class="setup">
 	{#if showHeight}
 		<label class="chip">
@@ -125,7 +150,7 @@
 			/>
 		</label>
 	{/if}
-	{#if canAdd}
+	{#if showAdd}
 		<div class="note-actions" bind:this={addMenu}>
 			<button
 				type="button"
@@ -147,28 +172,49 @@
 					{#if !showSupport}
 						<button type="button" role="menuitem" onclick={() => addDetail('support')}>Support</button>
 					{/if}
+					{#if onhit}
+						<button
+							type="button"
+							role="menuitem"
+							onclick={() => {
+								addOpen = false;
+								onhit?.();
+							}}>HIT method</button
+						>
+					{/if}
+					{#if onnote}
+						<button
+							type="button"
+							role="menuitem"
+							onclick={() => {
+								addOpen = false;
+								onnote?.();
+							}}>Sticky note</button>
+						>
+					{/if}
 				</div>
 			{/if}
 		</div>
 	{/if}
 </div>
+{/if}
 
 <style>
 	.setup {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 0.15rem 0.35rem;
-		margin-top: 0.45rem;
+		gap: 0.1rem 0.55rem;
+		margin-top: 0.15rem;
 	}
 	.chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.35rem;
-		min-height: 32px;
-		padding: 0 0.45rem;
+		gap: 0.3rem;
+		min-height: 1.5rem;
+		padding: 0;
 		border-radius: var(--radius-sm);
-		background: var(--paper);
+		background: transparent;
 	}
 	.chip span {
 		font-size: 0.66rem;
@@ -178,7 +224,7 @@
 		color: var(--steel);
 	}
 	.chip input {
-		width: 4.2rem;
+		width: 2.4rem;
 		padding: 0;
 		border: 0;
 		background: transparent;

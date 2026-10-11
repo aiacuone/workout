@@ -7,7 +7,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import Rating from '$lib/components/Rating.svelte';
 	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
-	import HistorySessionNote from '$lib/components/HistorySessionNote.svelte';
+	import HistoryNotes from '$lib/components/HistoryNotes.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
 	import { hitLogSummary } from '$lib/format';
 	import { hitMethod } from '$lib/hit';
@@ -76,6 +76,8 @@
 	let permanentExercise = $state('');
 	let permanentVal = $state('');
 	let savedNotes = $state<Record<string, string | null>>({});
+	let setupShown = $state<Record<string, { height: boolean; seat: boolean; support: boolean }>>({});
+	let setupAsk = $state<Record<string, 'height' | 'seat' | 'support' | null>>({});
 	let setupForm: HTMLFormElement | undefined = $state();
 	let setupWe = $state('');
 	let setupHeight = $state('');
@@ -245,9 +247,13 @@
 					<p class="extras"><span>Reps {e.repRange}</span></p>
 				{/if}
 				<ExerciseSetup
+					hideMenu
 					cableHeight={e.cableHeight}
 					seatHeight={e.seatHeight}
 					support={e.support}
+					request={setupAsk[e.id] ?? null}
+					onrequest={() => (setupAsk[e.id] = null)}
+					onshown={(shown) => (setupShown[e.id] = shown)}
 					onchange={(patch) => saveSetup(e.id, patch)}
 				/>
 				<ul class="sets">
@@ -292,15 +298,22 @@
 						</ol>
 					</div>
 				{/each}
-				<HistorySessionNote
-					value={exerciseNote(e.exerciseId, e.exerciseNotes)}
-					label="Permanent note"
-					placeholder="Form cues, setup, keep forever…"
-					addLabel="Permanent note"
-					onchange={(notes) => savePermanent(e.exerciseId, notes)}
-				/>
-				<HistorySessionNote value={e.notes} onchange={(notes) => note(e.id, notes ?? '')} />
-				<div class="rate"><Rating value={e.rating} onchange={(v) => rate(e.id, v)} /></div>
+				<HistoryNotes
+					permanent={exerciseNote(e.exerciseId, e.exerciseNotes)}
+					session={e.notes}
+					canHeight={!(setupShown[e.id]?.height || e.cableHeight)}
+					canSeat={!(setupShown[e.id]?.seat || e.seatHeight)}
+					canSupport={!(setupShown[e.id]?.support || e.support)}
+					onheight={() => (setupAsk[e.id] = 'height')}
+					onseat={() => (setupAsk[e.id] = 'seat')}
+					onsupport={() => (setupAsk[e.id] = 'support')}
+					onpermanent={(notes) => savePermanent(e.exerciseId, notes)}
+					onsession={(notes) => note(e.id, notes ?? '')}
+				>
+					{#snippet aside()}
+						<Rating value={e.rating} onchange={(v) => rate(e.id, v)} />
+					{/snippet}
+				</HistoryNotes>
 			</li>
 		{/each}
 	</ol>
@@ -460,7 +473,7 @@
 		gap: 0.75rem;
 	}
 	.exercises > li {
-		padding: 0.85rem;
+		padding: 0.6rem 0.7rem 0.45rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
 		background: var(--surface);
@@ -506,16 +519,16 @@
 		font-weight: 650;
 	}
 	.sets {
-		margin: 0.4rem 0 0;
+		margin: 0.2rem 0 0;
 		padding: 0;
 		list-style: none;
 		display: grid;
-		gap: 0.15rem;
+		gap: 0;
 	}
 	.sets li {
 		display: flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.3rem;
 	}
 	.set-edit {
 		display: inline-flex;
@@ -523,17 +536,17 @@
 		gap: 0.25rem;
 	}
 	.sets input {
-		width: 4.2rem;
-		min-height: 32px;
-		padding: 0.15rem 0.35rem;
+		width: 2.6rem;
+		min-height: 1.6rem;
+		padding: 0 0.1rem;
 		border: 1.5px solid transparent;
 		border-radius: var(--radius-sm);
-		background: var(--paper);
+		background: transparent;
 		font-weight: 750;
 		text-align: right;
 	}
 	.sets input.reps {
-		width: 3rem;
+		width: 1.8rem;
 	}
 	.sets input:focus {
 		outline: none;
@@ -577,11 +590,6 @@
 		font-size: 0.88rem;
 		font-style: italic;
 		color: var(--ink-2);
-	}
-	.rate {
-		margin-top: 0.6rem;
-		padding-top: 0.5rem;
-		border-top: 1px dashed var(--line);
 	}
 	.actions {
 		display: grid;

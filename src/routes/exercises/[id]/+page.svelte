@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import ExerciseForm from '$lib/components/ExerciseForm.svelte';
+	import NotePoints from '$lib/components/NotePoints.svelte';
 	import ExerciseHistory from '$lib/components/ExerciseHistory.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
@@ -42,7 +43,7 @@
 			<button class="btn sm">Restore</button>
 		</form>
 	{/if}
-	{#if data.exercise.notes}<p class="notes">{data.exercise.notes}</p>{/if}
+	{#if data.exercise.notes}<div class="notes"><NotePoints notes={data.exercise.notes} /></div>{/if}
 
 	<ExerciseHistory sessions={data.history} {unit} />
 </div>

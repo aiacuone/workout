@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import { setSummary } from '$lib/format';
-	import { hitMethod } from '$lib/hit';
+	import { HIT_METHODS, hitMethod } from '$lib/hit';
 	import { composeRepRange, parseRepRange } from '$lib/rep-range';
 	import type { SetType, SetView, WorkoutExerciseState } from '$lib/types';
 	import { selectAll } from '$lib/select-all';
@@ -11,6 +11,7 @@
 	import Icon from './Icon.svelte';
 	import Rating from './Rating.svelte';
 	import RestTimer from './RestTimer.svelte';
+	import NotePoints from './NotePoints.svelte';
 	import SessionNote from './SessionNote.svelte';
 
 	let {
@@ -24,6 +25,7 @@
 		idleSec,
 		onhistory,
 		onmenu,
+		onhit,
 		onrest,
 		arranging = false,
 		canUp = false,
@@ -40,6 +42,7 @@
 		idleSec: number;
 		onhistory: () => void;
 		onmenu: () => void;
+		onhit: () => void;
 		onrest: () => void;
 		arranging?: boolean;
 		canUp?: boolean;
@@ -74,7 +77,8 @@
 	const showSupport = $derived(supportOpen || !!we.support);
 	const showPermanent = $derived(permanentOpen || !!we.exerciseNotes);
 	const showSession = $derived(sessionOpen || !!we.notes);
-	const canAdd = $derived(!showHeight || !showSeat || !showSupport || !showPermanent || !showSession);
+	const canAddHit = $derived(we.hits.length < HIT_METHODS.length);
+	const showAdd = $derived(!showHeight || !showSeat || !showSupport || !showPermanent || !showSession || canAddHit);
 	const repParts = $derived(parseRepRange(we.repRange));
 	const hitColor = $derived(we.hits[0] ? hitMethod(we.hits[0].methodKey).color : null);
 
@@ -177,7 +181,10 @@
 	<RestTimer endsAt={restEndsAt} total={restTotal} {offsetMs} {idleSec} onedit={onrest} />
 
 	{#if we.previous?.notes}
-		<p class="last-note"><span class="eyebrow">Last time</span> {we.previous.notes}</p>
+		<div class="last-note">
+			<span class="eyebrow">Last time</span>
+			<NotePoints notes={we.previous.notes} />
+		</div>
 	{/if}
 
 	<div class="sets" role="table" aria-label="{we.name} sets">
@@ -263,14 +270,15 @@
 		<SessionNote
 			bind:open={permanentOpen}
 			value={we.exerciseNotes}
-			label="Permanent note"
+			sticky
+			label="Sticky note"
 			placeholder="Form cues, setup, keep forever…"
 			onchange={(exerciseNotes) => updateExercise({ exerciseNotes })}
 		/>
 		<SessionNote
 			bind:open={sessionOpen}
 			value={we.notes}
-			label="Session note"
+			label="Note"
 			placeholder="Changes for next time…"
 			onchange={(notes) => updateExercise({ notes })}
 		/>
@@ -358,16 +366,17 @@
 					/>
 				</label>
 			{/if}
-			{#if canAdd}
+			{#if showAdd}
 				<div class="note-actions" bind:this={addMenu}>
 					<button
 						type="button"
 						class="add-note"
+						aria-label="Add"
 						aria-expanded={addOpen}
 						aria-haspopup="menu"
 						onclick={() => (addOpen = !addOpen)}
 					>
-						<Icon name="plus" size={16} />Add
+						<Icon name="plus" size={16} />
 					</button>
 					{#if addOpen}
 						<div class="note-pick" role="menu">
@@ -380,11 +389,21 @@
 							{#if !showSupport}
 								<button type="button" role="menuitem" onclick={() => addDetail('support')}>Support</button>
 							{/if}
+							{#if canAddHit}
+								<button
+									type="button"
+									role="menuitem"
+									onclick={() => {
+										addOpen = false;
+										onhit();
+									}}>HIT method</button
+								>
+							{/if}
 							{#if !showPermanent}
-								<button type="button" role="menuitem" onclick={() => addDetail('permanent')}>Permanent note</button>
+								<button type="button" role="menuitem" onclick={() => addDetail('permanent')}>Sticky note</button>
 							{/if}
 							{#if !showSession}
-								<button type="button" role="menuitem" onclick={() => addDetail('session')}>Session note</button>
+								<button type="button" role="menuitem" onclick={() => addDetail('session')}>Note</button>
 							{/if}
 						</div>
 					{/if}
@@ -397,7 +416,7 @@
 
 <style>
 	.card {
-		padding: 0.85rem 0.85rem 0.7rem;
+		padding: 0.6rem 0.7rem 0.45rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
 		background: var(--surface);
@@ -460,14 +479,14 @@
 	}
 	.sets {
 		display: grid;
-		gap: 0.25rem;
+		gap: 0.05rem;
 	}
 	.row {
 		display: grid;
-		grid-template-columns: 2.4rem minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 2.75rem;
+		grid-template-columns: 2.2rem max-content 5.2rem 4.4rem minmax(2.4rem, 1fr);
 		align-items: center;
-		gap: 0.4rem;
-		padding: 0.15rem 0.2rem;
+		gap: 0.35rem;
+		padding: 0.02rem 0;
 		border-radius: var(--radius-sm);
 		position: relative;
 	}
@@ -493,7 +512,7 @@
 		animation: shake 0.4s;
 	}
 	.type {
-		height: 34px;
+		height: 32px;
 		border: 0;
 		border-radius: var(--radius-sm);
 		background: var(--paper-2);
@@ -526,20 +545,23 @@
 		cursor: default;
 	}
 	.row .input {
-		min-height: 38px;
-		padding: 0.3rem;
+		min-height: 32px;
+		padding: 0.1rem;
 		text-align: center;
 		font-weight: 750;
-		background: var(--paper);
-		border-color: transparent;
-	}
-	.row.done .input {
 		background: transparent;
+		border-color: transparent;
+		box-shadow: none;
+	}
+	.row .input:focus {
+		border-color: var(--lime);
+		box-shadow: none;
 	}
 	.check {
 		display: grid;
 		place-items: center;
-		height: 38px;
+		justify-self: end;
+		height: 32px;
 		border: 1.5px solid var(--line-strong);
 		border-radius: var(--radius-sm);
 		background: var(--surface);
@@ -561,16 +583,16 @@
 	.set-actions {
 		display: flex;
 		gap: 0.25rem;
-		margin-top: 0.35rem;
+		margin-top: 0.2rem;
 	}
 	footer {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: 0.5rem 0.75rem;
-		margin-top: 0.65rem;
-		padding-top: 0.55rem;
+		gap: 0.35rem 0.6rem;
+		margin-top: 0.4rem;
+		padding-top: 0.35rem;
 		border-top: 1px dashed var(--line);
 	}
 	.tools {
@@ -584,11 +606,11 @@
 	.chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.35rem;
-		min-height: 32px;
-		padding: 0 0.45rem;
+		gap: 0.3rem;
+		min-height: 1.5rem;
+		padding: 0;
 		border-radius: var(--radius-sm);
-		background: var(--paper);
+		background: transparent;
 	}
 	.chip span {
 		font-size: 0.66rem;
@@ -643,7 +665,7 @@
 	}
 	.note-actions {
 		position: relative;
-		justify-self: start;
+		justify-self: end;
 	}
 	.note-pick {
 		position: absolute;
@@ -674,17 +696,15 @@
 		background: var(--paper-2);
 	}
 	.add-note {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
-		padding: 0.35rem 0.55rem;
+		display: inline-grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
 		border: 0;
 		border-radius: var(--radius-sm);
 		background: transparent;
 		color: var(--steel);
-		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 650;
 		cursor: pointer;
 	}
 	.add-note:hover,

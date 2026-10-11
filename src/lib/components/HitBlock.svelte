@@ -236,6 +236,13 @@
 		text-align: center;
 		font-weight: 700;
 		font-variant-numeric: tabular-nums;
+		background: transparent;
+		border-color: transparent;
+		box-shadow: none;
+	}
+	.f .input:focus {
+		border-color: var(--lime);
+		box-shadow: none;
 	}
 	.f select.input {
 		padding: 0.3rem 0.3rem 0.9rem;

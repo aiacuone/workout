@@ -5,34 +5,43 @@
 	let {
 		value,
 		onchange,
-		label = 'Session note',
+		label = 'Note',
 		placeholder = 'Changes for next time…',
-		addLabel = 'Note'
+		addLabel = 'Note',
+		sticky = false,
+		open = $bindable(false),
+		hideButton = false
 	}: {
 		value: string | null;
 		onchange: (notes: string | null) => void;
 		label?: string;
 		placeholder?: string;
 		addLabel?: string;
+		sticky?: boolean;
+		open?: boolean;
+		hideButton?: boolean;
 	} = $props();
 
-	let open = $state(false);
+	const showing = $derived(open || !!value);
 </script>
 
-<div class="wrap">
-	<SessionNote
-		bind:open
-		{value}
-		{label}
-		{placeholder}
-		{onchange}
-	/>
-	{#if !open && !value}
-		<button type="button" class="add-note" onclick={() => (open = true)}>
-			<Icon name="plus" size={16} />{addLabel}
-		</button>
-	{/if}
-</div>
+{#if showing || !hideButton}
+	<div class="wrap">
+		<SessionNote
+			bind:open
+			{value}
+			{label}
+			{placeholder}
+			{sticky}
+			{onchange}
+		/>
+		{#if !hideButton && !open && !value}
+			<button type="button" class="add-note" onclick={() => (open = true)}>
+				<Icon name="plus" size={16} />{addLabel}
+			</button>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.wrap {
