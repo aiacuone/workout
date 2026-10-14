@@ -3,17 +3,17 @@
 	import { tick } from 'svelte';
 	import { page } from '$app/state';
 	import ExerciseHistory from '$lib/components/ExerciseHistory.svelte';
-	import HitBadge from '$lib/components/HitBadge.svelte';
+	import HistoryHit from '$lib/components/HistoryHit.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import Rating from '$lib/components/Rating.svelte';
 	import ExerciseSetup from '$lib/components/ExerciseSetup.svelte';
 	import HistoryNotes from '$lib/components/HistoryNotes.svelte';
 	import Sheet from '$lib/components/Sheet.svelte';
-	import { hitLogSummary } from '$lib/format';
+	import type { HitField } from '$lib/hit';
 	import { hitMethod } from '$lib/hit';
 	import TrendMarks from '$lib/components/Trend.svelte';
 	import { RECORD_LABEL, recordDetail, type Trend } from '$lib/records';
-	import type { Session, SetView } from '$lib/types';
+	import type { HitLogView, Session, SetView } from '$lib/types';
 	import { selectAll } from '$lib/select-all';
 	import { displayToKg, formatDate, formatDuration, kgToDisplay } from '$lib/units';
 
@@ -87,6 +87,10 @@
 	let setId = $state('');
 	let setWeight = $state('');
 	let setReps = $state('');
+	let hitLogForm: HTMLFormElement | undefined = $state();
+	let hitLogId = $state('');
+	let hitField = $state('');
+	let hitValue = $state('');
 
 	async function openHistory(exerciseId: string, name: string) {
 		historyFor = { id: exerciseId, name };
@@ -136,6 +140,14 @@
 		setReps = set.reps == null ? '' : String(set.reps);
 		await tick();
 		setForm?.requestSubmit();
+	}
+
+	async function saveHitLog(log: HitLogView, field: HitField, value: number | string | null) {
+		hitLogId = log.id;
+		hitField = field;
+		hitValue = value == null ? '' : String(value);
+		await tick();
+		hitLogForm?.requestSubmit();
 	}
 
 	function caretAtEnd(e: Event) {
@@ -289,14 +301,7 @@
 					{/each}
 				</ul>
 				{#each e.hits as h (h.id)}
-					<div class="hit" style:--c={hitMethod(h.methodKey).color}>
-						<HitBadge method={h.methodKey} full />
-						<ol>
-							{#each h.logs as l, i (l.id)}
-								<li class="num"><span>{hitMethod(h.methodKey).entryLabel} {i + 1}</span>{hitLogSummary(h.methodKey, l, unit)}</li>
-							{/each}
-						</ol>
-					</div>
+					<HistoryHit hit={h} {unit} exercises={data.exercises} onchange={saveHitLog} />
 				{/each}
 				<HistoryNotes
 					permanent={exerciseNote(e.exerciseId, e.exerciseNotes)}
@@ -360,6 +365,18 @@
 	<input type="hidden" name="setId" value={setId} />
 	<input type="hidden" name="weight" value={setWeight} />
 	<input type="hidden" name="reps" value={setReps} />
+</form>
+
+<form
+	method="POST"
+	action="?/hitLog"
+	bind:this={hitLogForm}
+	use:enhance={() => async ({ update }) => update({ reset: false })}
+	hidden
+>
+	<input type="hidden" name="logId" value={hitLogId} />
+	<input type="hidden" name="field" value={hitField} />
+	<input type="hidden" name="value" value={hitValue} />
 </form>
 
 <form method="POST" action="?/setup" bind:this={setupForm} use:enhance={() => async ({ update }) => update({ reset: false })} hidden>
@@ -568,28 +585,6 @@
 		width: 1.2rem;
 		font-weight: 800;
 		color: var(--steel);
-	}
-	.hit {
-		margin-top: 0.4rem;
-		padding: 0.3rem 0.45rem;
-		border-left: 3px solid color-mix(in srgb, var(--c) 50%, var(--line-strong));
-		background: color-mix(in srgb, var(--c) 5%, transparent);
-		border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-	}
-	.hit ol {
-		margin: 0.35rem 0 0;
-		padding: 0;
-		list-style: none;
-		display: grid;
-		gap: 0.1rem;
-		font-size: 0.9rem;
-	}
-	.hit li span {
-		display: inline-block;
-		min-width: 5.5rem;
-		font-size: 0.78rem;
-		font-weight: 750;
-		color: var(--ink-2);
 	}
 	.note {
 		margin-top: 0.4rem;

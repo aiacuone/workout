@@ -2,7 +2,9 @@ import { error, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import { db, schema } from '$lib/server/db';
 import { summarize } from '$lib/server/history';
+import { HIT_BY_KEY, type HitField } from '$lib/hit';
 import { compareNumber, type TrendSide } from '$lib/records';
+import { listExercises } from '$lib/server/exercises';
 import { previousSessionStats, previousWorkoutVolume, trendsForExercises, workoutRecords } from '$lib/server/prs';
 import { getPrefs, optNum, optStr, requireUser, str } from '$lib/server/util';
 import { getOwnedWorkout, getWorkoutState } from '$lib/server/workouts';
@@ -16,10 +18,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (workout.status === 'in_progress') redirect(303, '/workout/active');
 	const startedAt = new Date(workout.startedAt);
 	const exerciseIds = [...new Set(workout.exercises.map((e) => e.exerciseId))];
-	const [records, prior, previousVolumeKg] = await Promise.all([
+	const [records, prior, previousVolumeKg, exercises] = await Promise.all([
 		workoutRecords(user.id, startedAt, workout.exercises),
 		previousSessionStats(user.id, exerciseIds, startedAt),
-		previousWorkoutVolume(user.id, startedAt)
+		previousWorkoutVolume(user.id, startedAt),
+		listExercises(user.id)
 	]);
 	const totals = workout.exercises.reduce(
 		(t, e) => {
@@ -42,7 +45,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		records,
 		trends: trendsForExercises(workout.exercises, prior),
 		totals,
-		volumeTrend
+		volumeTrend,
+		exercises
 	};
 };
 
@@ -116,6 +120,54 @@ export const actions: Actions = {
 				reps: reps == null ? null : Math.min(1000, Math.max(0, Math.round(reps)))
 			})
 			.where(eq(schema.setLog.id, setId));
+	},
+
+	hitLog: async ({ locals, params, request }) => {
+		const { user, w } = await owned(locals, params.id);
+		const form = await request.formData();
+		const logId = str(form, 'logId');
+		const field = str(form, 'field') as HitField;
+		const [row] = await db
+			.select({ methodKey: schema.hitApplication.methodKey })
+			.from(schema.hitLog)
+			.innerJoin(schema.hitApplication, eq(schema.hitApplication.id, schema.hitLog.hitApplicationId))
+			.innerJoin(schema.workoutExercise, eq(schema.workoutExercise.id, schema.hitApplication.workoutExerciseId))
+			.where(and(eq(schema.hitLog.id, logId), eq(schema.workoutExercise.workoutId, w.id)))
+			.limit(1);
+		if (!row) error(404, 'HIT entry not found');
+		const method = HIT_BY_KEY[row.methodKey];
+		if (!method?.fields.includes(field)) error(400, 'Invalid HIT field');
+
+		const raw = optStr(form, 'value');
+		if (field === 'exercise') {
+			if (!raw) {
+				await db.update(schema.hitLog).set({ data: {} }).where(eq(schema.hitLog.id, logId));
+				return;
+			}
+			const [exercise] = await db
+				.select({ id: schema.exercise.id, name: schema.exercise.name })
+				.from(schema.exercise)
+				.where(and(eq(schema.exercise.id, raw), eq(schema.exercise.userId, user.id)))
+				.limit(1);
+			if (!exercise) error(404, 'Exercise not found');
+			await db.update(schema.hitLog).set({ data: { exerciseId: exercise.id, exerciseName: exercise.name } }).where(eq(schema.hitLog.id, logId));
+			return;
+		}
+
+		const number = raw == null ? null : Number(raw);
+		if (number != null && (!Number.isFinite(number) || number < 0)) error(400, 'Invalid HIT value');
+		if (field === 'weight') {
+			await db.update(schema.hitLog).set({ weightKg: number == null ? null : Math.min(2000, number) }).where(eq(schema.hitLog.id, logId));
+		} else {
+			const value = number == null ? null : Math.min(3600, Math.round(number));
+			const patch =
+				field === 'reps'
+					? { reps: value }
+					: field === 'duration'
+						? { durationSec: value }
+						: { restSec: value };
+			await db.update(schema.hitLog).set(patch).where(eq(schema.hitLog.id, logId));
+		}
 	},
 
 	setup: async ({ locals, params, request }) => {

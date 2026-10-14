@@ -186,6 +186,7 @@
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
+				layout: { padding: { top: 10, right: 8 } },
 				interaction: { mode: 'index', intersect: false },
 				plugins: {
 					legend: { display: false },
