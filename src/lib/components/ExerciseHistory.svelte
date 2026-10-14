@@ -210,7 +210,7 @@
 				},
 				scales: {
 					x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkipPadding: 12 } },
-					y: { position: 'left', grid: { color: '#243040' }, beginAtZero: false },
+					y: { position: 'left', grid: { color: '#243040' }, beginAtZero: false, grace: '12%' },
 					reps: { position: 'right', grid: { display: false }, beginAtZero: true }
 				}
 			}
