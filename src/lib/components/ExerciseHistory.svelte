@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { ChartConfiguration } from 'chart.js';
+	import type { ChartConfiguration, Plugin } from 'chart.js';
 	import { hitLogSummary, ratingLabel, setSummary } from '$lib/format';
+	import { HIT_METHODS, hitMethod } from '$lib/hit';
 	import type { Session } from '$lib/types';
 	import { formatDate, kgToDisplay, type WeightUnit } from '$lib/units';
 	import Chart from './Chart.svelte';
@@ -15,12 +16,46 @@
 	}: { sessions: Session[]; unit: WeightUnit; linkWorkouts?: boolean } = $props();
 
 	type Metric = 'top' | 'e1rm' | 'volume';
+	type ChartRange = 1 | 3 | 6 | 12 | 'all';
+
+	const CHART_RANGES: { value: ChartRange; label: string }[] = [
+		{ value: 1, label: 'Last month' },
+		{ value: 3, label: '3 months' },
+		{ value: 6, label: '6 months' },
+		{ value: 12, label: '1 year' },
+		{ value: 'all', label: 'All' }
+	];
+
 	let metric = $state<Metric>('top');
+	let chartRange = $state<ChartRange>('all');
 
 	const RATING_COLORS = ['#a8b4c0', '#ff6b73', '#ffb224', '#5dff8a'];
 
-	const chrono = $derived([...sessions].reverse().slice(-30));
+	const chrono = $derived.by(() => {
+		const entries = [...sessions].reverse();
+		if (chartRange === 'all') return entries;
+
+		const cutoff = new Date();
+		cutoff.setHours(0, 0, 0, 0);
+		const day = cutoff.getDate();
+		cutoff.setDate(1);
+		cutoff.setMonth(cutoff.getMonth() - chartRange);
+		const lastDay = new Date(cutoff.getFullYear(), cutoff.getMonth() + 1, 0).getDate();
+		cutoff.setDate(Math.min(day, lastDay));
+		return entries.filter((session) => new Date(session.date) >= cutoff);
+	});
 	const toUnit = (kg: number | null) => (kg == null ? null : Number(kgToDisplay(kg, unit)));
+	const visibleHitMethods = $derived.by(() => {
+		const keys = new Set(
+			chrono.flatMap((s) =>
+				s.hits
+					.filter((h) => h.logs.some((l) => l.completed && l.weightKg != null))
+					.map((h) => h.methodKey)
+			)
+		);
+		const known = HIT_METHODS.filter((method) => keys.delete(method.key));
+		return [...known, ...[...keys].map(hitMethod)];
+	});
 
 	const best = $derived({
 		top: Math.max(0, ...sessions.map((s) => s.topWeightKg ?? 0)),
@@ -38,8 +73,69 @@
 		);
 		const label =
 			metric === 'top' ? `Top weight (${unit})` : metric === 'e1rm' ? `Est. 1RM (${unit})` : `Volume (${unit})`;
+		const hitSeries =
+			metric === 'top'
+				? visibleHitMethods.map((method) => {
+						const selected = chrono.map((session) =>
+							session.hits
+								.filter((hit) => hit.methodKey === method.key)
+								.flatMap((hit) => hit.logs)
+								.filter((log) => log.completed && log.weightKg != null)
+								.sort(
+									(a, b) =>
+										(b.weightKg ?? 0) - (a.weightKg ?? 0) ||
+										(b.reps ?? 0) - (a.reps ?? 0) ||
+										(b.durationSec ?? 0) - (a.durationSec ?? 0)
+								)[0]
+						);
+						return {
+							method,
+							labels: selected.map((log) =>
+								!log
+									? ''
+									: method.key === 'isometric'
+										? log.durationSec != null
+											? `${log.durationSec}s`
+											: ''
+										: log.reps != null
+											? `×${log.reps}`
+											: ''
+							),
+							data: selected.map((log) => toUnit(log?.weightKg ?? null))
+						};
+					})
+				: [];
+		const hitLabelPlugin: Plugin = {
+			id: 'hit-point-labels',
+			afterDatasetsDraw: (chart) => {
+				const ctx = chart.ctx;
+				const occupied = new Map<string, number>();
+				ctx.save();
+				ctx.font = `600 11px ${getComputedStyle(document.body).fontFamily}`;
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'bottom';
+				ctx.lineWidth = 3;
+				ctx.strokeStyle = '#18212c';
+				hitSeries.forEach((series, seriesIndex) => {
+					const meta = chart.getDatasetMeta(seriesIndex + 2);
+					meta.data.forEach((point, pointIndex) => {
+						const text = series.labels[pointIndex];
+						if (!text || series.data[pointIndex] == null) return;
+						const key = `${Math.round(point.x)}:${Math.round(point.y)}`;
+						const stack = occupied.get(key) ?? 0;
+						occupied.set(key, stack + 1);
+						const y = point.y - 9 - stack * 13;
+						ctx.strokeText(text, point.x, y);
+						ctx.fillStyle = series.method.color;
+						ctx.fillText(text, point.x, y);
+					});
+				});
+				ctx.restore();
+			}
+		};
 		return {
 			type: 'bar',
+			plugins: [hitLabelPlugin],
 			data: {
 				labels: chrono.map((s) => formatDate(s.date, { weekday: undefined })),
 				datasets: [
@@ -51,9 +147,9 @@
 						borderColor: '#e8eee9',
 						borderWidth: 2.5,
 						tension: 0.25,
-						pointRadius: chrono.map((s) => (s.rating === 3 ? 7 : 5)),
-						pointHoverRadius: chrono.map((s) => (s.rating === 3 ? 9 : 7)),
-						pointBorderWidth: chrono.map((s) => (s.rating === 3 ? 2.5 : 1)),
+						pointRadius: 7,
+						pointHoverRadius: 9,
+						pointBorderWidth: 2.5,
 						pointBorderColor: chrono.map((s) =>
 							s.rating === 3 ? RATING_COLORS[3] : '#e8eee9'
 						),
@@ -69,7 +165,22 @@
 						backgroundColor: 'rgba(47, 123, 255, 0.45)',
 						borderRadius: 3,
 						order: 1
-					}
+					},
+					...hitSeries.map(({ method, data }) => ({
+						type: 'line' as const,
+						label: method.short,
+						data,
+						yAxisID: 'y',
+						showLine: false,
+						spanGaps: false,
+						pointStyle: 'circle' as const,
+						pointRadius: 9,
+						pointHoverRadius: 11,
+						pointBorderWidth: 2.5,
+						pointBackgroundColor: 'transparent',
+						pointBorderColor: method.color,
+						order: -1
+					}))
 				]
 			},
 			options: {
@@ -79,10 +190,19 @@
 				plugins: {
 					legend: { display: false },
 					tooltip: {
+						filter: (item) => item.datasetIndex < 2,
 						callbacks: {
 							afterBody: (items) => {
 								const s = chrono[items[0]?.dataIndex ?? -1];
-								return s?.rating ? `Rating: ${ratingLabel(s.rating)}` : '';
+								if (!s) return '';
+								const details = s.hits.flatMap((hit) => {
+									const method = hitMethod(hit.methodKey);
+									return hit.logs
+										.filter((log) => log.completed)
+										.map((log) => `${method.short} ${hitLogSummary(hit.methodKey, log, unit)}`);
+								});
+								if (s.rating) details.unshift(`Rating: ${ratingLabel(s.rating)}`);
+								return details;
 							}
 						}
 					}
@@ -115,17 +235,37 @@
 
 	{#if sessions.length > 1}
 		<div class="chart-card">
-			<div class="metric" role="tablist">
-				{#each [['top', 'Weight'], ['e1rm', 'Est. 1RM'], ['volume', 'Volume']] as [k, l] (k)}
-					<button type="button" role="tab" aria-selected={metric === k} onclick={() => (metric = k as Metric)}>
-						{l}
-					</button>
-				{/each}
+			<div class="chart-controls">
+				<div class="metric" role="tablist">
+					{#each [['top', 'Weight'], ['e1rm', 'Est. 1RM'], ['volume', 'Volume']] as [k, l] (k)}
+						<button type="button" role="tab" aria-selected={metric === k} onclick={() => (metric = k as Metric)}>
+							{l}
+						</button>
+					{/each}
+				</div>
+				<div class="range-picks" role="group" aria-label="Chart date range">
+					{#each CHART_RANGES as range (range.value)}
+						<button
+							type="button"
+							aria-pressed={chartRange === range.value}
+							onclick={() => (chartRange = range.value)}>{range.label}</button
+						>
+					{/each}
+				</div>
 			</div>
-			<Chart {config} />
+			{#if chrono.length > 1}
+				<Chart {config} />
+			{:else}
+				<p class="chart-empty">Not enough sessions in this date range.</p>
+			{/if}
 			<div class="legend">
 				<span><i class="line"></i>{metric === 'volume' ? 'Volume' : metric === 'e1rm' ? 'Est. 1RM' : 'Top weight'}</span>
 				<span><i class="bar"></i>Total reps</span>
+				{#if metric === 'top'}
+					{#each visibleHitMethods as method (method.key)}
+						<span><i class="hit-key" style:border-color={method.color}></i>{method.short}</span>
+					{/each}
+				{/if}
 				<span class="dots">
 					Rating
 					<i style:background={RATING_COLORS[1]}></i>1
@@ -218,9 +358,16 @@
 		border-radius: var(--radius);
 		background: var(--surface);
 	}
+	.chart-controls {
+		display: flex;
+		align-items: start;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
 	.metric {
 		display: inline-flex;
-		margin-bottom: 0.5rem;
 		padding: 3px;
 		border-radius: 8px;
 		background: var(--paper-2);
@@ -238,6 +385,35 @@
 	.metric button[aria-selected='true'] {
 		background: var(--chrome);
 		color: var(--lime);
+	}
+	.range-picks {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+	.range-picks button {
+		padding: 0.3rem 0.65rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--steel);
+		font: inherit;
+		font-size: 0.78rem;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.range-picks button[aria-pressed='true'] {
+		border-color: var(--ink);
+		background: var(--ink);
+		color: var(--surface);
+	}
+	.chart-empty {
+		display: grid;
+		min-height: 220px;
+		margin: 0;
+		place-items: center;
+		color: var(--steel);
+		font-size: 0.9rem;
 	}
 	.legend {
 		display: flex;
@@ -264,6 +440,13 @@
 		width: 10px;
 		height: 10px;
 		background: rgba(47, 123, 255, 0.8);
+	}
+	.legend .hit-key {
+		width: 9px;
+		height: 9px;
+		border: 2px solid;
+		border-radius: 50%;
+		background: transparent !important;
 	}
 	.legend .dots i {
 		width: 9px;

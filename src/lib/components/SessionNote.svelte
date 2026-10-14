@@ -182,7 +182,7 @@
 					addPoint();
 				}}
 			>
-				<Icon name="plus" size={14} />
+				<Icon name="plus" size={11} />
 			</button>
 		</div>
 	</div>
@@ -197,38 +197,38 @@
 	}
 	.box {
 		position: relative;
-		--note-line: color-mix(in srgb, var(--lime) 22%, var(--line-strong));
-		--note-fill: color-mix(in srgb, var(--lime) 4%, var(--paper));
-		--note-mark: color-mix(in srgb, var(--lime) 55%, var(--line-strong));
+		--note-line: color-mix(in srgb, var(--lime) 8%, var(--line));
+		--note-fill: color-mix(in srgb, var(--lime) 2%, var(--paper));
+		--note-mark: color-mix(in srgb, var(--lime) 18%, var(--line));
 		min-height: 2.2rem;
-		padding: 0.15rem 0.15rem 0.7rem 0.5rem;
-		border: 1.5px solid var(--note-line);
-		border-left-width: 3px;
+		padding: 0.15rem 0.15rem 0.35rem 0.5rem;
+		border: 1px solid var(--note-line);
+		border-left-width: 2px;
 		border-left-color: var(--note-mark);
 		border-radius: var(--radius-sm);
 		background: var(--note-fill);
 	}
 	.box:focus-within {
-		--note-line: color-mix(in srgb, var(--lime) 45%, var(--line-strong));
-		--note-mark: color-mix(in srgb, var(--lime) 70%, var(--line-strong));
+		--note-line: color-mix(in srgb, var(--lime) 22%, var(--line));
+		--note-mark: color-mix(in srgb, var(--lime) 35%, var(--line));
 		border-color: var(--note-line);
 		border-left-color: var(--note-mark);
 	}
 	.sticky .box {
-		--note-line: color-mix(in srgb, var(--warn-ink) 28%, var(--line-strong));
-		--note-fill: color-mix(in srgb, var(--warn-ink) 7%, var(--paper));
-		--note-mark: color-mix(in srgb, var(--warn-ink) 50%, var(--line-strong));
+		--note-line: color-mix(in srgb, var(--warn-ink) 12%, var(--line));
+		--note-fill: color-mix(in srgb, var(--warn-ink) 3%, var(--paper));
+		--note-mark: color-mix(in srgb, var(--warn-ink) 20%, var(--line));
 	}
 	.sticky .box:focus-within {
-		--note-line: color-mix(in srgb, var(--warn-ink) 42%, var(--line-strong));
-		--note-mark: color-mix(in srgb, var(--warn-ink) 65%, var(--line-strong));
-	}
-	.sticky .dot,
-	.sticky .add-point {
-		color: color-mix(in srgb, var(--warn-ink) 70%, var(--ink-2));
+		--note-line: color-mix(in srgb, var(--warn-ink) 22%, var(--line));
+		--note-mark: color-mix(in srgb, var(--warn-ink) 32%, var(--line));
 	}
 	.sticky .dot {
+		color: color-mix(in srgb, var(--warn-ink) 70%, var(--ink-2));
 		background: color-mix(in srgb, var(--warn-ink) 70%, var(--ink-2));
+	}
+	.sticky .add-point {
+		color: color-mix(in srgb, var(--warn-ink) 28%, var(--steel));
 	}
 	ul {
 		margin: 0;
@@ -287,17 +287,19 @@
 		bottom: 0;
 		display: inline-grid;
 		place-items: center;
-		width: 1.75rem;
-		height: 1.75rem;
+		width: 1.05rem;
+		height: 1.05rem;
 		padding: 0;
-		border: 1.5px solid var(--note-line);
-		border-radius: var(--radius);
+		border: 1px solid color-mix(in srgb, var(--note-line) 55%, transparent);
+		border-radius: 999px;
 		background: var(--note-fill);
-		color: var(--note-mark);
+		color: color-mix(in srgb, var(--note-mark) 40%, var(--steel));
 		transform: translate(-50%, 50%);
 		cursor: pointer;
 	}
-	.add-point:hover {
+	.add-point:hover,
+	.add-point:focus-visible {
 		color: var(--ink);
+		border-color: var(--note-line);
 	}
 </style>

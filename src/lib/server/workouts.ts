@@ -163,6 +163,7 @@ async function addExerciseTx(
 
 	const setup = await lastSetup(tx, userId, exerciseId);
 	const previous = await lastWorkSets(tx, userId, exerciseId);
+	const lastWorkingWeight = previous.at(-1)?.weightKg ?? opts.weightKg ?? null;
 	const [we] = await tx
 		.insert(schema.workoutExercise)
 		.values({
@@ -183,7 +184,7 @@ async function addExerciseTx(
 			return {
 				workoutExerciseId: we.id,
 				position: i,
-				weightKg: prev?.weightKg ?? opts.weightKg ?? null,
+				weightKg: lastWorkingWeight,
 				reps: prev?.reps ?? null
 			};
 		})

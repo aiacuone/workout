@@ -112,7 +112,7 @@
 		for (const f of MEASUREMENT_FIELDS) v[f.key] = entry ? cmToDisplay(entry[f.key], lu) : '';
 		vals = v;
 		placeholders = base;
-		calcBf = entry?.bodyFatPct != null;
+		calcBf = entry ? entry.bodyFatPct != null : true;
 		measureOpen = true;
 	}
 
@@ -156,6 +156,15 @@
 	] as const;
 
 	type SeriesId = (typeof CHART_SERIES)[number]['id'];
+	type ChartRange = 1 | 3 | 6 | 12 | 'all';
+
+	const CHART_RANGES: { value: ChartRange; label: string }[] = [
+		{ value: 1, label: 'Last month' },
+		{ value: 3, label: '3 months' },
+		{ value: 6, label: '6 months' },
+		{ value: 12, label: '1 year' },
+		{ value: 'all', label: 'All' }
+	];
 
 	function seriesNumber(e: Entry, id: SeriesId): number | null {
 		if (id === 'totalCm') return totalGirthCm(e);
@@ -166,6 +175,7 @@
 	const available = $derived(CHART_SERIES.filter((s) => data.entries.some((e) => seriesNumber(e, s.id) != null)));
 
 	let picked = $state<SeriesId[] | null>(null);
+	let chartRange = $state<ChartRange>('all');
 
 	const active = $derived.by(() => {
 		const ids = new Set(available.map((s) => s.id));
@@ -188,7 +198,22 @@
 		}
 	}
 
-	const chartEntries = $derived(data.entries.filter((e) => active.some((id) => seriesNumber(e, id) != null)));
+	const chartEntries = $derived.by(() => {
+		const entries = data.entries.filter((e) => active.some((id) => seriesNumber(e, id) != null));
+		if (chartRange === 'all') return entries;
+
+		const cutoff = new Date();
+		cutoff.setHours(0, 0, 0, 0);
+		const day = cutoff.getDate();
+		cutoff.setDate(1);
+		cutoff.setMonth(cutoff.getMonth() - chartRange);
+		const lastDay = new Date(cutoff.getFullYear(), cutoff.getMonth() + 1, 0).getDate();
+		cutoff.setDate(Math.min(day, lastDay));
+		const cutoffDate = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-${String(
+			cutoff.getDate()
+		).padStart(2, '0')}`;
+		return entries.filter((e) => e.measuredOn >= cutoffDate);
+	});
 
 	const config = $derived.by((): ChartConfiguration => {
 		const on = new Set(active);
@@ -444,8 +469,17 @@
 		</button>
 	</section>
 
-	{#if available.length && chartEntries.length > 1}
+	{#if available.length && data.entries.length > 1}
 		<div class="chart-card">
+			<div class="range-picks" role="group" aria-label="Chart date range">
+				{#each CHART_RANGES as range (range.value)}
+					<button
+						type="button"
+						aria-pressed={chartRange === range.value}
+						onclick={() => (chartRange = range.value)}>{range.label}</button
+					>
+				{/each}
+			</div>
 			<div class="picks" role="group" aria-label="Measurements on the chart">
 				{#each available as s (s.id)}
 					<button type="button" aria-pressed={active.includes(s.id)} onclick={() => toggleSeries(s.id)}>
@@ -453,7 +487,11 @@
 					</button>
 				{/each}
 			</div>
-			<Chart {config} height={230} />
+			{#if chartEntries.length > 1}
+				<Chart {config} height={230} />
+			{:else}
+				<p class="chart-empty">Not enough entries in this date range.</p>
+			{/if}
 		</div>
 	{/if}
 
@@ -835,6 +873,28 @@
 		border-radius: var(--radius);
 		background: var(--surface);
 	}
+	.range-picks {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin-bottom: 0.65rem;
+	}
+	.range-picks button {
+		padding: 0.3rem 0.65rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--steel);
+		font: inherit;
+		font-size: 0.78rem;
+		font-weight: 700;
+		cursor: pointer;
+	}
+	.range-picks button[aria-pressed='true'] {
+		border-color: var(--ink);
+		background: var(--ink);
+		color: var(--surface);
+	}
 	.picks {
 		display: flex;
 		flex-wrap: wrap;
@@ -868,6 +928,14 @@
 	}
 	.picks button[aria-pressed='true'] i {
 		opacity: 1;
+	}
+	.chart-empty {
+		display: grid;
+		min-height: 230px;
+		margin: 0;
+		place-items: center;
+		color: var(--steel);
+		font-size: 0.9rem;
 	}
 	.entries {
 		margin: 0;

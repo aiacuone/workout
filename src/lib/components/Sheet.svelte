@@ -20,16 +20,17 @@
 
 	$effect(() => {
 		if (!dialog) return;
-		if (open && !dialog.open) {
-			dialog.showModal();
+		const currentDialog = dialog;
+		if (open && !currentDialog.open) {
+			currentDialog.showModal();
 			// showModal focuses the first tabbable (close); wait a tick then move to the marked field.
 			const focus = () =>
-				(dialog.querySelector('[data-autofocus]') as HTMLElement | null)?.focus({
+				(currentDialog.querySelector('[data-autofocus]') as HTMLElement | null)?.focus({
 					preventScroll: true
 				});
 			requestAnimationFrame(() => requestAnimationFrame(focus));
 		}
-		if (!open && dialog.open) dialog.close();
+		if (!open && currentDialog.open) currentDialog.close();
 	});
 
 	function handleClose() {
