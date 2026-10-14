@@ -13,7 +13,7 @@ export function toast(message: string, kind: ToastKind = 'ok') {
 	}, 4200);
 }
 
-const ERROR_KEYS = ['error', 'pwError', 'importError', 'measureImportError'] as const;
+const ERROR_KEYS = ['error', 'importError', 'measureImportError'] as const;
 
 export function toastFormError(data: unknown) {
 	if (!data || typeof data !== 'object') return;

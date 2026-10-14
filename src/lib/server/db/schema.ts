@@ -20,7 +20,8 @@ const ts = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' 
 export const user = pgTable('user', {
 	id: id(),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
+	email: text('email').unique(),
+	googleSub: text('google_sub').unique(),
 	createdAt: ts('created_at').notNull().defaultNow()
 });
 

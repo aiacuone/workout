@@ -1,11 +1,5 @@
 import { fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
-import {
-	hashPassword,
-	invalidateUserSessions,
-	SESSION_COOKIE,
-	verifyPassword
-} from '$lib/server/auth';
 import { db, schema } from '$lib/server/db';
 import { createRoutinesFromLatestWorkouts } from '$lib/server/routines';
 import { importBmtCsv } from '$lib/server/measurements-import';
@@ -43,26 +37,6 @@ export const actions: Actions = {
 			})
 			.where(eq(schema.userPrefs.userId, user.id));
 		return { prefsSaved: true };
-	},
-
-	password: async ({ locals, request, cookies }) => {
-		const user = requireUser(locals);
-		const form = await request.formData();
-		const currentPw = str(form, 'current');
-		const next = str(form, 'next');
-
-		const [u] = await db.select().from(schema.user).where(eq(schema.user.id, user.id));
-		if (!u || !(await verifyPassword(currentPw, u.passwordHash)))
-			return fail(400, { pwError: 'Current password is wrong.' });
-		if (next.length < 8) return fail(400, { pwError: 'New password must be at least 8 characters.' });
-		if (next !== str(form, 'confirm')) return fail(400, { pwError: 'Passwords do not match.' });
-
-		await db
-			.update(schema.user)
-			.set({ passwordHash: await hashPassword(next) })
-			.where(eq(schema.user.id, user.id));
-		await invalidateUserSessions(user.id, cookies.get(SESSION_COOKIE));
-		return { pwSaved: true };
 	},
 
 	importStrong: async ({ locals, request }) => {

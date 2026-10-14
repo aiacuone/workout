@@ -61,7 +61,7 @@
 <div class="page">
 	<div class="page-head">
 		<div>
-			<p class="eyebrow">Signed in as {data.user?.username}</p>
+			<p class="eyebrow">Signed in as {data.user?.email || data.user?.username}</p>
 			<h1>Settings</h1>
 		</div>
 	</div>
@@ -116,25 +116,6 @@
 			</label>
 		</div>
 		<button class="btn primary">Save preferences</button>
-	</form>
-
-	<form
-		method="POST"
-		action="?/password"
-		class="card stack"
-		use:enhance={() =>
-			async ({ result, update }) => {
-				await update({ reset: false });
-				if (result.type === 'failure') toastFormError(result.data);
-				if (result.type === 'success') toast('Password changed. Other devices were signed out.');
-			}}
-	>
-		<h2>Change password</h2>
-		<input type="text" name="username" autocomplete="username" value={data.user?.username} hidden />
-		<label class="field">Current password<input name="current" type="password" autocomplete="current-password" required /></label>
-		<label class="field">New password<input name="next" type="password" autocomplete="new-password" minlength="8" required /></label>
-		<label class="field">Confirm new password<input name="confirm" type="password" autocomplete="new-password" required /></label>
-		<button class="btn">Change password</button>
 	</form>
 
 	<form

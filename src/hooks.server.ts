@@ -1,7 +1,7 @@
 import { error, redirect, type Handle } from '@sveltejs/kit';
 import { SESSION_COOKIE, setSessionCookie, validateSession } from '$lib/server/auth';
 
-const PUBLIC_PATHS = ['/login'];
+const PUBLIC_PATHS = ['/login', '/login/google', '/login/google/callback'];
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get(SESSION_COOKIE);

@@ -1,65 +1,27 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { toastFormError } from '$lib/toast.svelte';
-
-	let { data, form } = $props();
-	let busy = $state(false);
+	let { data } = $props();
 </script>
 
-<svelte:head><title>{data.setup ? 'Set up' : 'Sign in'} · Strongr</title></svelte:head>
+<svelte:head><title>Sign in · Strongr</title></svelte:head>
 
 <div class="screen">
 	<div class="plate" aria-hidden="true"></div>
 	<section class="panel">
 		<h1 class="wordmark">STRONGR</h1>
-		<p class="lede">
-			{data.setup
-				? 'Create the one account for this log. Signup closes after this.'
-				: 'Every set, drop and hold — logged.'}
-		</p>
+		<p class="lede">Every set, drop and hold — logged.</p>
 
-		<form
-			method="POST"
-			action={data.setup ? '?/setup' : '?/login'}
-			class="stack"
-			use:enhance={() => {
-				busy = true;
-				return async ({ result, update }) => {
-					await update();
-					busy = false;
-					if (result.type === 'failure') toastFormError(result.data);
-				};
-			}}
-		>
-			<label class="field">
-				Username
-				<input
-					name="username"
-					autocomplete="username"
-					autocapitalize="none"
-					required
-					value={form?.username ?? ''}
-				/>
-			</label>
-			<label class="field">
-				Password
-				<input
-					name="password"
-					type="password"
-					autocomplete={data.setup ? 'new-password' : 'current-password'}
-					required
-				/>
-			</label>
-			{#if data.setup}
-				<label class="field">
-					Confirm password
-					<input name="confirm" type="password" autocomplete="new-password" required />
-				</label>
-			{/if}
-			<button class="btn primary block" disabled={busy}>
-				{data.setup ? 'Create account' : 'Sign in'}
-			</button>
-		</form>
+		{#if data.error}
+			<p class="form-error" role="alert">{data.error}</p>
+		{/if}
+
+		{#if data.configured}
+			<a class="btn primary block" href="/login/google">Sign in with Google</a>
+			<p class="note">Only approved Google accounts can sign in.</p>
+		{:else}
+			<p class="form-error" role="alert">
+				Google sign-in is not set up. Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and ALLOWED_EMAILS.
+			</p>
+		{/if}
 	</section>
 </div>
 
@@ -110,14 +72,10 @@
 		color: #c9d3cf;
 		max-width: 30ch;
 	}
-	.panel :global(label.field) {
-		color: #c9d3cf;
-	}
-	.panel :global(label.field input) {
-		background: rgba(251, 252, 251, 0.96);
-		border-color: transparent;
-		color: #0e1118;
-		caret-color: #0e1118;
+	.note {
+		margin: 0;
+		color: #9aa6a1;
+		font-size: 0.9rem;
 	}
 
 	@keyframes spin {
