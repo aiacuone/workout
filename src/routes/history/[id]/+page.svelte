@@ -470,9 +470,12 @@
 		padding: 0;
 		list-style: none;
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 0.75rem;
+		min-width: 0;
 	}
 	.exercises > li {
+		min-width: 0;
 		padding: 0.6rem 0.7rem 0.45rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
@@ -487,6 +490,7 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
+		min-width: 0;
 		width: 100%;
 		padding: 0;
 		border: 0;
@@ -501,9 +505,11 @@
 	}
 	.ex-name {
 		display: inline-flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.4rem;
 		min-width: 0;
+		overflow-wrap: anywhere;
 	}
 	.extras {
 		display: flex;
@@ -608,7 +614,10 @@
 	}
 	@media (max-width: 480px) {
 		.totals {
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.totals div:last-child {
+			grid-column: 1 / -1;
 		}
 		.actions {
 			grid-template-columns: 1fr;
