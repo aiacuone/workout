@@ -22,10 +22,10 @@
 		}[];
 	};
 
-	let { workout, unit }: { workout: Summary; unit: WeightUnit } = $props();
+	let { workout, unit, href = `/history/${workout.id}` }: { workout: Summary; unit: WeightUnit; href?: string } = $props();
 </script>
 
-<a class="card" href="/history/{workout.id}">
+<a class="card" {href}>
 	<header>
 		<div>
 			<h3>{workout.name}</h3>

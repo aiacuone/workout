@@ -7,11 +7,13 @@
 	let {
 		routine,
 		canStart = true,
-		canDelete = false
+		canDelete = false,
+		href = `/routines/${routine.id}`
 	}: {
 		routine: { id: string; name: string; exercises: { name: string; sets: number }[] };
 		canStart?: boolean;
 		canDelete?: boolean;
+		href?: string;
 	} = $props();
 
 	let confirming = $state(false);
@@ -19,7 +21,7 @@
 </script>
 
 <article class="card">
-	<a class="main" href="/routines/{routine.id}">
+	<a class="main" {href}>
 		<h3>{routine.name}</h3>
 		<p class="muted">
 			{#if routine.exercises.length}

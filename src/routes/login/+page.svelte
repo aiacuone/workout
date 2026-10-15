@@ -22,6 +22,7 @@
 				Google sign-in is not set up. Add GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and ALLOWED_EMAILS.
 			</p>
 		{/if}
+		<a class="btn block preview" href="/preview">View interactive preview</a>
 	</section>
 </div>
 
@@ -76,6 +77,10 @@
 		margin: 0;
 		color: #9aa6a1;
 		font-size: 0.9rem;
+	}
+	.preview {
+		border-color: #647284;
+		color: #c9d3cf;
 	}
 
 	@keyframes spin {

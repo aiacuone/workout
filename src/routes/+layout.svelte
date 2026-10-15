@@ -19,7 +19,8 @@
 	] as const;
 
 	const path = $derived(page.url.pathname);
-	const chrome = $derived(!!data.user && path !== '/login');
+	const preview = $derived(path === '/preview' || path.startsWith('/preview/'));
+	const chrome = $derived((!!data.user && path !== '/login') || preview);
 	const onActive = $derived(path.startsWith('/workout/active'));
 
 	const webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
@@ -48,8 +49,13 @@
 	});
 
 	function isCurrent(href: string) {
-		if (href === '/') return path === '/';
-		return path === href || path.startsWith(href + '/');
+		const target = tabHref(href);
+		if (target === '/' || target === '/preview') return path === target;
+		return path === target || path.startsWith(target + '/');
+	}
+
+	function tabHref(href: string) {
+		return preview ? `/preview${href === '/' ? '' : href}` : href;
 	}
 </script>
 
@@ -59,13 +65,24 @@
 
 {#if chrome}
 	<header class="topbar">
-		<a class="brand" href="/">STRONGR</a>
-		<nav class="desk-nav" aria-label="Primary">
-			{#each tabs as t (t.href)}
-				<a href={t.href} aria-current={isCurrent(t.href) ? 'page' : undefined}>{t.label}</a>
-			{/each}
-		</nav>
-		<a class="icon-btn" href="/settings" aria-label="Settings"><Icon name="settings" /></a>
+		<a class="brand" href={preview ? '/preview' : '/'}>STRONGR</a>
+		<div class="top-actions">
+			<nav class="desk-nav" aria-label="Primary">
+				{#each tabs as t (t.href)}
+					<a
+						href={tabHref(t.href)}
+						aria-label={t.label}
+						title={t.label}
+						aria-current={isCurrent(t.href) ? 'page' : undefined}
+					>
+						<Icon name={t.icon} />
+					</a>
+				{/each}
+			</nav>
+			{#if !preview}
+				<a class="icon-btn" href="/settings" aria-label="Settings" title="Settings"><Icon name="settings" /></a>
+			{/if}
+		</div>
 	</header>
 {/if}
 
@@ -85,9 +102,8 @@
 
 	<nav class="tabbar" aria-label="Primary">
 		{#each tabs as t (t.href)}
-			<a href={t.href} aria-current={isCurrent(t.href) ? 'page' : undefined}>
+			<a href={tabHref(t.href)} aria-label={t.label} aria-current={isCurrent(t.href) ? 'page' : undefined}>
 				<Icon name={t.icon} />
-				<span>{t.label}</span>
 			</a>
 		{/each}
 	</nav>
@@ -116,16 +132,26 @@
 		text-decoration: none;
 		margin-right: auto;
 	}
+	.top-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
 	.desk-nav {
 		display: none;
 		gap: 0.25rem;
 	}
 	.desk-nav a {
-		padding: 0.45rem 0.75rem;
+		display: grid;
+		place-items: center;
+		width: 38px;
+		height: 38px;
 		border-radius: var(--radius-sm);
-		font-weight: 650;
 		text-decoration: none;
 		color: var(--ink-2);
+	}
+	.desk-nav a:hover {
+		background: var(--paper-2);
 	}
 	.desk-nav a[aria-current='page'] {
 		background: var(--chrome);
@@ -145,12 +171,8 @@
 	.tabbar a {
 		display: grid;
 		place-items: center;
-		align-content: center;
-		gap: 2px;
 		min-width: 0;
 		color: var(--steel);
-		font-size: 0.7rem;
-		font-weight: 650;
 		text-decoration: none;
 	}
 	.tabbar a[aria-current='page'] {

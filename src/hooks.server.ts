@@ -20,6 +20,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const path = event.url.pathname;
 	const isPublic =
 		PUBLIC_PATHS.includes(path) ||
+		path === '/preview' ||
+		path.startsWith('/preview/') ||
 		path.startsWith('/_app/') ||
 		/\.(png|svg|ico|webmanifest|js|css|woff2?)$/.test(path);
 
