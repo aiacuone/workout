@@ -8,6 +8,7 @@ import { listExercises } from '$lib/server/exercises';
 import { previousSessionStats, previousWorkoutVolume, trendsForExercises, workoutRecords } from '$lib/server/prs';
 import { getPrefs, optNum, optStr, requireUser, str } from '$lib/server/util';
 import { getOwnedWorkout, getWorkoutState } from '$lib/server/workouts';
+import { RATING_MAX } from '$lib/format';
 import { displayToKg } from '$lib/units';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -64,7 +65,7 @@ export const actions: Actions = {
 		const r = optNum(form, 'rating');
 		await db
 			.update(schema.workoutExercise)
-			.set({ rating: r && r >= 1 && r <= 3 ? Math.round(r) : null })
+			.set({ rating: r && r >= 1 && r <= RATING_MAX ? Math.round(r) : null })
 			.where(and(eq(schema.workoutExercise.id, str(form, 'weId')), eq(schema.workoutExercise.workoutId, w.id)));
 	},
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setSummary } from '$lib/format';
+	import { ratingColor, setSummary } from '$lib/format';
 	import type { Trend } from '$lib/records';
 	import { formatDate, formatDuration, kgToDisplay, type WeightUnit } from '$lib/units';
 	import HitBadge from './HitBadge.svelte';
@@ -46,11 +46,8 @@
 				<span class="right">
 					{#each e.hits as h (h)}<HitBadge method={h} />{/each}
 					{#if e.best}
-						<span
-							class="best num"
-							class:rough={e.rating === 1}
-							class:solid={e.rating === 2}
-							class:great={e.rating === 3}>{setSummary(e.best, unit)}</span
+						<span class="best num" style:color={ratingColor(e.rating) || undefined}
+							>{setSummary(e.best, unit)}</span
 						>
 					{/if}
 				</span>
@@ -133,15 +130,6 @@
 	.best {
 		color: var(--ink-2);
 		font-weight: 650;
-	}
-	.best.rough {
-		color: var(--rating-rough);
-	}
-	.best.solid {
-		color: var(--rating-solid);
-	}
-	.best.great {
-		color: var(--rating-great);
 	}
 	@media (max-width: 420px) {
 		.right :global(.badge) {

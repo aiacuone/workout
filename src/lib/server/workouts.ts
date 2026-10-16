@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { and, asc, desc, eq, inArray, ne, sql } from 'drizzle-orm';
+import { RATING_MAX } from '$lib/format';
 import { HIT_BY_KEY } from '$lib/hit';
 import type { WorkoutExerciseState, WorkoutState } from '$lib/types';
 import { db, schema } from './db';
@@ -439,7 +440,7 @@ export async function applyOp(userId: string, workoutId: string, op: Op): Promis
 				if ('seatHeight' in p) set.seatHeight = text(p.seatHeight, 20);
 				if ('support' in p) set.support = text(p.support, 20);
 				if ('repRange' in p) set.repRange = text(p.repRange, 20);
-				if ('rating' in p) set.rating = num(p.rating, 1, 3, true);
+				if ('rating' in p) set.rating = num(p.rating, 1, RATING_MAX, true);
 				if ('notes' in p) set.notes = text(p.notes, 2000);
 				if (Object.keys(set).length)
 					await tx.update(schema.workoutExercise).set(set).where(eq(schema.workoutExercise.id, op.weId));

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ChartConfiguration, Plugin } from 'chart.js';
-	import { hitLogSummary, ratingLabel, setSummary } from '$lib/format';
+	import { hitLogSummary, RATINGS, RATING_MAX, ratingColor, ratingLabel, setSummary } from '$lib/format';
 	import { HIT_METHODS, hitMethod } from '$lib/hit';
 	import type { Session } from '$lib/types';
 	import { formatDate, kgToDisplay, type WeightUnit } from '$lib/units';
@@ -29,7 +29,7 @@
 	let metric = $state<Metric>('top');
 	let chartRange = $state<ChartRange>('all');
 
-	const RATING_COLORS = ['#a8b4c0', '#ff6b73', '#ffb224', '#5dff8a'];
+	const UNRATED_COLOR = '#a8b4c0';
 
 	const chrono = $derived.by(() => {
 		const entries = [...sessions].reverse();
@@ -151,9 +151,9 @@
 						pointHoverRadius: 9,
 						pointBorderWidth: 2.5,
 						pointBorderColor: chrono.map((s) =>
-							s.rating === 3 ? RATING_COLORS[3] : '#e8eee9'
+							s.rating === RATING_MAX ? ratingColor(RATING_MAX) : '#e8eee9'
 						),
-						pointBackgroundColor: chrono.map((s) => RATING_COLORS[s.rating ?? 0]),
+						pointBackgroundColor: chrono.map((s) => ratingColor(s.rating) || UNRATED_COLOR),
 						spanGaps: true,
 						order: 0
 					},
@@ -269,9 +269,9 @@
 				{/if}
 				<span class="dots">
 					Rating
-					<i style:background={RATING_COLORS[1]}></i>1
-					<i style:background={RATING_COLORS[2]}></i>2
-					<i style:background={RATING_COLORS[3]}></i>3
+					{#each RATINGS as r (r.value)}
+						<i style:background={r.color}></i>{r.value}
+					{/each}
 				</span>
 			</div>
 		</div>

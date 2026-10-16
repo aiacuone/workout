@@ -20,6 +20,19 @@ export function hitLogSummary(methodKey: string, l: HitLogView, unit: WeightUnit
 	return parts.join(' ') || '—';
 }
 
+export const RATINGS = [
+	{ value: 1, label: 'Rough', color: '#ff6b73' },
+	{ value: 2, label: 'Solid', color: '#ff8c1a' },
+	{ value: 3, label: 'Good', color: '#ffe14a' },
+	{ value: 4, label: 'Great', color: '#30d158' }
+] as const;
+
+export const RATING_MAX = RATINGS.length;
+
 export function ratingLabel(r: number | null | undefined) {
-	return r === 1 ? 'Rough' : r === 2 ? 'Solid' : r === 3 ? 'Great' : '';
+	return RATINGS.find((x) => x.value === r)?.label ?? '';
+}
+
+export function ratingColor(r: number | null | undefined) {
+	return RATINGS.find((x) => x.value === r)?.color ?? '';
 }

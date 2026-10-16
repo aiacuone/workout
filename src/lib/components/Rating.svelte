@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ratingLabel } from '$lib/format';
+	import { RATINGS, ratingColor, ratingLabel } from '$lib/format';
 
 	let {
 		value,
@@ -11,32 +11,24 @@
 {#if onchange}
 	<div
 		class="rating {size}"
-		class:rough={value === 1}
-		class:solid={value === 2}
-		class:great={value === 3}
+		style:--rating={ratingColor(value)}
 		role="radiogroup"
 		aria-label="Rating"
 	>
-		{#each [1, 2, 3] as n (n)}
+		{#each RATINGS as r (r.value)}
 			<button
 				type="button"
 				role="radio"
-				aria-checked={value === n}
-				aria-label={ratingLabel(n)}
-				class:on={value != null && n <= value}
-				onclick={() => onchange(value === n ? null : n)}
+				aria-checked={value === r.value}
+				aria-label={r.label}
+				class:on={value != null && r.value <= value}
+				onclick={() => onchange(value === r.value ? null : r.value)}
 			></button>
 		{/each}
 	</div>
 {:else if value}
-	<span
-		class="rating {size} static"
-		class:rough={value === 1}
-		class:solid={value === 2}
-		class:great={value === 3}
-		title={ratingLabel(value)}
-	>
-		{#each [1, 2, 3] as n (n)}<i class:on={n <= value}></i>{/each}
+	<span class="rating {size} static" style:--rating={ratingColor(value)} title={ratingLabel(value)}>
+		{#each RATINGS as r (r.value)}<i class:on={r.value <= value}></i>{/each}
 	</span>
 {/if}
 
@@ -64,17 +56,9 @@
 	i {
 		cursor: default;
 	}
-	.rough .on {
-		background: var(--rating-rough);
-		border-color: var(--rating-rough);
-	}
-	.solid .on {
-		background: var(--rating-solid);
-		border-color: var(--rating-solid);
-	}
-	.great .on {
-		background: var(--rating-great);
-		border-color: var(--rating-great);
+	.on {
+		background: var(--rating);
+		border-color: var(--rating);
 	}
 	.sm button,
 	.sm i {
