@@ -317,6 +317,7 @@
 					<span>Height</span>
 					<input
 						bind:this={cableInput}
+						inputmode="numeric"
 						placeholder="–"
 						data-select-all
 						value={we.cableHeight ?? ''}
@@ -335,6 +336,7 @@
 					<span>Seat</span>
 					<input
 						bind:this={seatInput}
+						inputmode="numeric"
 						placeholder="–"
 						data-select-all
 						value={we.seatHeight ?? ''}
